@@ -9,11 +9,15 @@ export class SensorMeasurement {
   @Column('text')
   sensorId: string; 
 
+  // See entity/Sensors.ts
+  @Column('integer')
+  sensorType: number;
+
   @Column('text')
   plantId: string;
 
   @Column('datetime')
-  measuredAt: Date;
+  measuredAt: string;
 
   @Column("double")
   data: number; 

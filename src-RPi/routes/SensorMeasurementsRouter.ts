@@ -5,9 +5,17 @@ const router : express.Router = express.Router();
 
 router.get( "/", SensorMeasurementController.getAll );
 
-router.get( "/type/:sensorType", SensorMeasurementController.getByType );
+router.post( "/", SensorMeasurementController.post );
 
-router.get("/sensor/:sensorId", SensorMeasurementController.getById );
+router.get( "/:measurementId", SensorMeasurementController.getById );
+
+router.get( "/plant/:plantId", SensorMeasurementController.getByPlantId );
+
+router.get( "/type/:sensorType/plant/:plantId", SensorMeasurementController.getByPlantIdAndType );
+
+router.get( "/sensor/:sensorId", SensorMeasurementController.getBySensorId );
+
+router.get( "/sensor/:sensorId/plant/:plantId", SensorMeasurementController.getBySensorIdAndPlantId );
 
 router.delete("/measurement/:measurementId", SensorMeasurementController.delete );
 

@@ -15,7 +15,7 @@ createConnection().then(async connection => {
   
   app.use(bodyParser.json());
 
-  app.use("/api/plants/sensor-measurements/:plant-id",sensorMeasurementsRouter);
+  app.use("/api/plants/sensor-measurements/",sensorMeasurementsRouter);
   app.use("/api/plants/sensors/",sensorsRouter);
   app.use("/api/plants",plantsRouter);
 
