@@ -1,0 +1,7 @@
+{
+  "type" : "sqlite",
+  "database" : "flora_fantastica.db",
+  "entities": [
+    "entity/*.ts"
+  ]
+}
