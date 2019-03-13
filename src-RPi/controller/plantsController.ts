@@ -1,40 +1,95 @@
 import { Request, Response } from "express";
+import { getManager } from "typeorm";
+import { Plant } from "../entity/Plants";
 
 export class PlantsController {
 
-  static get_all(req : Request, res: Response){
+  static async get_all(req : Request, res: Response){
   
-    res.send("Getting a all plants..." );
+    var manager = getManager();
+
+    var data = await manager.find(Plant);
+
+    res.send(data);
 
   }
 
-  static get_by_id(req : Request, res: Response){
+  static async get_by_id(req : Request, res: Response){
     
     var id = req.params.plantId;
 
-    res.send("Getting a specific one..." );
+    var manager = getManager();
+
+    var data = await manager.findOne(Plant, {
+      where : {
+        id : id
+      }
+    });
+
+    res.send(data);
     
   }
 
-  static post(req : Request, res: Response){
+  static async post(req : Request, res: Response){
 
-    res.send("Posting a plant!");
+    var plantData : Partial<Plant> = req.body;
+
+    var manager = getManager();
+
+    var plant : Plant = manager.create( Plant, plantData);
+
+    var result = await manager.insert(Plant, plant);
+
+    var createdId = result.identifiers[0].id;
+
+    var createdEntity = await manager.find(Plant, {
+      where : {
+        id : createdId
+      }
+    })
+
+    res.send(createdEntity);
 
   }
 
-  static delete(req : Request, res: Response){
+  /*
+   * Returns the deleted object
+   */
+  static async delete(req : Request, res: Response){
 
     var id = req.params.plantId;
 
-    res.send("Deleting a plant!");
+    var manager = getManager();
+
+    var deletingEntity = await manager.findOne(Plant, {
+      where : {
+        id : id
+      }
+    });
+
+    var result = await manager.delete(Plant, id);
+
+    res.send(deletingEntity);
 
   }
 
-  static put(req : Request, res: Response){
+  /*
+   * Returns the patched object
+   */
+  static async patch(req : Request, res: Response){
 
     var id = req.params.plantId;
 
-    res.send("Putting a plant!");
+    var plantData : Partial<Plant> = req.body;
+
+    var manager = getManager();
+
+    var result = await manager.update(Plant, id, plantData);
+
+    var updatedEntity = await manager.findOne(Plant, id);
+
+    res.send(updatedEntity);
+
   }
 
 }

@@ -9,7 +9,7 @@ router.post('/', SensorController.post);
 
 router.get('/:sensorId', SensorController.get_by_id);
 
-router.put('/:sensorId', SensorController.put);
+router.patch('/:sensorId', SensorController.patch);
 
 router.delete('/:sensorId', SensorController.delete);
 

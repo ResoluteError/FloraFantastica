@@ -29,7 +29,7 @@ export class SensorController {
 
   }
 
-  static put(req : Request, res: Response){
+  static patch(req : Request, res: Response){
 
     var id = req.params.sensorId;
     

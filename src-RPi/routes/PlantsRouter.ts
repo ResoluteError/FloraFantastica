@@ -9,7 +9,7 @@ router.post('/', PlantsController.post);
 
 router.get('/:plantId', PlantsController.get_by_id);
 
-router.put('/:plantId', PlantsController.put);
+router.patch('/:plantId', PlantsController.patch);
 
 router.delete('/:plantId', PlantsController.delete);
 
