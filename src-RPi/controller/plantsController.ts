@@ -20,11 +20,7 @@ export class PlantsController {
 
     var manager = getManager();
 
-    var data = await manager.findOne(Plant, {
-      where : {
-        id : id
-      }
-    });
+    var data = await manager.findOne(Plant, id);
 
     res.send(data);
     
@@ -42,11 +38,7 @@ export class PlantsController {
 
     var createdId = result.identifiers[0].id;
 
-    var createdEntity = await manager.find(Plant, {
-      where : {
-        id : createdId
-      }
-    })
+    var createdEntity = await manager.find(Plant, createdId);
 
     res.send(createdEntity);
 
@@ -61,11 +53,7 @@ export class PlantsController {
 
     var manager = getManager();
 
-    var deletingEntity = await manager.findOne(Plant, {
-      where : {
-        id : id
-      }
-    });
+    var deletingEntity = await manager.findOne(Plant, id );
 
     var result = await manager.delete(Plant, id);
 
