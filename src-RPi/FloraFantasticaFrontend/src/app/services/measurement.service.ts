@@ -89,14 +89,14 @@ export class MeasurementService {
 
   }
 
-  getMeasurementsByPlantId(plantId : string): Observable<Measurement>{
+  getMeasurementsByPlantId(plantId : string): Observable<Measurement[]>{
 
     var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
 
     return new Observable( observer => {
 
-      this.http.get<Measurement>(url + "/measurements/plant/"+plantId, options).subscribe( result => {
+      this.http.get<Measurement[]>(url + "/measurements/plant/"+plantId, options).subscribe( result => {
         observer.next(result);
         observer.complete();
       }, err => {
