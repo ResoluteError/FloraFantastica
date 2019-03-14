@@ -3,6 +3,7 @@ import express = require("express");
 import {router as plantsRouter} from "./routes/PlantsRouter";
 import {router as sensorMeasurementsRouter} from "./routes/MeasurementsRouter";
 import {router as sensorsRouter} from "./routes/SensorsRouter";
+import {router as actionsRouter} from "./routes/ActionsRouter";
 import { createConnection } from "typeorm";
 import { SeedDataController } from "./controller/SeedDataController";
 import bodyParser = require('body-parser')
@@ -25,7 +26,8 @@ createConnection().then(async connection => {
 
   app.use("/api/measurements/",sensorMeasurementsRouter);
   app.use("/api/sensors/",sensorsRouter);
-  app.use("/api/plants",plantsRouter);
+  app.use("/api/plants/",plantsRouter);
+  app.use("/api/actions/",actionsRouter);
 
   app.get("/seed/plants", SeedDataController.seedPlants);
   app.get("/seed/sensors", SeedDataController.seedSensors);

@@ -13,6 +13,7 @@ import { AlertComponent } from './helper/alert/alert.component';
 import { PromptComponent } from './helper/prompt/prompt.component';
 import { CookieManagerComponent } from './helper/cookie-manager/cookie-manager.component';
 import { HttpClient, HttpHandler, HttpClientModule } from '@angular/common/http';
+import { ActionService } from './services/action.service';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { HttpClient, HttpHandler, HttpClientModule } from '@angular/common/http'
     HttpOptionsService,
     PlantService,
     SensorService,
-    MeasurementService
+    MeasurementService,
+    ActionService
   ],
   bootstrap: [AppComponent]
 })

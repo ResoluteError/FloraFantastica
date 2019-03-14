@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Plant, PlantDataObj } from 'src/app/models/plant.model';
 import { SensorService } from 'src/app/services/sensor.service';
 import { Sensor } from 'src/app/models/sensor.model';
+import { ActionService } from 'src/app/services/action.service';
 
 @Component({
   selector: 'app-plant-card',
@@ -16,15 +17,14 @@ export class PlantCardComponent implements OnInit {
   sensors : Sensor[] = [];
 
   constructor(
-    private sensorService : SensorService
+    private sensorService : SensorService,
+    private actionService : ActionService
   ) { }
 
   ngOnInit() {
     
 
     this.plantData = new PlantDataObj(this.plant.currentData);
-
-    console.log("PlantData ", this.plantData);
 
     this.sensorService.getSensorsByPlantId(this.plant.id).subscribe( sensors => {
 
@@ -38,7 +38,15 @@ export class PlantCardComponent implements OnInit {
   }
 
   updateCurrentPlantData(){
-    console.log("Updating plant with id: " + this.plant.id);
+    this.actionService.updatePlantCurrentData(this.plant.id).subscribe( updatedPlant => {
+
+      this.plantData = new PlantDataObj(updatedPlant.currentData);
+
+    }, err => {
+       
+      // TODO alert system 
+
+    })
   }
 
   /* 
