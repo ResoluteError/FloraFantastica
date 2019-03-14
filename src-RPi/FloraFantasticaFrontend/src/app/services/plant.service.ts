@@ -19,16 +19,13 @@ export class PlantService {
 
     var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
-    console.log("Getting plants...")
 
     return new Observable( observer => {
 
       this.http.get<Plant[]>(url + "/plants", options).subscribe( result => {
-        console.log("got plants");
         observer.next(result);
         observer.complete();
       }, err => {
-        console.log("error plants");
         observer.error(err);
         observer.complete();
       });
