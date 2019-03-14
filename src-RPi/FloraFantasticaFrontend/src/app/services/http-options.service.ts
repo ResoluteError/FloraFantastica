@@ -22,5 +22,9 @@ export class HttpOptionsService {
     return "http://localhost:8080";
   }
 
+  get apiUrl(): string {
+    return "http://localhost:8080/api";
+  }
+
 
 }

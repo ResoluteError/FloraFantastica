@@ -16,7 +16,7 @@ export class SensorService {
 
   getSensors(): Observable<Sensor[]>{
 
-    var url = this.httpOptions.url;
+    var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
 
     return new Observable( observer => {
@@ -35,7 +35,7 @@ export class SensorService {
 
   getSensorById(id : string): Observable<Sensor>{
 
-    var url = this.httpOptions.url;
+    var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
 
     return new Observable( observer => {
@@ -54,7 +54,7 @@ export class SensorService {
 
   getSensorsByPlantId(plantId : string): Observable<Sensor[]>{
 
-    var url = this.httpOptions.url;
+    var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
     
     return new Observable( observer => {
@@ -72,7 +72,7 @@ export class SensorService {
 
   postSensor(Sensor: Partial<Sensor>): Observable<Sensor>{
 
-    var url = this.httpOptions.url;
+    var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
 
     return new Observable( observer => {
@@ -91,7 +91,7 @@ export class SensorService {
 
   deleteSensor(id : string): Observable<Sensor>{
 
-    var url = this.httpOptions.url;
+    var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
 
     return new Observable( observer => {
@@ -110,7 +110,7 @@ export class SensorService {
 
   patchSensor(id : string, patchedValues : Partial<Sensor>) : Observable<Sensor>{
 
-    var url = this.httpOptions.url;
+    var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
 
     return new Observable( observer => {

@@ -17,15 +17,18 @@ export class PlantService {
 
   getPlants(): Observable<Plant[]>{
 
-    var url = this.httpOptions.url;
+    var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
+    console.log("Getting plants...")
 
     return new Observable( observer => {
 
       this.http.get<Plant[]>(url + "/plants", options).subscribe( result => {
+        console.log("got plants");
         observer.next(result);
         observer.complete();
       }, err => {
+        console.log("error plants");
         observer.error(err);
         observer.complete();
       });
@@ -36,7 +39,7 @@ export class PlantService {
 
   getPlantById(id : string): Observable<Plant>{
 
-    var url = this.httpOptions.url;
+    var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
 
     return new Observable( observer => {
@@ -55,7 +58,7 @@ export class PlantService {
 
   postPlant(plant: Partial<Plant>): Observable<Plant>{
 
-    var url = this.httpOptions.url;
+    var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
 
     return new Observable( observer => {
@@ -74,7 +77,7 @@ export class PlantService {
 
   deletePlant(id : string): Observable<Plant>{
 
-    var url = this.httpOptions.url;
+    var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
 
     return new Observable( observer => {
@@ -93,7 +96,7 @@ export class PlantService {
 
   patchPlant(id : string, patchedValues : Partial<Plant>) : Observable<Plant>{
 
-    var url = this.httpOptions.url;
+    var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
 
     return new Observable( observer => {

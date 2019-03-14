@@ -15,7 +15,7 @@ export class MeasurementService {
 
   getMeasurements(): Observable<Measurement[]>{
 
-    var url = this.httpOptions.url;
+    var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
 
     return new Observable( observer => {
@@ -34,7 +34,7 @@ export class MeasurementService {
 
   getMeasurementById(id : number): Observable<Measurement>{
 
-    var url = this.httpOptions.url;
+    var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
 
     return new Observable( observer => {
@@ -53,7 +53,7 @@ export class MeasurementService {
 
   postMeasurement(measurement : Partial<Measurement>): Observable<Measurement>{
 
-    var url = this.httpOptions.url;
+    var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
 
     return new Observable( observer => {
@@ -72,7 +72,7 @@ export class MeasurementService {
 
   deleteMeasurement(id : number): Observable<Measurement>{
 
-    var url = this.httpOptions.url;
+    var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
 
     return new Observable( observer => {
@@ -91,7 +91,7 @@ export class MeasurementService {
 
   getMeasurementsByPlantId(plantId : string): Observable<Measurement>{
 
-    var url = this.httpOptions.url;
+    var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
 
     return new Observable( observer => {
@@ -109,7 +109,7 @@ export class MeasurementService {
   }
   getMeasurementsBySensorId(sensorId : string): Observable<Measurement[]>{
 
-    var url = this.httpOptions.url;
+    var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
 
     return new Observable( observer => {
@@ -128,7 +128,7 @@ export class MeasurementService {
 
   getMeasurementsBySensorIdAndPlantId(plantId : string, sensorId: string): Observable<Measurement[]>{
 
-    var url = this.httpOptions.url;
+    var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
 
     return new Observable( observer => {
@@ -147,7 +147,7 @@ export class MeasurementService {
 
   getMeasurementsBySensorTypeAndPlantId(plantId : string, sensorType: number): Observable<Measurement[]>{
 
-    var url = this.httpOptions.url;
+    var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
 
     return new Observable( observer => {
