@@ -13,7 +13,7 @@ export class DashboardComponent implements OnInit {
     private plantService : PlantService
   ) { }
 
-  plants : Plant[] = null;
+  plants : Plant[] = [];
 
   ngOnInit() {
 

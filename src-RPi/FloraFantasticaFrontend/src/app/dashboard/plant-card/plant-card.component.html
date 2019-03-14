@@ -1,3 +1,14 @@
-<p>
-  plant-card works!
-</p>
+<h3>Plant {{plant.name}}</h3>
+<h5>Active Sensors:</h5>
+<ul>
+  <li *ngFor="let sensor of sensors">{{sensor.name}} ({{sensor.id}})</li>
+</ul>
+<h5>Current Data: <button (click)="updateCurrentPlantData()">Refresh</button></h5>
+<ul>
+  <li>Air Temperature: {{plantData.airTemperature}}</li>
+  <li>Air Humidity: {{plantData.airHumidity}}</li>
+  <li>Soil Temperature: {{plantData.soilTemperature}}</li>
+  <li>Soil Moisture: {{plantData.soilMoisture}}</li>
+  <li>Light Intensity: {{plantData.lightIntensity}}</li>
+  <li>Last Watered: {{plantData.lastWatering}}</li>
+</ul>
