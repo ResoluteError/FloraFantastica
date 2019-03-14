@@ -12,8 +12,12 @@ import { PlantCardComponent } from './dashboard/plant-card/plant-card.component'
 import { AlertComponent } from './helper/alert/alert.component';
 import { PromptComponent } from './helper/prompt/prompt.component';
 import { CookieManagerComponent } from './helper/cookie-manager/cookie-manager.component';
-import { HttpClient, HttpHandler, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { ActionService } from './services/action.service';
+import { FooterComponent } from './footer/footer.component';
+import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
+import { AlertService } from './services/alert.service';
+import { HistoryComponent } from './history/history.component';
 
 @NgModule({
   declarations: [
@@ -22,19 +26,23 @@ import { ActionService } from './services/action.service';
     PlantCardComponent,
     AlertComponent,
     PromptComponent,
-    CookieManagerComponent
+    CookieManagerComponent,
+    FooterComponent,
+    HistoryComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    NgbPopoverModule
   ],
   providers: [
     HttpOptionsService,
     PlantService,
     SensorService,
     MeasurementService,
-    ActionService
+    ActionService,
+    AlertService
   ],
   bootstrap: [AppComponent]
 })
