@@ -17,6 +17,6 @@ router.get( "/sensor/:sensorId", MeasurementController.getBySensorId );
 
 router.get( "/sensor/:sensorId/plant/:plantId", MeasurementController.getBySensorIdAndPlantId );
 
-router.delete("/measurement/:measurementId", MeasurementController.delete );
+router.delete("/:measurementId", MeasurementController.delete );
 
 export {router};

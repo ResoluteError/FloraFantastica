@@ -119,7 +119,7 @@ export class MeasurementController {
   static async delete(req : Request, res : Response){
 
     var id = req.params.measurementId;
-    var plantId = req.params.plantId;
+
     var manager = getManager();
 
     var deleteEntity = await manager.findOne(Measurement, id);
