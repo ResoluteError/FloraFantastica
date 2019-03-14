@@ -25,7 +25,7 @@ createConnection().then(async connection => {
   app.get("/seed/view", SeedDataController.viewData);
   app.get("/seed/drop", SeedDataController.dropSeed);
   
-  app.use(express.static("FaunaFantasticaFrontend/dist/FaunaFantasticaFrontend"));
+  app.use(express.static("FloraFantasticaFrontend/dist/FloraFantasticaFrontend"));
   
   app.listen(8080, () => {
     console.log("Listening");
