@@ -1,4 +1,19 @@
-<app-plant-card *ngFor="let plant of plants" [plant]="plant"></app-plant-card>
-<p>
-  dashboard works!
-</p>
+<div class="container">
+  <div class="row mt-3">
+    <div class="col-12">
+      <div class="jumbotron">
+        <h1 class="display-3">Dashboard</h1>
+        <p class="lead">See what is happening with your plants on a single glance.</p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+
+    <div class="col-6 mt-3" *ngFor="let plant of plants">
+
+      <app-plant-card  [plant]="plant"></app-plant-card>
+
+    </div>
+
+  </div>
+</div>
