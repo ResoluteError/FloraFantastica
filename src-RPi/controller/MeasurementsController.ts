@@ -1,17 +1,17 @@
 import { Request, Response } from "express";
 import { getManager } from "typeorm";
-import { SensorMeasurement } from "../entity/SensorMeasurement";
+import { Measurement } from "../entity/Measurement";
 import { Sensor } from "../entity/Sensors";
 
 
-export class SensorMeasurementController {
+export class MeasurementController {
 
 
   static async getAll(req : Request, res : Response){
     
     var manager = getManager();
 
-    var data = await manager.find(SensorMeasurement);
+    var data = await manager.find(Measurement);
 
     res.send(data)
 
@@ -22,7 +22,7 @@ export class SensorMeasurementController {
     var manager = getManager();
     var plantId = req.params.plantId;
 
-    var data = await manager.find(SensorMeasurement, {
+    var data = await manager.find(Measurement, {
       where : {
         plantId : plantId
       }
@@ -38,7 +38,7 @@ export class SensorMeasurementController {
     var plantId = req.params.plantId;
     var manager = getManager();
 
-    var data = await manager.find(SensorMeasurement, {
+    var data = await manager.find(Measurement, {
       where : {
         plantId : plantId,
         sensorType : type
@@ -54,7 +54,7 @@ export class SensorMeasurementController {
     var id = req.params.measurementId;
     var manager = getManager();
 
-    var data = await manager.findOne(SensorMeasurement, id);
+    var data = await manager.findOne(Measurement, id);
 
     res.send(data)
 
@@ -65,7 +65,7 @@ export class SensorMeasurementController {
     var sensorId = req.params.sensorId;
     var manager = getManager();
 
-    var data = await manager.find(SensorMeasurement, {
+    var data = await manager.find(Measurement, {
       where : {
         sensorId : sensorId
       }
@@ -84,7 +84,7 @@ export class SensorMeasurementController {
     var plantId = req.params.plantId;
     var manager = getManager();
 
-    var data = await manager.find(SensorMeasurement, {
+    var data = await manager.find(Measurement, {
       where : {
         sensorId : sensorId,
         plantId : plantId
@@ -98,20 +98,19 @@ export class SensorMeasurementController {
 
   static async post(req : Request, res : Response){
 
-    var plantId = req.params.plantId;
     var manager = getManager();
 
-    var newMeasurement = manager.create(SensorMeasurement, req.body);
+    var newMeasurement = manager.create(Measurement, req.body);
 
     var sensor = await manager.findOne( Sensor, newMeasurement.sensorId);
 
     newMeasurement.sensorType = sensor.type;
-    newMeasurement.plantId = plantId;
+    newMeasurement.plantId = sensor.currentPlantId;
     newMeasurement.measuredAt = (new Date()).toISOString();
 
-    var result = await manager.insert(SensorMeasurement, newMeasurement);
+    var result = await manager.insert(Measurement, newMeasurement);
 
-    var postedEntity = await manager.findOne(SensorMeasurement, result.identifiers[0].id);
+    var postedEntity = await manager.findOne(Measurement, result.identifiers[0].id);
 
     res.send(postedEntity);
 
@@ -123,9 +122,9 @@ export class SensorMeasurementController {
     var plantId = req.params.plantId;
     var manager = getManager();
 
-    var deleteEntity = await manager.findOne(SensorMeasurement, id);
+    var deleteEntity = await manager.findOne(Measurement, id);
 
-    await manager.delete(SensorMeasurement, id);
+    await manager.delete(Measurement, id);
 
     res.send(deleteEntity);
 

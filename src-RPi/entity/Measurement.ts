@@ -1,7 +1,7 @@
 import { PrimaryGeneratedColumn, Column, Entity } from "typeorm";
 
 @Entity()
-export class SensorMeasurement {
+export class Measurement {
 
   @PrimaryGeneratedColumn()
   id: number;

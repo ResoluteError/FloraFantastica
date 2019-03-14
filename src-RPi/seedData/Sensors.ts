@@ -3,7 +3,7 @@ import { Plant } from "../entity/Plants";
 
 export class SensorSeedData {
 
-  static getData( plants : Partial<Plant>[] ){
+  static getData( plants : Partial<Plant>[] ): Sensor[]{
 
     var sensorTypes = [10,11,20,21,30,40];
     var sensors : Sensor[] = [];

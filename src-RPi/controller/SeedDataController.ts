@@ -2,9 +2,10 @@ import { Request, Response } from "express";
 import { getManager, getConnection } from "typeorm";
 import { Plant } from "../entity/Plants";
 import { PlantSeedData } from "../seedData/Plants";
-import { SensorMeasurement } from "../entity/SensorMeasurement";
+import { Measurement } from "../entity/Measurement";
 import { Sensor } from "../entity/Sensors";
 import { SensorSeedData } from "../seedData/Sensors";
+import { MeasurementSeedData } from "../seedData/Measurements";
 
 
 export class SeedDataController{
@@ -41,6 +42,28 @@ export class SeedDataController{
 
   }
 
+  static async seedMeasurements(req : Request, res : Response){
+
+    var manager = getManager();
+    
+    var sensors = await manager.find(Sensor);
+
+    var measurementData = MeasurementSeedData.getData(sensors);
+
+    var insertBlock : Measurement[];
+
+    while( (insertBlock = measurementData.splice(0,5)).length ){
+
+      await manager.insert(Measurement, insertBlock);
+
+    }
+
+    var resultData = await manager.find(Measurement);
+
+    res.send(resultData);
+
+  }
+
 
 
   static async dropSeed( req : Request, res : Response){
@@ -58,7 +81,7 @@ export class SeedDataController{
     var manager = getManager();
 
     var plants = await manager.find(Plant);
-    var measurements = await manager.find(SensorMeasurement);
+    var measurements = await manager.find(Measurement);
     var sensors = await manager.find(Sensor);
     
     res.send({plants : plants, measurements : measurements, sensors : sensors});

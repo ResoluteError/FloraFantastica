@@ -2,8 +2,8 @@ import { Plant } from "../entity/Plants";
 
 export class PlantSeedData {
 
-  static getData(){
-    var seedPlants : Partial<Plant>[] = [];
+  static getData() : Plant[]{
+    var seedPlants : Plant[] = [];
 
     for (var i = 1; i <= 3; i++){
 
