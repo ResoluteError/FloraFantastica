@@ -13,6 +13,14 @@ createConnection().then(async connection => {
 
   const app : express.Application = express();
   
+  app.use((req : express.Request, res : express.Response, next : express.NextFunction) => {
+
+    res.header("Access-Control-Allow-Origin", "http://localhost:4200");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+
+  });
+
   app.use(bodyParser.json());
 
   app.use("/api/measurements/",sensorMeasurementsRouter);
