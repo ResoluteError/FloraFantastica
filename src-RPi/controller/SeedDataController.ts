@@ -4,6 +4,7 @@ import { Plant } from "../entity/Plants";
 import { PlantSeedData } from "../seedData/Plants";
 import { SensorMeasurement } from "../entity/SensorMeasurement";
 import { Sensor } from "../entity/Sensors";
+import { SensorSeedData } from "../seedData/Sensors";
 
 
 export class SeedDataController{
@@ -18,9 +19,29 @@ export class SeedDataController{
 
     var resultData = await manager.find(Plant);
 
-    res.send("Plant Seed Insert Success: " + JSON.stringify(resultData));
+    res.send(resultData);
 
   }
+
+  static async seedSensors(req : Request, res : Response){
+
+    var manager = getManager();
+    
+    var plantIds = await manager.find(Plant, {
+      select : ["id"]
+    });
+
+    var sensorData = SensorSeedData.getData(plantIds);
+
+    await manager.insert(Sensor, sensorData);
+
+    var resultData = await manager.find(Sensor);
+
+    res.send(resultData);
+
+  }
+
+
 
   static async dropSeed( req : Request, res : Response){
 

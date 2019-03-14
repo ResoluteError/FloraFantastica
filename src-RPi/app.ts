@@ -20,6 +20,7 @@ createConnection().then(async connection => {
   app.use("/api/plants",plantsRouter);
 
   app.get("/seed/plants", SeedDataController.seedPlants);
+  app.get("/seed/sensors", SeedDataController.seedSensors);
   app.get("/seed/view", SeedDataController.viewData);
   app.get("/seed/drop", SeedDataController.dropSeed);
   

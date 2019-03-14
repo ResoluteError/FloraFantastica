@@ -53,7 +53,7 @@ export class SensorController {
 
     var createdId = result.identifiers[0].id;
 
-    var createdEntity = await manager.find(Sensor, createdId);
+    var createdEntity = await manager.findOne(Sensor, createdId);
 
     res.send(createdEntity);
 
@@ -76,8 +76,16 @@ export class SensorController {
   static async patch(req : Request, res: Response){
 
     var id = req.params.sensorId;
-    
-    res.send("Putting a plant!");
+
+    var sensorData : Partial<Sensor> = req.body;
+
+    var manager = getManager();
+
+    var result = await manager.update(Sensor, id, sensorData);
+
+    var updatedEntity = await manager.findOne(Sensor, id);
+
+    res.send(updatedEntity);
   }
 
 }

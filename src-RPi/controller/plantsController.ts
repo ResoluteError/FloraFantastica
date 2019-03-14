@@ -38,7 +38,7 @@ export class PlantsController {
 
     var createdId = result.identifiers[0].id;
 
-    var createdEntity = await manager.find(Plant, createdId);
+    var createdEntity = await manager.findOne(Plant, createdId);
 
     res.send(createdEntity);
 
