@@ -6,7 +6,7 @@ export class Sensor {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column("text")
+  @Column({type: "text", nullable: true})
   currentPlantId: string;
 
   @Column("text")

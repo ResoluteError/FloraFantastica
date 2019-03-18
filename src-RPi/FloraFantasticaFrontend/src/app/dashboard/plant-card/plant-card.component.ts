@@ -1,9 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Plant, PlantDataObj } from 'src/app/models/plant.model';
 import { SensorService } from 'src/app/services/sensor.service';
 import { Sensor } from 'src/app/models/sensor.model';
 import { ActionService } from 'src/app/services/action.service';
 import { AlertService } from 'src/app/services/alert.service';
+import { PromptService } from 'src/app/services/prompt.service';
+import { PlantService } from 'src/app/services/plant.service';
 
 @Component({
   selector: 'app-plant-card',
@@ -13,6 +15,8 @@ import { AlertService } from 'src/app/services/alert.service';
 export class PlantCardComponent implements OnInit {
 
   @Input( "plant" ) plant : Plant;
+  @Output() delete = new EventEmitter<string>();
+
 
   currentView = "data";
   plantData : PlantDataObj;
@@ -20,8 +24,10 @@ export class PlantCardComponent implements OnInit {
 
   constructor(
     private sensorService : SensorService,
+    private plantService : PlantService,
     private actionService : ActionService,
-    private alertService : AlertService
+    private alertService : AlertService,
+    private promptService: PromptService
   ) { }
 
   ngOnInit() {
@@ -88,8 +94,39 @@ export class PlantCardComponent implements OnInit {
     return `Type: ${types[sensor.type]}`;
   }
 
-  delete(){
-    
+  deletePlant(){
+    this.promptService.confirmDelete(`Are you sure you want to permanently delete '${this.plant.name}'?`, ()=>{
+
+      this.plantService.deletePlant(this.plant.id).subscribe( result =>{
+
+        var sensorRequestCounter = 0;
+        var failed = [];
+
+        this.sensors.forEach( (sensor) => {
+          this.sensorService.patchSensor(sensor.id, {
+            currentPlantId: null
+          }).subscribe( result => {
+            console.log("Unlinked Sensor: " + result.id);
+          }, err => {
+            console.log("Failed unlinking sensor: " + sensor.id);
+            failed.push(sensor.name);
+          }, () => {
+            sensorRequestCounter++;
+            if(sensorRequestCounter === this.sensors.length){
+              this.delete.emit(this.plant.id);
+              if(failed.length === 0){
+                this.alertService.success("Deletion Successfull!", "All sensors of that plant were unlinked.")
+              } else {
+                this.alertService.warning("Sensor API Error!", "Plant could be deleted, but these sensors were not unlinked: " + failed.join(", "), 5000)
+              }
+            }
+          });
+        });
+      }, err => {
+        this.alertService.warning('Plant API Error.',`Could not delete '${this.plant.name}', please try again in a moment.`)
+      });
+
+    });
   }
 
   /* 

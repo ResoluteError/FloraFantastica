@@ -1,7 +1,7 @@
 <div class="card h-100">
   <div class="card-header">
     <b>{{plant.name}}</b>
-    <button class="btn btn-sm btn-outline-danger float-right" (click)="delete()">Delete</button>
+    <button class="btn btn-sm btn-outline-danger float-right" (click)="deletePlant()">Delete</button>
   </div>
   <!-- <img class="card-img-top" [src]="plant.icon" alt=""> -->
   <div class="card-body" *ngIf="currentView === 'data'">
@@ -51,7 +51,7 @@
   <div class="card-footer pt-1 pb-1">
     <button type="button" class="btn btn-link" *ngIf="currentView == 'data'" (click)="updateView('sensors')">Sensors</button>
     <button type="button" class="btn btn-link" *ngIf="currentView == 'sensors'" (click)="updateView('data')">Data</button>
-      <button type="button" class="btn btn-link" [routerLink]="['history/' + plant.id]">History</button>
+      <button type="button" class="btn btn-link" [routerLink]="'plant-details/' + plant.id">Details</button>
     <button type="button" class="btn btn-link" (click)="updateCurrentPlantData()">Refresh</button>
   </div>
 
