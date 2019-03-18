@@ -29,4 +29,8 @@ export class DashboardComponent implements OnInit {
 
   }
 
+  deletePlant( plantId : string){
+    this.plants = this.plants.filter( plant => plant.id !== plantId);
+  }
+
 }

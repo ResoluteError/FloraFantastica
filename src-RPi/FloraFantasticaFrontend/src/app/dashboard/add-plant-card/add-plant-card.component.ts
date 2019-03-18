@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Plant } from 'src/app/models/plant.model';
 
 @Component({
@@ -10,7 +10,7 @@ export class AddPlantCardComponent implements OnInit {
 
   constructor() { }
 
-  showEdit: boolean = true;
+  showEdit: boolean = false;
   creating : boolean = false;
 
   input = {
@@ -37,7 +37,6 @@ export class AddPlantCardComponent implements OnInit {
 
   createPlant(){
     this.creating = true;
-    
   }
 
 }
