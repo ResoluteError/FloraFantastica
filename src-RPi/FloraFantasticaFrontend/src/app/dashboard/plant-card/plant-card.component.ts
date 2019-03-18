@@ -88,6 +88,10 @@ export class PlantCardComponent implements OnInit {
     return `Type: ${types[sensor.type]}`;
   }
 
+  delete(){
+    
+  }
+
   /* 
   // Use for icons later
   get airTemperature(){

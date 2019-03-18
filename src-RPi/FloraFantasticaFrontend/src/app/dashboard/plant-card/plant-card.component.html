@@ -1,6 +1,7 @@
 <div class="card h-100">
   <div class="card-header">
     <b>{{plant.name}}</b>
+    <button class="btn btn-sm btn-outline-danger float-right" (click)="delete()">Delete</button>
   </div>
   <!-- <img class="card-img-top" [src]="plant.icon" alt=""> -->
   <div class="card-body" *ngIf="currentView === 'data'">
@@ -47,11 +48,11 @@
       </tbody>
     </table>
   </div>
-  <div class="card-footer">
-    <a *ngIf="currentView == 'data'" style="cursor: pointer" tabindex="0" (click)="updateView('sensors')" class="card-link">Sensors</a>
-    <a *ngIf="currentView == 'sensors'" style="cursor: pointer" tabindex="0" (click)="updateView('data')" class="card-link">Data</a>
-    <a [routerLink]="['history/' + plant.id]" class="card-link">History</a>
-    <a style="cursor: pointer"  tabindex="0" (click)="updateCurrentPlantData()" class="card-link">Refresh</a>
+  <div class="card-footer pt-1 pb-1">
+    <button type="button" class="btn btn-link" *ngIf="currentView == 'data'" (click)="updateView('sensors')">Sensors</button>
+    <button type="button" class="btn btn-link" *ngIf="currentView == 'sensors'" (click)="updateView('data')">Data</button>
+      <button type="button" class="btn btn-link" [routerLink]="['history/' + plant.id]">History</button>
+    <button type="button" class="btn btn-link" (click)="updateCurrentPlantData()">Refresh</button>
   </div>
 
 </div>

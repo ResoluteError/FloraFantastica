@@ -1,0 +1,43 @@
+
+<div class="card h-100" *ngIf="!showEdit">
+  <div class="add-interact text-center" tabindex="1" (click)="toggleEdit(true)" >
+    <div class="add-icon">
+      +
+    </div>
+    <div>
+      Add Plant
+    </div>
+  </div>
+</div>
+<div class="card h-100" *ngIf="showEdit">
+  <div class="card-header">
+    <b>New Plant</b>
+    <button class="btn btn-sm btn-outline-secondary float-right" (click)="toggleEdit(false)">Cancel</button>
+  </div>
+  <div class="card-body" *ngIf="showEdit">
+    <form>
+      <div class="form-group">
+        <label for="plantName">
+          Plant Name <span class="badge badge-danger ml-1" *ngIf="errors.name">{{errors.name}}</span>
+        </label>
+        <input type="text" id="plantName" name="plantName" class="form-control" [(ngModel)]="input.name" autocomplete="off" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="plantImageUpload">
+          Image <span class="badge badge-danger ml-1" *ngIf="errors.imgSrc">{{errors.imgSrc}}</span>
+        </label>
+        <div class="input-group">
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" id="plantImageUpload" name="plantImageUpload" aria-describedby="inputGroupFileAddon01" [(ngModel)]="input.imgSrc">
+            <label class="custom-file-label" for="plantImageUpload">{{ input.imgSrc || "Choose file"}}</label>
+          </div>
+        </div>
+      </div>
+      <div class="text-center">
+        <input *ngIf="!creating" type="submit" class="btn btn-primary" value="Create Plant" (click)="createPlant()">
+        <input *ngIf="creating" type="submit" class="btn btn-primary disabled" value="Please wait..." disabled>
+      </div>
+    </form>
+  </div>
+</div>

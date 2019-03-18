@@ -18,6 +18,8 @@ import { FooterComponent } from './footer/footer.component';
 import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from './services/alert.service';
 import { HistoryComponent } from './history/history.component';
+import { AddPlantCardComponent } from './dashboard/add-plant-card/add-plant-card.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -28,13 +30,15 @@ import { HistoryComponent } from './history/history.component';
     PromptComponent,
     CookieManagerComponent,
     FooterComponent,
-    HistoryComponent
+    HistoryComponent,
+    AddPlantCardComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    NgbPopoverModule
+    NgbPopoverModule,
+    FormsModule
   ],
   providers: [
     HttpOptionsService,

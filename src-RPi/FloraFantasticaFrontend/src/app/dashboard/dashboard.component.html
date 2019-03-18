@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container mb-5">
   <div class="row mt-3">
     <div class="col-12">
       <div class="jumbotron">
@@ -10,9 +10,10 @@
   <div class="row">
 
     <div class="col-6 mt-3" *ngFor="let plant of plants">
-
       <app-plant-card  [plant]="plant"></app-plant-card>
-
+    </div>
+    <div class="col-6 mt-3">
+      <app-add-plant-card></app-add-plant-card>
     </div>
 
   </div>

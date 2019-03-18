@@ -1,0 +1,38 @@
+.add-interact {
+
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: auto;
+  margin-bottom: auto;
+  outline: none !important;
+
+  .add-icon {
+
+    font-weight: normal;
+    display: inline-block;
+    margin: 20px auto;
+    border-radius: 50px;
+    font-size: 60px;
+    background-color: rgba(0,0,0,0.2);
+    width: 95px;
+    height: 95px;
+    color: white;
+    text-align: center;
+    transition: background-color 200ms linear;
+  
+  }
+
+  &:hover,
+  &:focus {
+
+    .add-icon{
+
+      background-color: rgba(0,0,0,0.5);
+
+    }
+
+
+  }
+
+}
+
