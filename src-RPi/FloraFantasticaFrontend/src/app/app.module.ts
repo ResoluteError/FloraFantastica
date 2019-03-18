@@ -17,9 +17,11 @@ import { ActionService } from './services/action.service';
 import { FooterComponent } from './footer/footer.component';
 import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 import { AlertService } from './services/alert.service';
-import { HistoryComponent } from './history/history.component';
+import { PlantDetailsComponent } from './plant-details/plant-details.component';
 import { AddPlantCardComponent } from './dashboard/add-plant-card/add-plant-card.component';
 import { FormsModule } from '@angular/forms';
+import { PromptService } from './services/prompt.service';
+import { GlobalStateService } from './services/global-state.service';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,7 @@ import { FormsModule } from '@angular/forms';
     PromptComponent,
     CookieManagerComponent,
     FooterComponent,
-    HistoryComponent,
+    PlantDetailsComponent,
     AddPlantCardComponent
   ],
   imports: [
@@ -46,7 +48,9 @@ import { FormsModule } from '@angular/forms';
     SensorService,
     MeasurementService,
     ActionService,
-    AlertService
+    AlertService,
+    PromptService,
+    GlobalStateService
   ],
   bootstrap: [AppComponent]
 })

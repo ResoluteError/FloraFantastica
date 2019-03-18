@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { HistoryComponent } from './history/history.component';
+import { PlantDetailsComponent } from './plant-details/plant-details.component';
 
 const routes: Routes = [
   {
@@ -9,8 +9,8 @@ const routes: Routes = [
     component : DashboardComponent
   },
   {
-    path : 'history/:plantId',
-    component : HistoryComponent
+    path : 'plant-details/:plantId',
+    component : PlantDetailsComponent
   }
 ];
 

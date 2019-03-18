@@ -12,11 +12,11 @@ import { ChartController } from '../controller/chart.controller';
 import { ChartUIController } from '../controller/chartUI.controller';
 
 @Component({
-  selector: 'app-history',
-  templateUrl: './history.component.html',
-  styleUrls: ['./history.component.scss']
+  selector: 'app-plant-details',
+  templateUrl: './plant-details.component.html',
+  styleUrls: ['./plant-details.component.scss']
 })
-export class HistoryComponent implements OnInit {
+export class PlantDetailsComponent implements OnInit {
 
   constructor(
     private plantService : PlantService,
