@@ -7,6 +7,7 @@ export class ChartController {
 
   chart : Chart;
 
+  canvas : HTMLCanvasElement;
   context : CanvasRenderingContext2D;
 
   chartOptions : ChartOptions;
@@ -17,7 +18,8 @@ export class ChartController {
 
   constructor(eleRef : ElementRef){
 
-    this.context = eleRef.nativeElement.getContext("2d");
+    this.canvas = eleRef.nativeElement
+    this.context = this.canvas.getContext("2d");
 
     this.lineColors = [
       "rgba(20,40,150,1)",
@@ -31,6 +33,14 @@ export class ChartController {
     this.cLineColorIndex = 0;
 
     this.chartOptions = {
+      legend: {
+        labels : {
+          //usePointStyle: true,
+          fontSize: 15,
+          padding: 15
+        },
+        position: "top",
+      },
       tooltips : {
         callbacks : {
           label : (tooltipItem, data) => {
@@ -57,7 +67,8 @@ export class ChartController {
           }
         }],
         yAxes : []
-      }
+      },
+      responsive: true
     }
 
     this.datasets = [];
@@ -82,8 +93,10 @@ export class ChartController {
 
     dataset.label = Sensor.typeToLabel(sensorType);
     dataset.borderColor = this.lineColors[this.cLineColorIndex];
+    dataset.backgroundColor = "transparent";
     dataset.fill = false;
     dataset.yAxisID = yAxis.id;
+    dataset.pointStyle = "circle";
 
     this.datasets.push(dataset);
     this.chartOptions.scales.yAxes.push(yAxis)
@@ -145,6 +158,16 @@ export class ChartController {
       ticks : ticksByType[sensorType]
     }
     return yAxis;
+  }
+
+  setUIDelegate( delegate? : Function){
+    
+    this.canvas.onclick = (event) => {
+      console.log(event);
+      delegate( this.chart.getElementsAtEvent(event), event);
+
+    }
+    
   }
 
 }

@@ -1,0 +1,17 @@
+.canvas-container {
+
+  margin: auto;
+  position: relative;
+  padding: 0;
+
+  .chartUI{
+
+    position: absolute;
+    left: 0;
+    top: 0;
+    // border: 1px solid black;
+    pointer-events: none;
+
+  }
+
+}

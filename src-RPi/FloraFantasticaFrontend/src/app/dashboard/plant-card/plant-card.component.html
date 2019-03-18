@@ -4,18 +4,25 @@
   </div>
   <!-- <img class="card-img-top" [src]="plant.icon" alt=""> -->
   <div class="card-body" *ngIf="currentView === 'data'">
-    <p *ngIf="plantData.airTemperature">{{plantData.airTemperature}}°<br>
-    <span class="small"><b>Air Temperature</b></span></p> 
-    <p *ngIf="plantData.airHumidity">{{plantData.airHumidity}}%<br>
-    <span class="small"><b>Air Humidity</b></span></p> 
-    <p *ngIf="plantData.soilTemperature">{{plantData.soilTemperature}}°<br>
-    <span class="small"><b>Soil Temperature</b></span></p> 
-    <p *ngIf="plantData.soilMoisture">{{plantData.soilMoisture}}<br>
-    <span class="small"><b>Soil Moisture</b></span></p> 
-    <p *ngIf="plantData.lightIntensity">{{plantData.lightIntensity}}<br>
-    <span class="small"><b>Light Intensity</b></span></p> 
-    <p *ngIf="plantData.lastWatering">{{plantData.lastWatering}}<br>
-    <span class="small"><b>Last Watered</b></span></p> 
+    <div class="row h-100">
+      <div class="col-6 align-self-center text-center">
+        <img [src]="plant.icon" class="plant-icon">
+      </div>
+      <div class="col-6 h-100">
+          <p *ngIf="plantData.airTemperature">{{plantData.airTemperature}}°<br>
+          <span class="small"><b>Air Temperature</b></span></p> 
+          <p *ngIf="plantData.airHumidity">{{plantData.airHumidity}}%<br>
+          <span class="small"><b>Air Humidity</b></span></p> 
+          <p *ngIf="plantData.soilTemperature">{{plantData.soilTemperature}}°<br>
+          <span class="small"><b>Soil Temperature</b></span></p> 
+          <p *ngIf="plantData.soilMoisture">{{plantData.soilMoisture}}<br>
+          <span class="small"><b>Soil Moisture</b></span></p> 
+          <p *ngIf="plantData.lightIntensity">{{plantData.lightIntensity}}<br>
+          <span class="small"><b>Light Intensity</b></span></p> 
+          <p *ngIf="plantData.lastWatering">{{plantData.lastWatering}}<br>
+          <span class="small"><b>Last Watered</b></span></p> 
+      </div>
+    </div>
   </div>
 
   <div class="card-body" *ngIf="currentView === 'sensors'">
