@@ -10,6 +10,8 @@ export class ChartController {
   canvas : HTMLCanvasElement;
   context : CanvasRenderingContext2D;
 
+  sensors : Sensor[];
+
   chartOptions : ChartOptions;
   datasets : ChartDataSets[];
 
@@ -18,8 +20,9 @@ export class ChartController {
 
   constructor(eleRef : ElementRef){
 
-    this.canvas = eleRef.nativeElement
+    this.canvas = eleRef.nativeElement;
     this.context = this.canvas.getContext("2d");
+    this.sensors = [];
 
     this.lineColors = [
       "rgba(20,40,150,1)",
@@ -44,10 +47,8 @@ export class ChartController {
       tooltips : {
         callbacks : {
           label : (tooltipItem, data) => {
-            
             var setIndex = tooltipItem.datasetIndex;
-            var label = data.datasets[setIndex].label;
-            var sensorType = Sensor.labelToType(label);
+            var sensorType = this.sensors[setIndex].type;
             var date = (new Date(tooltipItem.xLabel)).toLocaleString();
             var units = Sensor.typeToUnit(sensorType);
             return `${date}: ${tooltipItem.yLabel + units}`;
@@ -75,7 +76,7 @@ export class ChartController {
 
   }
 
-  addDataset( dataset : ChartDataSets, sensorType : number): void{
+  addDataset( dataset : ChartDataSets, sensor : Sensor): void{
 
 
     var max = (<ChartPoint>dataset.data[0]).y;
@@ -89,9 +90,9 @@ export class ChartController {
 
     max = <number>max;
 
-    var yAxis = this.setupYAxis(sensorType, max);
+    var yAxis = this.setupYAxis(sensor.type, max);
 
-    dataset.label = Sensor.typeToLabel(sensorType);
+    dataset.label = sensor.name;
     dataset.borderColor = this.lineColors[this.cLineColorIndex];
     dataset.backgroundColor = "transparent";
     dataset.fill = false;
@@ -99,6 +100,7 @@ export class ChartController {
     dataset.pointStyle = "circle";
 
     this.datasets.push(dataset);
+    this.sensors.push(sensor);
     this.chartOptions.scales.yAxes.push(yAxis)
 
     this.cLineColorIndex++;

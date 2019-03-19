@@ -13,7 +13,6 @@ export class ChartUIController {
 
   fitToChart( chart : ElementRef): void{
     var htmlEle = <HTMLCanvasElement>chart.nativeElement;
-    console.log("test ", htmlEle);
     var height = htmlEle.clientHeight;
     var width = htmlEle.clientWidth;
     this.canvas.style.width = width + "px";
@@ -21,8 +20,7 @@ export class ChartUIController {
   }
 
   actionHandler( datasets : any, event : MouseEvent ){
-    console.log("huhu", event);
-    console.log("huhu", datasets);
+    console.log("acitonhandler: datasets, event - ", datasets, event);
   }
 
 }

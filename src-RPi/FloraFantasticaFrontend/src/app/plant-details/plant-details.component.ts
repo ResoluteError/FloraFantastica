@@ -10,6 +10,7 @@ import { AlertService } from '../services/alert.service';
 import { Chart} from 'chart.js';
 import { ChartController } from '../controller/chart.controller';
 import { ChartUIController } from '../controller/chartUI.controller';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-plant-details',
@@ -44,65 +45,46 @@ export class PlantDetailsComponent implements OnInit {
       this.alertService.warning("Plant API Error.","Failed getting plant data for the plant "+ plantId);
     });
 
-    this.measurementService.getMeasurementsByPlantId(plantId).subscribe( measurements => {
-      this.measurements = Measurement.sortByDate(measurements);
-      this.handleMeasurementImport(measurements);
-    }, err => {
-      this.alertService.warning("Measurement API Error.","Failed getting measurement data for the plant "+ plantId);
-    });
+    var requests = forkJoin(
+      this.measurementService.getMeasurementsByPlantId(plantId),
+      this.sensorService.getSensorsByPlantId(plantId)
+    );
 
-    this.sensorService.getSensorsByPlantId(plantId).subscribe( sensors => {
-      this.sensors = sensors;
+    requests.subscribe( results => {
+      var measurements = results[0];
+      Measurement.sortByDate(measurements);
+      var sensors = results[1];
+      this.handleMeasurementImport(measurements, sensors);
     }, err => {
-      this.alertService.warning("Sensor API Error.","Failed getting sensor data for the plant "+ plantId);
+      this.alertService.warning("Measurement or Sensor API Error.","Failed getting measurement data for the plant "+ plantId);
     });
 
   }
 
 
-  handleMeasurementImport(measurements : Measurement[]){
+  handleMeasurementImport(measurements : Measurement[], sensors : Sensor[]){
 
-    var sensors = Measurement.getDistinctSensors(measurements);
     var chartController = new ChartController(this.baseChart);
 
-    // Get a temperature Sensor
-    var exampleSensor = sensors.find(value => value.type == 21 || value.type == 10);
+    for(var sensor of sensors){
+      var data = measurements.filter( measurement => measurement.sensorId == sensor.id).map( measurement => {
+        return {
+          x : new Date(measurement.measuredAt),
+          y : measurement.data
+        }
+      });
 
-    var data = measurements.filter( measurement => measurement.sensorId == exampleSensor.id).map( measurement => {
-      return {
-        x : new Date(measurement.measuredAt),
-        y : measurement.data
+      var dataset = {
+        data : data,
+        showLine: sensor.type < 90,
+        lineTension: 0
       }
-    });
 
-    var dataset = {
-      data : data,
-      showLine: true,
-      lineTension: 0
+      chartController.addDataset(dataset, sensor);
+
     }
-
-    chartController.addDataset(dataset, exampleSensor.type);
-    
-    // Get a temperature Sensor
-    var exampleSensor = sensors.find(value => value.type == 20 || value.type == 11);
-
-    var data = measurements.filter( measurement => measurement.sensorId == exampleSensor.id).map( measurement => {
-      return {
-        x : new Date(measurement.measuredAt),
-        y : measurement.data
-      }
-    });
-
-    var dataset = {
-      data : data,
-      showLine: true,
-      lineTension: 0
-    }
-
-    chartController.addDataset(dataset, exampleSensor.type);
 
     this.chart = chartController.draw("scatter");
-
 
     var chartUIController = new ChartUIController(this.chartUI);
     chartUIController.fitToChart(this.baseChart);
