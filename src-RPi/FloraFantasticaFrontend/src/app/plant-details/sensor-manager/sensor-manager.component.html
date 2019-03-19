@@ -1,0 +1,89 @@
+<div class="card">
+
+  <div class="card-header">
+    <b>Sensors</b>
+  </div>
+  <div class="card-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th width="40%">
+            Linked Sensors
+          </th>
+          <th width="15%" class="text-center">
+            Pin
+          </th>
+          <th width="15%" class="text-center">
+            Status
+          </th>
+          <th width="30%" class="text-center">
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let sensor of activeSensors">
+          <td width="40%">
+            <span [ngbPopover]="sensorTypeTooltip(sensor)" triggers="mouseenter:mouseleave" class="d-inline-block">
+              {{sensor.name}}
+            </span>
+          </td>
+          <td width="15%" class="text-center">
+            {{sensor.pin || "?"}}
+          </td>
+          <td width="15%" class="text-center">
+            <div [ngbPopover]="sensorStateTooltip(sensor)" triggers="mouseenter:mouseleave">
+              <fa-icon [icon]="stateToIcon(sensor.state)"></fa-icon>
+            </div>
+          </td>
+          <td width="30%" class="text-center">
+            <div *ngIf="sensor.state !== 2" class="d-inline-block click-resume" ngbPopover="Resume Sensor Measuring" triggers="mouseenter:mouseleave" (click)="resumeSensor(sensor)">
+              <fa-icon [icon]="['fas','play']"></fa-icon>
+            </div>
+            <div *ngIf="sensor.state === 2" class="d-inline-block click-pause" ngbPopover="Pause Sensor Measuring" triggers="mouseenter:mouseleave" (click)="pauseSensor(sensor)">
+              <fa-icon [icon]="['fas','pause']"></fa-icon>
+            </div>
+            <div class="d-inline-block ml-4 click-measure" ngbPopover="Realtime Measurement" triggers="mouseenter:mouseleave">
+              <fa-icon [icon]="['fas','flask']"></fa-icon>
+            </div>
+            <div class="d-inline-block ml-4 click-unlink" ngbPopover="Unlink Sensor" triggers="mouseenter:mouseleave" (click)="unlinkSensor(sensor)">
+              <fa-icon [icon]="['fas','unlink']"></fa-icon>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Available Sensors</th>
+          <th class="text-center">Pin</th>
+          <th class="text-center">Type</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let sensor of availableSensors">
+          <td width="40%">{{sensor.name}}</td>
+          <td width="15%" class="text-center">
+            {{sensor.pin || "?"}}
+          </td>
+          <td width="15%" class="text-center">
+            <div [ngbPopover]="sensorTypeTooltip(sensor)" triggers="mouseenter:mouseleave">
+              {{sensor.type}}
+            </div>
+          </td>
+          <td width="30%" class="text-center">
+            <div (click)="linkSensor(sensor)" class="d-inline-block ml-4 click-link" ngbPopover="Link Sensor" triggers="mouseenter:mouseleave">
+              <fa-icon [icon]="['fas','link']"></fa-icon>
+            </div>
+            <div class="d-inline-block ml-4 click-delete" ngbPopover="Delete Sensor" triggers="mouseenter:mouseleave" (click)="deleteSensor(sensor)">
+              <fa-icon [icon]="['fas','trash-alt']"></fa-icon>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
