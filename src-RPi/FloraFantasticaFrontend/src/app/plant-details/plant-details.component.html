@@ -1,5 +1,15 @@
 <div class="container">
   <div class="row">
+    <div class="col-12">
+      <h1 class="text-center mt-4 mb-4">Detail View</h1>
+      <div class="btn-group btn-group-sm float-right" role="group" aria-label="Timeframe">
+        <button type="button" class="btn btn-secondary" (click)="updateChartScope(90)">90 Days</button>
+        <button type="button" class="btn btn-secondary" (click)="updateChartScope(30)">30 Days</button>
+        <button type="button" class="btn btn-secondary" (click)="updateChartScope(7)">7 Days</button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
 
     <div class="col-12 canvas-container">
         <canvas #baseChart>
@@ -11,19 +21,21 @@
   <div class="row mt-5">
     <div class="col-4">
     
-      <div class="card">
+      <div class="card mb-3">
         <div class="card-header">
-          <b>{{plant.name}}</b>
+          <b>{{plantName}}</b>
           <button class="btn btn-sm btn-outline-dark float-right">Edit</button>
         </div>
         <div class="card-body">
-          <p class="card-text">{{plant.description || "Describe your plant"}}</p>
+          <p class="card-text">{{plantDescription}}</p>
         </div>
       </div>
 
+      <app-health-input></app-health-input>
+
     </div>
     <div class="col-8">
-      Data
+      <app-sensor-manager (change)="updateSensors($event)" [plant]="plant"></app-sensor-manager>
     </div>
   </div>
   <div class="row mt-5">

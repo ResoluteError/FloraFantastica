@@ -1,0 +1,19 @@
+<div class="card">
+  <div class="card-header">
+    <b>New Health Entry</b>
+  </div>
+  <div class="card-body" *ngIf="!entryAdded">
+    <div class="form-group">
+      <label for="plantHealth">
+        Plant Health
+      </label>
+      <input type="range" class="form-control-range" id="plantHealth" name="plantHealth" min="0" max="10" value="5" step="1" [(ngModel)]="health">
+    </div>
+    <div class="text-center">
+      <div class="alert alert-{{healthClass}}">
+        <b>Status:</b> {{healthDescription}}
+      </div>
+      <button class="btn btn-outline-primary">Add Entry</button>
+    </div>
+  </div>
+</div>

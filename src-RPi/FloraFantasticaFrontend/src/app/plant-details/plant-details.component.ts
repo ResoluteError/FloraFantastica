@@ -114,9 +114,20 @@ export class PlantDetailsComponent implements OnInit {
 
   }
 
-  hanldeUI( ){
+  updateChartScope( days : number){
+    console.log("New days: " + days);
+  }
 
+  updateSensors(sensors : Sensor[]){
+    
+  }
 
+  get plantName(){
+    return (this.plant && this.plant.name) || "Loading..."
+  }
+
+  get plantDescription(){
+    return (this.plant && this.plant.name) || "..."
   }
 
 }
