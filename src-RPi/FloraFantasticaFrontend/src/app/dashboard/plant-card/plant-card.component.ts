@@ -65,33 +65,22 @@ export class PlantCardComponent implements OnInit {
   }
 
   sensorStateClass( sensor : Sensor):string{
-    var states = [
+    var stateClasses = [
       'unknown',
       'paused',
       'active'
     ]
-    return "sensor-state " + states[sensor.state];
+    return "sensor-state " + stateClasses[sensor.state];
   }
 
   sensorStateTooltip(sensor : Sensor){
-    var states = [
-      'Unknown',
-      'Paused',
-      'Active'
-    ]
-    return `Status: ${states[sensor.state]}`;
+    var state = sensor.state;
+    return `Status: ${Sensor.stateToString(state)}`;
   }
 
   sensorTypeTooltip(sensor : Sensor){
-    var types = {
-      10 : "Air Temperature",
-      11 : "Air Humidity",
-      20 : "Soil Moisture",
-      21 : "Soil Temperature",
-      30 : "Light Intensity",
-      40 : "Watering Trigger"
-    }
-    return `Type: ${types[sensor.type]}`;
+    var label = Sensor.typeToLabel(sensor.type);
+    return `Type: ${label}`;
   }
 
   deletePlant(){

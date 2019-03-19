@@ -43,4 +43,13 @@ export class Sensor {
     return labels[sensorLabel] || 0;
   }
 
+  static stateToString(state : number){
+    var states = [
+      'Unknown',
+      'Paused',
+      'Active'
+    ];
+    return states[state];
+  }
+
 }

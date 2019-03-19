@@ -21,6 +21,9 @@ import { PlantDetailsComponent } from './plant-details/plant-details.component';
 import { AddPlantCardComponent } from './dashboard/add-plant-card/add-plant-card.component';
 import { FormsModule } from '@angular/forms';
 import { PromptService } from './services/prompt.service';
+import { SensorManagerComponent } from './plant-details/sensor-manager/sensor-manager.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { HealthInputComponent } from './plant-details/health-input/health-input.component';
 
 @NgModule({
   declarations: [
@@ -32,14 +35,18 @@ import { PromptService } from './services/prompt.service';
     CookieManagerComponent,
     FooterComponent,
     PlantDetailsComponent,
-    AddPlantCardComponent
+    AddPlantCardComponent,
+    SensorManagerComponent,
+    HealthInputComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     NgbPopoverModule,
-    FormsModule
+    FormsModule,
+    BrowserModule,
+    FontAwesomeModule
   ],
   providers: [
     HttpOptionsService,
