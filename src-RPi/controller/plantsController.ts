@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
-import { getManager } from "typeorm";
+import { getManager, CreateDateColumn } from "typeorm";
 import { Plant } from "../entity/Plants";
+import fs = require('fs');
+import mime = require('mime-types');
 
 export class PlantsController {
 
@@ -29,6 +31,17 @@ export class PlantsController {
   static async post(req : Request, res: Response){
 
     var plantData : Partial<Plant> = req.body;
+    try {
+      var fileName = Date.now()+"."+mime.extensions[req.file.mimetype];
+      plantData.icon = "/uploads/"+ fileName;
+      fs.writeFileSync(__dirname + '/../public/uploads/'+fileName, req.file.buffer);
+      console.log("Wrote file: ", plantData.icon);
+    } catch (err){
+      console.log("Error writing file: ",fileName, err);
+    }
+
+    plantData.state = plantData.state || 0;
+    plantData.currentData = plantData.currentData || "{}";
 
     var manager = getManager();
 

@@ -24,6 +24,7 @@ createConnection().then(async connection => {
   });
 
   app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({extended: true}));
 
   app.use("/api/measurements/",sensorMeasurementsRouter);
   app.use("/api/sensors/",sensorsRouter);
@@ -36,7 +37,9 @@ createConnection().then(async connection => {
   app.get("/seed/view", SeedDataController.viewData);
   app.get("/seed/drop", SeedDataController.dropSeed);
   
-  app.use(express.static("FloraFantasticaFrontend/dist/FloraFantasticaFrontend"));
+  app.use("/uploads", express.static(__dirname + "/public/uploads"));
+  console.log("Looging for: " + __dirname + "/public/uploads");
+  // app.use(express.static(__dirname + "/FloraFantasticaFrontend/dist/FloraFantasticaFrontend"));
   
   app.listen(8080, () => {
     console.log("Listening");

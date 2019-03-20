@@ -1,12 +1,15 @@
 import express = require("express");
 import { PlantsController } from "../controller/PlantsController"
 import { SensorController } from "../controller/sensorsController";
+import multer = require('multer');
+
+let upload = multer();
 
 const router : express.Router = express.Router();
 
 router.get('/', PlantsController.get_all);
 
-router.post('/', PlantsController.post);
+router.post('/', upload.single("plantImageUpload"), PlantsController.post);
 
 router.get('/:plantId', PlantsController.get_by_id);
 
