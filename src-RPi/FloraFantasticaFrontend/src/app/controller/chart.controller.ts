@@ -105,7 +105,7 @@ export class ChartController {
   
       this.cLineColorIndex++;
     } catch {
-      console.log("Caught dataset: ", dataset);
+      // empty dataset
     }
 
   }

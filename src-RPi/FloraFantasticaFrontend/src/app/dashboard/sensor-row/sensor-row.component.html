@@ -1,7 +1,7 @@
 <ng-container *ngIf="!editMode">
   <td>{{sensor.name}}</td>
   <td>{{sensorTypeLabel}}</td>
-  <td>{{sensor.pin}}</td>
+  <td>{{sensor.pin || "?"}}</td>
   <td>{{plantName}}</td>
   <td class="text-center"><div [ngbPopover]="sensorStateTooltip" triggers="mouseenter:mouseleave"><fa-icon [icon]="sensorStateIcon"></fa-icon></div></td>
   <td class="action-cell">
@@ -19,7 +19,7 @@
   </td>
   <td>
     <select class="custom-select" name="plantId-{{editSensor.id}}" [(ngModel)]="editSensor.currentPlantId">
-      <option [value]="null">None</option>
+      <option value="">None</option>
       <option *ngFor="let plant of plants" [value]="plant.id">{{plant.name}}</option>
     </select>
   </td>

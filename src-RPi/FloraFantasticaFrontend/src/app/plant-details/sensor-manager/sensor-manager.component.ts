@@ -5,6 +5,7 @@ import { SensorService } from 'src/app/services/sensor.service';
 import { PromptService } from 'src/app/services/prompt.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { Plant } from 'src/app/models/plant.model';
+import { ActionService } from 'src/app/services/action.service';
 
 @Component({
   selector: 'app-sensor-manager',
@@ -22,34 +23,17 @@ export class SensorManagerComponent implements OnInit {
   constructor(
     private sensorService : SensorService,
     private promptService : PromptService,
-    private alertService : AlertService
+    private alertService : AlertService,
+    private actionService : ActionService
   ) { }
 
-  stateToIcon( state : number ){
-    var icons = [
-      ['far','question-circle'],
-      ['far','pause-circle'],
-      ['far','play-circle'],
-    ]
-    return icons[state];
-  }
-
-  sensorStateTooltip(sensor : Sensor){
-    var state = sensor.state;
-    return `Status: ${Sensor.stateToString(state)}`;
-  }
-
-  sensorTypeTooltip(sensor : Sensor){
-    var label = Sensor.typeToLabel(sensor.type);
-    return `Type: ${label}`;
-  }
 
   ngOnInit() {
     this.sensorService.getSensors().subscribe( sensors => {
       sensors.forEach( sensor => {
         if (sensor.currentPlantId === this.plant.id){
           this.activeSensors.push(sensor)
-        } else if(sensor.currentPlantId == null){
+        } else if(sensor.currentPlantId == null || sensor.currentPlantId === ""){
           this.availableSensors.push(sensor);
         }
       });
@@ -125,6 +109,50 @@ export class SensorManagerComponent implements OnInit {
     }, err => {
       this.alertService.warning("Sensor API Error.", `Failed to pause the sensor '${pauseSensor.name}', please try again in a moment.`, 5000);
     })
+  }
+
+  checkSensor(sensor : Sensor){
+    this.actionService.checkSensorState(sensor.id).subscribe( result => {
+      if(result.state === sensor.state){
+        this.alertService.success("State Checked.", `The state of '${sensor.name}' has not changed`);
+      } else {
+        this.activeSensors.find( item => item.id === sensor.id).state = result.state;
+        this.alertService.success("State Updated.", `The state of '${sensor.name}' has changed`);
+      }
+    }, err => {
+      this.alertService.warning("Action API Error.",`Failed to check the sensor status for '${sensor.name}'`, 4000);
+    })
+  }
+
+  getSensorMeasurement(sensor : Sensor){
+    this.actionService.getSensorMeasurement(sensor.id).subscribe( result => {
+      if(result == null || Object.keys(result).length == 0){
+        this.alertService.warning("Sensor Measure Error.",`Failed to get a new measurement for '${sensor.name}'`, 4000);
+      } else {
+        this.alertService.success("Success.",`New measurement for '${sensor.name}': ${result.data}`);
+      }
+    }, err => {
+      this.alertService.warning("Action API Error.",`Failed to get a measurement for '${sensor.name}'`, 4000);
+    })
+  }
+
+  stateToIcon( state : number ){
+    var icons = [
+      ['far','question-circle'],
+      ['far','pause-circle'],
+      ['far','play-circle'],
+    ]
+    return icons[state];
+  }
+
+  sensorStateTooltip(sensor : Sensor){
+    var state = sensor.state;
+    return `Status: ${Sensor.stateToString(state)}`;
+  }
+
+  sensorTypeTooltip(sensor : Sensor){
+    var label = Sensor.typeToLabel(sensor.type);
+    return `Type: ${label}`;
   }
 
 }
