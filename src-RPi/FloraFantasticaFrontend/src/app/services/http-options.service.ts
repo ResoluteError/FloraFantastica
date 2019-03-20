@@ -18,6 +18,15 @@ export class HttpOptionsService {
     }
   }
 
+  get formOptions(): HttpOptions {
+    return {
+      headers: new HttpHeaders(
+        {
+          'Content-Type': 'multipart/form-data'
+        })
+    }
+  }
+
   get url(): string {
     return "http://localhost:8080";
   }

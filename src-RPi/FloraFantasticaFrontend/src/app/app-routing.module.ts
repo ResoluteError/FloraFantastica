@@ -6,7 +6,13 @@ import { PlantDetailsComponent } from './plant-details/plant-details.component';
 const routes: Routes = [
   {
     path : '',
-    component : DashboardComponent
+    component : DashboardComponent,
+    data: {view: "plants"}
+  },
+  {
+    path : 'sensors',
+    component : DashboardComponent,
+    data: {view: "sensors"}
   },
   {
     path : 'plant-details/:plantId',

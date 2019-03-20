@@ -24,6 +24,14 @@ import { PromptService } from './services/prompt.service';
 import { SensorManagerComponent } from './plant-details/sensor-manager/sensor-manager.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HealthInputComponent } from './plant-details/health-input/health-input.component';
+import { SensorRowComponent } from './dashboard/sensor-row/sensor-row.component';
+import { library } from '@fortawesome/fontawesome-svg-core';
+
+import { faPause, faPlay, faUnlink, faFlask, faLink , faTrashAlt, faEdit as fasEdit, faSave, faTimesCircle, faLeaf} from '@fortawesome/free-solid-svg-icons';
+import { faPlayCircle, faPauseCircle, faQuestionCircle, faEdit } from '@fortawesome/free-regular-svg-icons';
+import { AddSensorRowComponent } from './dashboard/add-sensor-row/add-sensor-row.component';
+
+library.add(faQuestionCircle, faPause, faPlay, faPlayCircle, faPauseCircle, faTrashAlt, faUnlink, faFlask, faLink, faEdit, fasEdit, faSave, faTimesCircle, faLeaf);
 
 @NgModule({
   declarations: [
@@ -37,7 +45,9 @@ import { HealthInputComponent } from './plant-details/health-input/health-input.
     PlantDetailsComponent,
     AddPlantCardComponent,
     SensorManagerComponent,
-    HealthInputComponent
+    HealthInputComponent,
+    SensorRowComponent,
+    AddSensorRowComponent
   ],
   imports: [
     BrowserModule,

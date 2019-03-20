@@ -1,14 +1,10 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { Sensor } from 'src/app/models/sensor.model';
 import { SensorService } from 'src/app/services/sensor.service';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faPause, faPlay, faUnlink, faFlask, faLink , faTrashAlt} from '@fortawesome/free-solid-svg-icons';
-import { faPlayCircle, faPauseCircle, faQuestionCircle } from '@fortawesome/free-regular-svg-icons';
+
 import { PromptService } from 'src/app/services/prompt.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { Plant } from 'src/app/models/plant.model';
-
-library.add(faQuestionCircle, faPause, faPlay, faPlayCircle, faPauseCircle, faTrashAlt, faUnlink, faFlask, faLink);
 
 @Component({
   selector: 'app-sensor-manager',

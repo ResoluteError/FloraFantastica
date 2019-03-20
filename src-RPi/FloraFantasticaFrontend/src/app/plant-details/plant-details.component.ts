@@ -7,7 +7,6 @@ import { Sensor } from '../models/sensor.model';
 import { Measurement } from '../models/measurement.model';
 import { ActivatedRoute } from '@angular/router';
 import { AlertService } from '../services/alert.service';
-import { Chart} from 'chart.js';
 import { ChartController } from '../controller/chart.controller';
 import { ChartUIController } from '../controller/chartUI.controller';
 import { forkJoin } from 'rxjs';
@@ -52,7 +51,6 @@ export class PlantDetailsComponent implements OnInit {
 
     requests.subscribe( results => {
       var measurements = results[0];
-      Measurement.sortByDate(measurements);
       var sensors = results[1];
       this.handleMeasurementImport(measurements, sensors);
     }, err => {
@@ -65,6 +63,13 @@ export class PlantDetailsComponent implements OnInit {
   handleMeasurementImport(measurements : Measurement[], sensors : Sensor[]){
 
     var chartController = new ChartController(this.baseChart);
+
+    if(measurements.length === 0){
+      chartController.draw("scatter");
+      return;
+    }
+  
+    Measurement.sortByDate(measurements);
 
     for(var sensor of sensors){
       var data = measurements.filter( measurement => measurement.sensorId == sensor.id).map( measurement => {
@@ -93,6 +98,7 @@ export class PlantDetailsComponent implements OnInit {
     chartController.setUIDelegate(
       chartUIController.actionHandler
     )
+
 
   }
 

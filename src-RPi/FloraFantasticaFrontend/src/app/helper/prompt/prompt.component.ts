@@ -21,7 +21,6 @@ export class PromptComponent implements OnInit {
   ngOnInit() {
     this.promptService.getSubject().subscribe( prompt => {
       this.prompt = prompt;
-      console.log("Ya'll got a message!");
       $("#"+this.promptModal.nativeElement.id).modal('show');
     });
   }

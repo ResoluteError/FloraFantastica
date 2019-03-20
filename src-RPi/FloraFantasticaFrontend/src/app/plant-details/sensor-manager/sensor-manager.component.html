@@ -37,17 +37,17 @@
             </div>
           </td>
           <td width="30%" class="text-center">
-            <div *ngIf="sensor.state !== 2" class="d-inline-block click-resume" ngbPopover="Resume Sensor Measuring" triggers="mouseenter:mouseleave" (click)="resumeSensor(sensor)">
-              <fa-icon [icon]="['fas','play']"></fa-icon>
+            <div *ngIf="sensor.state !== 2" class="d-inline-block" ngbPopover="Resume Sensor Measuring" triggers="mouseenter:mouseleave" (click)="resumeSensor(sensor)">
+              <fa-icon class="green action-icon" [icon]="['fas','play']"></fa-icon>
             </div>
-            <div *ngIf="sensor.state === 2" class="d-inline-block click-pause" ngbPopover="Pause Sensor Measuring" triggers="mouseenter:mouseleave" (click)="pauseSensor(sensor)">
-              <fa-icon [icon]="['fas','pause']"></fa-icon>
+            <div *ngIf="sensor.state === 2" class="d-inline-block" ngbPopover="Pause Sensor Measuring" triggers="mouseenter:mouseleave" (click)="pauseSensor(sensor)">
+              <fa-icon class="yellow action-icon" [icon]="['fas','pause']"></fa-icon>
             </div>
-            <div class="d-inline-block ml-4 click-measure" ngbPopover="Realtime Measurement" triggers="mouseenter:mouseleave">
-              <fa-icon [icon]="['fas','flask']"></fa-icon>
+            <div class="d-inline-block ml-4" ngbPopover="Realtime Measurement" triggers="mouseenter:mouseleave">
+              <fa-icon class="purple action-icon" [icon]="['fas','flask']"></fa-icon>
             </div>
-            <div class="d-inline-block ml-4 click-unlink" ngbPopover="Unlink Sensor" triggers="mouseenter:mouseleave" (click)="unlinkSensor(sensor)">
-              <fa-icon [icon]="['fas','unlink']"></fa-icon>
+            <div class="d-inline-block ml-4" ngbPopover="Unlink Sensor" triggers="mouseenter:mouseleave" (click)="unlinkSensor(sensor)">
+              <fa-icon class="orange action-icon" [icon]="['fas','unlink']"></fa-icon>
             </div>
           </td>
         </tr>
@@ -74,11 +74,11 @@
             </div>
           </td>
           <td width="30%" class="text-center">
-            <div (click)="linkSensor(sensor)" class="d-inline-block ml-4 click-link" ngbPopover="Link Sensor" triggers="mouseenter:mouseleave">
-              <fa-icon [icon]="['fas','link']"></fa-icon>
+            <div (click)="linkSensor(sensor)" class="d-inline-block ml-4" ngbPopover="Link Sensor" triggers="mouseenter:mouseleave">
+              <fa-icon class="blue action-icon" [icon]="['fas','link']"></fa-icon>
             </div>
-            <div class="d-inline-block ml-4 click-delete" ngbPopover="Delete Sensor" triggers="mouseenter:mouseleave" (click)="deleteSensor(sensor)">
-              <fa-icon [icon]="['fas','trash-alt']"></fa-icon>
+            <div class="d-inline-block ml-4" ngbPopover="Delete Sensor" triggers="mouseenter:mouseleave" (click)="deleteSensor(sensor)">
+              <fa-icon class="red action-icon" [icon]="['fas','trash-alt']"></fa-icon>
             </div>
           </td>
         </tr>

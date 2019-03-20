@@ -78,33 +78,35 @@ export class ChartController {
 
   addDataset( dataset : ChartDataSets, sensor : Sensor): void{
 
-
-    var max = (<ChartPoint>dataset.data[0]).y;
-
-    for(var point of dataset.data){
-
-      point = <ChartPoint>point;
-      max = point.y > max ? point.y : max;
-
+    try {
+      var max = (<ChartPoint>dataset.data[0]).y;
+  
+      for(var point of dataset.data){
+  
+        point = <ChartPoint>point;
+        max = point.y > max ? point.y : max;
+  
+      }
+  
+      max = <number>max;
+  
+      var yAxis = this.setupYAxis(sensor.type, max);
+  
+      dataset.label = sensor.name;
+      dataset.borderColor = this.lineColors[this.cLineColorIndex];
+      dataset.backgroundColor = "transparent";
+      dataset.fill = false;
+      dataset.yAxisID = yAxis.id;
+      dataset.pointStyle = "circle";
+  
+      this.datasets.push(dataset);
+      this.sensors.push(sensor);
+      this.chartOptions.scales.yAxes.push(yAxis)
+  
+      this.cLineColorIndex++;
+    } catch {
+      console.log("Caught dataset: ", dataset);
     }
-
-    max = <number>max;
-
-    var yAxis = this.setupYAxis(sensor.type, max);
-
-    dataset.label = sensor.name;
-    dataset.borderColor = this.lineColors[this.cLineColorIndex];
-    dataset.backgroundColor = "transparent";
-    dataset.fill = false;
-    dataset.yAxisID = yAxis.id;
-    dataset.pointStyle = "circle";
-
-    this.datasets.push(dataset);
-    this.sensors.push(sensor);
-    this.chartOptions.scales.yAxes.push(yAxis)
-
-    this.cLineColorIndex++;
-
 
   }
 

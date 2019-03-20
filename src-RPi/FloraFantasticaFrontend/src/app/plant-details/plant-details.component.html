@@ -24,7 +24,7 @@
       <div class="card mb-3">
         <div class="card-header">
           <b>{{plantName}}</b>
-          <button class="btn btn-sm btn-outline-dark float-right">Edit</button>
+          <fa-icon [icon]="['fas','edit']" class="blue float-right action-icon"></fa-icon>
         </div>
         <div class="card-body">
           <p class="card-text">{{plantDescription}}</p>
@@ -35,7 +35,7 @@
 
     </div>
     <div class="col-8">
-      <app-sensor-manager (change)="updateSensors($event)" [plant]="plant"></app-sensor-manager>
+      <app-sensor-manager *ngIf="plant" (change)="updateSensors($event)" [plant]="plant"></app-sensor-manager>
     </div>
   </div>
   <div class="row mt-5">

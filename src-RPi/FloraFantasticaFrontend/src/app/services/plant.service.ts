@@ -72,6 +72,25 @@ export class PlantService {
 
   }
 
+  postPlantForm(plant: FormData): Observable<Plant>{
+
+    var url = this.httpOptions.apiUrl;
+    var options = this.httpOptions.formOptions;
+
+    return new Observable( observer => {
+
+      this.http.post<Plant>(url + "/plants", plant).subscribe( result => {
+        observer.next(result);
+        observer.complete();
+      }, err => {
+        observer.error(err);
+        observer.complete();
+      });
+
+    });
+
+  }
+
   deletePlant(id : string): Observable<Plant>{
 
     var url = this.httpOptions.apiUrl;

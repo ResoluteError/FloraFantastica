@@ -5,6 +5,7 @@ export class Sensor {
   name: string;
   type: number;
   state: number;
+  pin: string;
 
   static typeToLabel( sensorType : number){
     var labels = {
