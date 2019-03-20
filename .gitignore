@@ -1,3 +1,4 @@
 src-RPi/node_modules/
 **/.DS_Store
 .DS_Store
+src-RPi/public/uploads
