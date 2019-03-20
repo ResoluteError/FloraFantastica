@@ -19,7 +19,7 @@
   </td>
   <td>
     <select class="custom-select" name="plantId-{{editSensor.id}}" [(ngModel)]="editSensor.currentPlantId">
-      <option>Assign. Plant</option>
+      <option [value]="null">None</option>
       <option *ngFor="let plant of plants" [value]="plant.id">{{plant.name}}</option>
     </select>
   </td>

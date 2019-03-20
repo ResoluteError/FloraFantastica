@@ -26,11 +26,26 @@
 
       <thead>
         <tr>
-          <th width="25%">Name</th>
-          <th width="20%">Type</th>
-          <th width="10%">Pin</th>
-          <th width="25%">Assinged Plant</th>
-          <th width="10%" class="text-center">Status</th>
+          <th (click)="toggleSort('name')" width="25%" class="sorting-header">
+            Name 
+            <fa-icon class="ml-2" *ngIf="sortSetting.item === 'name'" [icon]="getSortIcon('name')"></fa-icon>
+          </th>
+          <th (click)="toggleSort('type', typeToStr)" width="20%" class="sorting-header">
+            Type 
+            <fa-icon class="ml-2" *ngIf="sortSetting.item === 'type'" [icon]="getSortIcon('type')"></fa-icon>
+          </th>
+          <th (click)="toggleSort('pin')" width="10%" class="sorting-header">
+            Pin 
+            <fa-icon class="ml-2" *ngIf="sortSetting.item === 'pin'" [icon]="getSortIcon('pin')"></fa-icon>
+          </th>
+          <th (click)="toggleSort('currentPlantId', plantIdToStr)" width="25%" class="sorting-header">
+            Assinged Plant 
+            <fa-icon class="ml-2" *ngIf="sortSetting.item === 'currentPlantId'" [icon]="getSortIcon('currentPlantId')"></fa-icon>
+          </th>
+          <th (click)="toggleSort('state')" width="10%" class="text-center" class="sorting-header">
+            Status 
+            <fa-icon class="ml-2" *ngIf="sortSetting.item === 'state'" [icon]="getSortIcon('state')"></fa-icon>
+          </th>
           <th width="10%"></th>
         </tr>
       </thead>

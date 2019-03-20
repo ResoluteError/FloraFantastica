@@ -27,11 +27,11 @@ import { HealthInputComponent } from './plant-details/health-input/health-input.
 import { SensorRowComponent } from './dashboard/sensor-row/sensor-row.component';
 import { library } from '@fortawesome/fontawesome-svg-core';
 
-import { faPause, faPlay, faUnlink, faFlask, faLink , faTrashAlt, faEdit as fasEdit, faSave, faTimesCircle, faLeaf} from '@fortawesome/free-solid-svg-icons';
+import { faPause, faPlay, faUnlink, faFlask, faLink , faTrashAlt, faEdit as fasEdit, faSave, faTimesCircle, faLeaf, faCaretDown, faCaretUp} from '@fortawesome/free-solid-svg-icons';
 import { faPlayCircle, faPauseCircle, faQuestionCircle, faEdit } from '@fortawesome/free-regular-svg-icons';
 import { AddSensorRowComponent } from './dashboard/add-sensor-row/add-sensor-row.component';
 
-library.add(faQuestionCircle, faPause, faPlay, faPlayCircle, faPauseCircle, faTrashAlt, faUnlink, faFlask, faLink, faEdit, fasEdit, faSave, faTimesCircle, faLeaf);
+library.add(faQuestionCircle, faPause, faPlay, faPlayCircle, faPauseCircle, faTrashAlt, faUnlink, faFlask, faLink, faEdit, fasEdit, faSave, faTimesCircle, faLeaf, faCaretDown, faCaretUp);
 
 @NgModule({
   declarations: [
