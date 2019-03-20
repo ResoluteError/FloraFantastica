@@ -91,6 +91,12 @@ export class PlantCardComponent implements OnInit {
         var sensorRequestCounter = 0;
         var failed = [];
 
+        if(this.sensors.length === 0){
+          this.delete.emit(this.plant.id);
+          this.alertService.success("Success.", `The plant '${this.plant.name}' was deleted.`);
+          return;
+        }
+
         this.sensors.forEach( (sensor) => {
           this.sensorService.patchSensor(sensor.id, {
             currentPlantId: null
@@ -118,54 +124,13 @@ export class PlantCardComponent implements OnInit {
     });
   }
 
-  /* 
-  // Use for icons later
-  get airTemperature(){
-    try {
-      return this.currentData.airTemperature || "test";
-    } catch {
-      return "test";
+  get noPlantData(){
+    for(var key in this.plantData){
+      if(this.plantData[key] != null){
+        return false;
+      }
     }
+    return true;
   }
-
-  get airHumidity(){
-    try {
-      return this.currentData.airHumidity;
-    } catch {
-      return null
-    }
-  }
-
-  get soilTemperature(){
-    try {
-      return this.currentData.soilTemperature;
-    } catch {
-      return null
-    }
-  }
-
-  get soilMoisture(){
-    try {
-      return this.currentData.soilMoisture;
-    } catch {
-      return null
-    }
-  }
-
-  get lightIntensity(){
-    try {
-      return this.currentData.lightIntensity;
-    } catch {
-      return null
-    }
-  }
-
-  get lastWatering(){
-    try {
-      return this.currentData.lastWatering;
-    } catch {
-      return null
-    }
-  }*/
 
 }

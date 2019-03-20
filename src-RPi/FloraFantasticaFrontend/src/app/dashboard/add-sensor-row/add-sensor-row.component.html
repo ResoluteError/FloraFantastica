@@ -1,0 +1,29 @@
+<td>
+  <input class="form-control" type="text" placeholder="Sensor Name" name="create-sensor-name" [(ngModel)]="sensor.name">
+</td>
+<td>
+  <select class="custom-select"  name="create-sensor-type" [(ngModel)]="sensor.type" >
+      <option value="null" selected>Type</option>
+      <option value="10">Air Temp.</option>
+      <option value="11">Air Humid.</option>
+      <option value="20">Soil Moist.</option>
+      <option value="21">Soil Temp.</option>
+      <option value="30">Light</option>
+      <option value="40">Water Btn.</option>
+    </select>
+</td>
+<td>
+  <input class="form-control" type="text" placeholder="A0" maxlength="2" name="create-sensor-pin" [(ngModel)]="sensor.pin">
+</td>
+<td>
+  <select class="custom-select" name="create-sensor-plantId" [(ngModel)]="sensor.currentPlantId">
+      <option value="null" selected>Assign. Plant</option>
+      <option *ngFor="let plant of plants" [value]="plant.id">{{plant.name}}</option>
+    </select>
+</td>
+<td class="text-center">
+  0
+</td>
+<td>
+  <input class="btn btn-outline-primary" type="submit" value="Create" (click)="createSensor()">
+</td>

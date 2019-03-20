@@ -1,7 +1,6 @@
 <div class="card h-100">
   <div class="card-header">
-    <b>{{plant.name}}</b>
-    <button class="btn btn-sm btn-outline-danger float-right" (click)="deletePlant()">Delete</button>
+    <fa-icon [icon]="['fas','leaf']" class="mr-2"></fa-icon><b>{{plant.name}}</b>
   </div>
   <!-- <img class="card-img-top" [src]="plant.icon" alt=""> -->
   <div class="card-body" *ngIf="currentView === 'data'">
@@ -22,6 +21,8 @@
           <span class="small"><b>Light Intensity</b></span></p> 
           <p *ngIf="plantData.lastWatering">{{plantData.lastWatering}}<br>
           <span class="small"><b>Last Watered</b></span></p> 
+          <p *ngIf="noPlantData" class="mt-5">No current data for this plant
+          </p> 
       </div>
     </div>
   </div>
@@ -51,8 +52,9 @@
   <div class="card-footer pt-1 pb-1">
     <button type="button" class="btn btn-link" *ngIf="currentView == 'data'" (click)="updateView('sensors')">Sensors</button>
     <button type="button" class="btn btn-link" *ngIf="currentView == 'sensors'" (click)="updateView('data')">Data</button>
-      <button type="button" class="btn btn-link" [routerLink]="'plant-details/' + plant.id">Details</button>
+      <button type="button" class="btn btn-link" [routerLink]="'/plant-details/' + plant.id">Details</button>
     <button type="button" class="btn btn-link" (click)="updateCurrentPlantData()">Refresh</button>
+    <fa-icon [icon]="['fas','trash-alt']" class="float-right red action-icon mt-2" (click)="deletePlant()"></fa-icon>
   </div>
 
 </div>

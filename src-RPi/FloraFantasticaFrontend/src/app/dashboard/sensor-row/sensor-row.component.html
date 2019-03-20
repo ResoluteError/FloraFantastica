@@ -1,0 +1,31 @@
+<ng-container *ngIf="!editMode">
+  <td>{{sensor.name}}</td>
+  <td>{{sensorTypeLabel}}</td>
+  <td>{{sensor.pin}}</td>
+  <td>{{plantName}}</td>
+  <td class="text-center"><div [ngbPopover]="sensorStateTooltip" triggers="mouseenter:mouseleave"><fa-icon [icon]="sensorStateIcon"></fa-icon></div></td>
+  <td class="action-cell">
+      <fa-icon class="blue action-icon" [icon]="['fas','edit']" (click)="switchMode(true)"></fa-icon>
+      <fa-icon class="red ml-3 action-icon" [icon]="['fas','trash-alt']" (click)="deleteSensor()"></fa-icon>
+  </td>
+</ng-container>
+<ng-container *ngIf="editMode">
+  <td>
+    <input type="text" name="name-{{editSensor.id}}" [(ngModel)]="editSensor.name" class="form-control">
+  </td>
+  <td>{{sensorTypeLabel}}</td>
+  <td>
+    <input type="text" name="pin-{{editSensor.id}}" [(ngModel)]="editSensor.pin" class="form-control" maxlength="2">
+  </td>
+  <td>
+    <select class="custom-select" name="plantId-{{editSensor.id}}" [(ngModel)]="editSensor.currentPlantId">
+      <option>Assign. Plant</option>
+      <option *ngFor="let plant of plants" [value]="plant.id">{{plant.name}}</option>
+    </select>
+  </td>
+  <td class="text-center"><div [ngbPopover]="sensorStateTooltip" triggers="mouseenter:mouseleave"><fa-icon [icon]="sensorStateIcon"></fa-icon></div></td>
+  <td class="action-cell">
+      <fa-icon class="green action-icon" [icon]="['fas','save']" (click)="saveEdit()"></fa-icon>
+      <fa-icon class="orange action-icon ml-3" [icon]="['fas','times-circle']" (click)="switchMode(false)"></fa-icon>
+  </td>
+</ng-container>
