@@ -30,9 +30,10 @@ export class PlantDetailsComponent implements OnInit {
   @ViewChild("chartUI") chartUI : ElementRef;
 
   plant : Plant;
-  sensors : Sensor[];
-  measurements : Measurement[];
   chart : Chart;
+  timeScope: number = 30;
+  chartController : ChartController;
+  chartUIController : ChartUIController;
 
   ngOnInit() {
 
@@ -60,7 +61,7 @@ export class PlantDetailsComponent implements OnInit {
   }
 
 
-  handleMeasurementImport(measurements : Measurement[], sensors : Sensor[]){
+  handleMeasurementImport(measurements : Measurement[], sensors : Sensor[]): void{
 
     var chartController = new ChartController(this.baseChart);
 
@@ -89,21 +90,25 @@ export class PlantDetailsComponent implements OnInit {
 
     }
 
+    chartController.setupXAxis(this.timeScope);
+
     this.chart = chartController.draw("scatter");
 
     var chartUIController = new ChartUIController(this.chartUI);
     chartUIController.fitToChart(this.baseChart);
 
-
     chartController.setUIDelegate(
       chartUIController.actionHandler
     )
 
+    this.chartController = chartController;
+    this.chartUIController = chartUIController;
 
   }
 
   updateChartScope( days : number){
-    console.log("New days: " + days);
+    this.timeScope = days;
+    this.chartController.setupXAxis(days);
   }
 
   updateSensors(sensors : Sensor[]){
@@ -112,6 +117,10 @@ export class PlantDetailsComponent implements OnInit {
 
   newHealthEntry( entry : Measurement){
     console.log("New entry: " + entry.data);
+  }
+
+  activeClass( days : number){
+    return this.timeScope === days ? "active" : "";
   }
 
   get plantName(){

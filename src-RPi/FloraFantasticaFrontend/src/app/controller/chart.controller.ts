@@ -125,6 +125,45 @@ export class ChartController {
     return this.chart;
   }
 
+  public setupXAxis( timeScope: number): void{
+
+    var msInHour = 1000 * 60 * 60;    
+    var msInDay = msInHour * 24;    
+    var endOfToday = Date.now() + ( msInDay - (Date.now() % msInDay))
+
+    var stepSize : number;
+
+    this.chartOptions.scales.xAxes[0].ticks.min = endOfToday - timeScope * msInDay;
+    this.chartOptions.scales.xAxes[0].ticks.max = endOfToday;
+
+    if(timeScope <= 1){
+      stepSize = msInHour * 2;
+    } else if(timeScope <= 7){
+      stepSize = msInDay;
+    } else {
+      stepSize = msInDay * Math.round(timeScope / 10);
+    }
+
+    this.chartOptions.scales.xAxes[0].ticks.stepSize = stepSize;
+
+    if(timeScope <= 1){
+      this.chartOptions.scales.xAxes[0].ticks.callback = (value) => {
+        return (new Date(value)).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      }
+    } else {
+      this.chartOptions.scales.xAxes[0].ticks.callback = (value) => {
+        return (new Date(value)).toLocaleDateString();
+      }
+    }
+
+    if(this.chart){
+      this.chart.config.options.scales.xAxes = this.chartOptions.scales.xAxes;
+      this.chart.update();
+      return;
+    }
+
+  }
+
   
   private setupYAxis(sensorType: number, max : number) : ChartYAxe {
     var id = uuid();
