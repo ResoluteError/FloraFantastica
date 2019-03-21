@@ -12,7 +12,7 @@
   </div>
   <div class="row">
 
-    <div class="col-12 canvas-container">
+    <div class="col-lg-offset-1 col-lg-10 col-12 col-offset-0 canvas-container">
         <canvas #baseChart>
         </canvas>
         <canvas #chartUI class="chartUI">
@@ -20,7 +20,7 @@
     </div>
   </div>
   <div class="row mt-5">
-    <div class="col-4">
+    <div class="col-md-4">
     
       <div class="card mb-3">
         <div class="card-header">
@@ -35,7 +35,7 @@
       <app-health-input [plant]="plant" (postedHealth)="newHealthEntry($event)"></app-health-input>
 
     </div>
-    <div class="col-8">
+    <div class="col-md-8">
       <app-sensor-manager *ngIf="plant" (change)="updateSensors($event)" [plant]="plant"></app-sensor-manager>
     </div>
   </div>

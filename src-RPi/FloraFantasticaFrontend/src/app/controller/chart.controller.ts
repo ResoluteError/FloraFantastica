@@ -2,18 +2,19 @@ import { ElementRef } from "@angular/core";
 import { Chart, ChartOptions, ChartDataSets, ChartYAxe, ChartPoint, } from 'chart.js';
 import { Sensor } from "../models/sensor.model";
 import { v4 as uuid } from "uuid";
+import { Measurement } from "../models/measurement.model";
 
 export class ChartController {
 
-  chart : Chart;
+  private chart : Chart;
 
   canvas : HTMLCanvasElement;
   context : CanvasRenderingContext2D;
 
   sensors : Sensor[];
 
-  chartOptions : ChartOptions;
-  datasets : ChartDataSets[];
+  private chartOptions : ChartOptions;
+  private datasets : ChartDataSets[];
 
   lineColors : string[];
   cLineColorIndex : number;
@@ -160,6 +161,26 @@ export class ChartController {
       this.chart.config.options.scales.xAxes = this.chartOptions.scales.xAxes;
       this.chart.update();
       return;
+    }
+
+  }
+
+  public addMeasurementToDataset( measurement : Measurement){
+
+    for( var i = 0; i < this.sensors.length; i++){
+      var sensor = this.sensors[i];
+      if(sensor.id === measurement.sensorId){
+        var newPoint : ChartPoint = {
+          x : new Date(measurement.measuredAt),
+          y : measurement.data
+        };
+        (<ChartPoint[]>this.datasets[i].data).push(newPoint);
+        if(this.chart){
+          this.chart.data.datasets = this.datasets;
+          this.chart.update();
+        }
+        return;
+      }
     }
 
   }

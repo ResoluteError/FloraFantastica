@@ -111,12 +111,10 @@ export class PlantDetailsComponent implements OnInit {
     this.chartController.setupXAxis(days);
   }
 
-  updateSensors(sensors : Sensor[]){
-    
-  }
-
   newHealthEntry( entry : Measurement){
-    console.log("New entry: " + entry.data);
+    this.chartController.addMeasurementToDataset(
+      entry
+    );
   }
 
   activeClass( days : number){

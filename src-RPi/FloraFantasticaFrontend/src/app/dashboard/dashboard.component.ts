@@ -36,7 +36,7 @@ export class DashboardComponent implements OnInit {
 
     this.sensorService.getSensors().subscribe( sensors => {
 
-      this.sensors = sensors;
+      this.sensors = sensors.filter(sensor => sensor.type < 90);
 
     }, err => {
 

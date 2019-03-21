@@ -13,10 +13,10 @@
   </div>
   <div class="row" *ngIf="view === 'plants'">
 
-    <div class="col-6 mt-3" *ngFor="let plant of plants">
+    <div class="col-md-6 mt-3" *ngFor="let plant of plants">
       <app-plant-card  [plant]="plant" (delete)="removePlant($event)"></app-plant-card>
     </div>
-    <div class="col-6 mt-3">
+    <div class="col-md-6 mt-3">
       <app-add-plant-card (create)="createPlant($event)"></app-add-plant-card>
     </div>
 
