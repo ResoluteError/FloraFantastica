@@ -81,7 +81,7 @@ export class PlantDetailsComponent implements OnInit {
 
       var dataset = {
         data : data,
-        showLine: sensor.type < 90,
+        showLine: (sensor.type !== 40),
         lineTension: 0
       }
 
@@ -108,6 +108,10 @@ export class PlantDetailsComponent implements OnInit {
 
   updateSensors(sensors : Sensor[]){
     
+  }
+
+  newHealthEntry( entry : Measurement){
+    console.log("New entry: " + entry.data);
   }
 
   get plantName(){

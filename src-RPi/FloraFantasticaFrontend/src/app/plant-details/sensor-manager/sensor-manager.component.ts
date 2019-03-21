@@ -31,6 +31,9 @@ export class SensorManagerComponent implements OnInit {
   ngOnInit() {
     this.sensorService.getSensors().subscribe( sensors => {
       sensors.forEach( sensor => {
+        if(sensor.type >= 90){
+          return;
+        }
         if (sensor.currentPlantId === this.plant.id){
           this.activeSensors.push(sensor)
         } else if(sensor.currentPlantId == null || sensor.currentPlantId === ""){

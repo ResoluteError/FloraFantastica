@@ -112,13 +112,15 @@ export class ChartController {
 
   draw(type : string): Chart{
     
-    this.chart = new Chart( this.context, {
+    var chartData = {
       type : type,
       data : {
         datasets : this.datasets
       },
       options : this.chartOptions
-    });
+    };
+
+    this.chart = new Chart(this.context, chartData );
 
     return this.chart;
   }
@@ -150,9 +152,13 @@ export class ChartController {
         max: max * 1.2 - (max * 1.2 % 10)
         // evtl. 1080?
       },
-      31: {
+      40: {
         min: 0,
         max: max * 1.2 - (max * 1.2 % 100)
+      },
+      90: {
+        min: 0,
+        max: 10
       }
     }
     var yAxis = {

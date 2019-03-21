@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getManager } from "typeorm";
+import { getManager, LessThan } from "typeorm";
 import { Sensor } from "../entity/Sensors";
 
 export class SensorController {
@@ -14,6 +14,7 @@ export class SensorController {
 
   }
 
+  
   static async get_by_plant_id(req : Request, res: Response){
 
     var id = req.params.plantId;
@@ -28,6 +29,7 @@ export class SensorController {
     res.send(sensors);
 
   }
+
 
   static async get_by_id(req : Request, res: Response){
     

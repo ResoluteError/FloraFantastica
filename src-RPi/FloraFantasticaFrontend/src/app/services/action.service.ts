@@ -64,4 +64,21 @@ export class ActionService {
     });
   }
 
+  postHealthEntry( plantId: string, health: number): Observable<Measurement>{
+    
+    var url = this.httpOptions.apiUrl;
+    var options = this.httpOptions.options;
+    
+    return new Observable( observer => {
+      this.http.post<Measurement>(`${url}/actions/plant/${plantId}/post-health-entry`,{data : health}, options).subscribe( result => {
+        observer.next(result);
+        observer.complete();
+      }, err => {
+        observer.error(err);
+        observer.complete();
+      });
+
+    });
+  }
+
 }

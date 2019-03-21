@@ -1,8 +1,8 @@
-<div class="card">
+<div class="card" *ngIf="!entryAdded">
   <div class="card-header">
     <b>New Health Entry</b>
   </div>
-  <div class="card-body" *ngIf="!entryAdded">
+  <div class="card-body">
     <div class="form-group">
       <label for="plantHealth">
         Plant Health
@@ -11,9 +11,23 @@
     </div>
     <div class="text-center">
       <div class="alert alert-{{healthClass}}">
-        <b>Status:</b> {{healthDescription}}
+        <b>Status ({{health}}):</b> {{healthDescription}}
       </div>
-      <button class="btn btn-outline-primary">Add Entry</button>
+      <button *ngIf="!posting" class="btn btn-outline-primary" (click)="postHealth()">Add Entry</button>
+      <button *ngIf="posting" class="btn btn-outline-primary disabled" disabled>Saving...</button>
+    </div>
+  </div>
+</div>
+<div class="card" *ngIf="entryAdded">
+  <div class="card-header">
+    <b>Entry added</b>
+  </div>
+  <div class="card-body">
+    <div class="text-center">
+      Plant Health:
+      <div class="alert alert-{{healthClass}}">
+        <b>({{health}})</b> {{healthDescription}}
+      </div>
     </div>
   </div>
 </div>

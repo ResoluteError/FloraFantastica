@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { getManager, EntityManager, getRepository } from "typeorm";
 import { Measurement } from "../entity/Measurement";
 import { Plant } from "../entity/Plants";
+import { Sensor } from "../entity/Sensors";
 
 export class ActionsController {
   
@@ -42,6 +43,47 @@ export class ActionsController {
 
     res.send(result);
 
+  }
+
+
+  static async postHealthEntry(req : Request, res: Response){
+    var manager = getManager();
+
+    var plantId = req.params.plantId;
+    var sensorId : string;
+
+    var sensor = await manager.findOne( Sensor, {
+      where: {
+        currentPlantId: plantId,
+        type: 90
+      }
+    });
+
+    // Create Sensor if none exists yet
+    if(!sensor){
+      var result = await manager.insert(Sensor, {
+        currentPlantId: plantId,
+        name: "Health Entries",
+        pin: null,
+        type: 90,
+        state: 0
+      });
+      sensorId = result.identifiers[0].id;
+    } else {
+      sensorId = sensor.id;
+    }
+
+    var newMeasurement = await manager.insert(Measurement, {
+      sensorId : sensorId,
+      sensorType : 90,
+      plantId : plantId,
+      measuredAt: (new Date()).toISOString(),
+      data: req.body.data
+    });
+
+    var postedEntity = await manager.findOne(Measurement, newMeasurement.identifiers[0].id);
+
+    res.send(postedEntity);
   }
 
 }

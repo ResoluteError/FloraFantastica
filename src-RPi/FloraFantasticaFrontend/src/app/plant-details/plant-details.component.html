@@ -31,7 +31,7 @@
         </div>
       </div>
 
-      <app-health-input></app-health-input>
+      <app-health-input [plant]="plant" (postedHealth)="newHealthEntry($event)"></app-health-input>
 
     </div>
     <div class="col-8">

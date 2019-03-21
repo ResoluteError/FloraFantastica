@@ -19,6 +19,7 @@ export class Sensor {
   // 20 - soil moisture; 21 - soil temp; 
   // 30 - ground light;
   // 40 - watering button; 
+  // 90s - Hidden Sensors: 90 - Manual Health Check
   @Column("int")
   type: number; 
 

@@ -26,7 +26,8 @@ export class Sensor {
       20 : " fq",
       21 : "° C",
       30 : " res",
-      40 : " ms"
+      40 : " ms",
+      90: "",
     }
     return units[sensorType];
   }

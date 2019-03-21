@@ -106,7 +106,7 @@ export class MeasurementController {
 
     newMeasurement.sensorType = sensor.type;
     newMeasurement.plantId = sensor.currentPlantId;
-    newMeasurement.measuredAt = (new Date()).toISOString();
+    newMeasurement.measuredAt = newMeasurement.measuredAt || (new Date()).toISOString();
 
     var result = await manager.insert(Measurement, newMeasurement);
 
