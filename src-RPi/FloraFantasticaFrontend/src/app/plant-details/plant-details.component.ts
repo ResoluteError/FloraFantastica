@@ -121,12 +121,4 @@ export class PlantDetailsComponent implements OnInit {
     return this.timeScope === days ? "active" : "";
   }
 
-  get plantName(){
-    return (this.plant && this.plant.name) || "Loading..."
-  }
-
-  get plantDescription(){
-    return (this.plant && this.plant.name) || "..."
-  }
-
 }

@@ -1,6 +1,4 @@
-<td>
-  <input class="form-control" type="text" placeholder="Sensor Name" name="create-sensor-name" [(ngModel)]="sensor.name">
-</td>
+
 <td>
   <select class="custom-select"  name="create-sensor-type" [(ngModel)]="sensor.type" >
       <option value="null" selected>Type</option>
@@ -11,6 +9,9 @@
       <option value="30">Light</option>
       <option value="40">Water Btn.</option>
     </select>
+</td>
+<td>
+  <input class="form-control" type="text" placeholder="Sensor Name" name="create-sensor-name" [(ngModel)]="sensor.name">
 </td>
 <td>
   <input class="form-control" type="text" placeholder="A0" maxlength="2" name="create-sensor-pin" [(ngModel)]="sensor.pin">

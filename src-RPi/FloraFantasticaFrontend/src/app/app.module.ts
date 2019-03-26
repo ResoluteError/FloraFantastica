@@ -30,6 +30,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPause, faPlay, faUnlink, faFlask, faLink , faTrashAlt, faEdit as fasEdit, faSave, faTimesCircle, faLeaf, faCaretDown, faCaretUp, faSyncAlt} from '@fortawesome/free-solid-svg-icons';
 import { faPlayCircle, faPauseCircle, faQuestionCircle, faEdit } from '@fortawesome/free-regular-svg-icons';
 import { AddSensorRowComponent } from './dashboard/add-sensor-row/add-sensor-row.component';
+import { CustomIconComponent } from './helper/custom-icon/custom-icon.component';
 
 library.add(faQuestionCircle, faPause, faPlay, faPlayCircle, faPauseCircle, faTrashAlt, faUnlink, faFlask, faLink, faEdit, fasEdit, faSave, faTimesCircle, faLeaf, faCaretDown, faCaretUp, faSyncAlt);
 
@@ -47,7 +48,8 @@ library.add(faQuestionCircle, faPause, faPlay, faPlayCircle, faPauseCircle, faTr
     SensorManagerComponent,
     HealthInputComponent,
     SensorRowComponent,
-    AddSensorRowComponent
+    AddSensorRowComponent,
+    CustomIconComponent
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" *ngIf="plant">
   <div class="row">
     <div class="col-12">
       <h1 class="text-center mt-4 mb-4">Detail View</h1>
@@ -24,11 +24,11 @@
     
       <div class="card mb-3">
         <div class="card-header">
-          <b>{{plantName}}</b>
+          <b>{{plant.name}}</b>
           <fa-icon [icon]="['fas','edit']" class="blue float-right action-icon"></fa-icon>
         </div>
         <div class="card-body">
-          <p class="card-text">{{plantDescription}}</p>
+          <p class="card-text">{{plant.description}}</p>
         </div>
       </div>
 
@@ -42,6 +42,13 @@
   <div class="row mt-5">
     <div class="col-12">
       <button class="btn btn-primary" [routerLink]="'/'">Go Back</button>
+    </div>
+  </div>
+</div>
+<div class="container" *ngIf="!plant">
+  <div class="row mt-3">
+    <div class="col text-center">
+      <h4>Loading Plant data...</h4>
     </div>
   </div>
 </div>

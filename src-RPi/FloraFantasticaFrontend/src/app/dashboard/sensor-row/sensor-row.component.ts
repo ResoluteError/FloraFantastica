@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Sensor } from 'src/app/models/sensor.model';
+import { Sensor, DisplaySensor } from 'src/app/models/sensor.model';
 import { Plant } from 'src/app/models/plant.model';
 import { SensorService } from 'src/app/services/sensor.service';
 import { AlertService } from 'src/app/services/alert.service';
@@ -14,7 +14,7 @@ import { PromptService } from 'src/app/services/prompt.service';
 })
 export class SensorRowComponent implements OnInit {
 
-  @Input("sensor") sensor : Sensor;
+  @Input("sensor") sensor : DisplaySensor;
   @Input("plants") plants : Plant[];
 
   @Output("delete") delete = new EventEmitter<string>();
@@ -43,7 +43,7 @@ export class SensorRowComponent implements OnInit {
 
   saveEdit(){
     this.sensorService.patchSensor(this.sensor.id, this.editSensor).subscribe( result => {
-      this.sensor = result;
+      this.sensor = Sensor.toDisplaySensor(result, this.plants);
       this.alertService.success("Success.","Sensor was updated.");
       this.editMode = false;
     }, err => {
@@ -61,33 +61,5 @@ export class SensorRowComponent implements OnInit {
       })
     });
   }
-
-  get plantName(){
-    try {
-      return this.plants.find( plant => plant.id === this.sensor.currentPlantId).name || "None";
-    } catch {
-      return "None"
-    }
-  }
-
-  get sensorStateIcon(){
-    var icons = [
-      ['far','question-circle'],
-      ['far','pause-circle'],
-      ['far','play-circle'],
-    ]
-    return icons[this.sensor.state];
-  }
-
-
-  get sensorStateTooltip(){
-    var state = this.sensor.state;
-    return `Status: ${Sensor.stateToString(state)}`;
-  }
-
-  get sensorTypeLabel(){
-    var type = this.sensor.type;
-    return Sensor.typeToLabel(type);
-  }
-
+  
 }

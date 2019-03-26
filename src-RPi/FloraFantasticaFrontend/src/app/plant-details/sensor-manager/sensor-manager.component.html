@@ -25,7 +25,7 @@
         <tr *ngFor="let sensor of activeSensors">
           <td width="40%">
             <span [ngbPopover]="sensorTypeTooltip(sensor)" triggers="mouseenter:mouseleave" class="d-inline-block">
-              {{sensor.name}}
+                <span class="custom-icon air"></span><span class="custom-icon humidity mr-2"></span>{{sensor.name}}
             </span>
           </td>
           <td width="15%" class="text-center">

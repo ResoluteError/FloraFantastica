@@ -1,3 +1,5 @@
+import { Plant } from "./plant.model";
+
 export class Sensor {
 
   id : string;
@@ -32,6 +34,18 @@ export class Sensor {
     return units[sensorType];
   }
 
+  static typeToIcons( sensorType: number ): string[]{
+    var icons = {
+      10 : ["air","temperature"],
+      11 : ["air","humidity"],
+      20 : ["soil","humidity"],
+      21 : ["soil","temperature"],
+      30 : ["light"],
+      40 : ["temperature"],
+    }
+    return icons[sensorType];
+  }
+
   static labelToType(sensorLabel : string){
     var labels = {
       "Air Temperature" : 10,
@@ -45,7 +59,7 @@ export class Sensor {
     return labels[sensorLabel] || 0;
   }
 
-  static stateToString(state : number){
+  static stateToString(state : number): string{
     var states = [
       'Unknown',
       'Paused',
@@ -53,5 +67,38 @@ export class Sensor {
     ];
     return states[state];
   }
+
+  static stateToIcon(state : number):string[]{
+    var icons = [
+      ['far','question-circle'],
+      ['far','pause-circle'],
+      ['far','play-circle'],
+    ]
+    return icons[state];
+  }
+
+  static toDisplaySensor(sensor: Sensor, plants: Plant[]): DisplaySensor{
+    return {
+      ...sensor,
+      typeIcons: Sensor.typeToIcons(sensor.type),
+      typeLabel: Sensor.typeToLabel(sensor.type),
+      stateIcon: Sensor.stateToIcon(sensor.state),
+      stateLabel: Sensor.stateToString(sensor.state),
+      unit: Sensor.typeToUnit(sensor.type),
+      currentPlantName: sensor.currentPlantId ? plants.find( plant => plant.id === sensor.currentPlantId).name : "None"
+    }
+  }
+
+}
+
+export class DisplaySensor extends Sensor {
+
+  currentPlantName?: string;
+  typeIcons : string[];
+  typeLabel: string;
+  stateIcon : string[];
+  stateLabel : string;
+  unit: string;
+
 
 }

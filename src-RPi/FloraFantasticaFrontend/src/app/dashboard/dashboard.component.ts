@@ -3,9 +3,10 @@ import { PlantService } from '../services/plant.service';
 import { Plant } from '../models/plant.model';
 import { AlertService } from '../services/alert.service';
 import { ActivatedRoute } from '@angular/router';
-import { Sensor } from '../models/sensor.model';
+import { Sensor, DisplaySensor } from '../models/sensor.model';
 import { SensorService } from '../services/sensor.service';
 import { Location } from '@angular/common';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,7 +24,7 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   plants : Plant[] = [];
-  sensors : Sensor[] = [];
+  sensors : DisplaySensor[] = [];
   view : string;
   sortSetting : {item : string, desc: boolean} = {
     item : null,
@@ -34,23 +35,28 @@ export class DashboardComponent implements OnInit {
 
     this.view = this.route.snapshot.data.view;
 
-    this.sensorService.getSensors().subscribe( sensors => {
+    var subs = [
+      this.sensorService.getSensors(),
+      this.plantService.getPlants()
+    ];
 
-      this.sensors = sensors.filter(sensor => sensor.type < 90);
+    var combined = combineLatest( subs, (sensors : Sensor[], plants : Plant[]) => {
+
+      var dispSensors : DisplaySensor[] = (sensors).map( sensor => Sensor.toDisplaySensor(sensor, plants)
+      );
+      
+      return [dispSensors, plants];
+
+    });
+
+    combined.subscribe( ([sensors, plants]) => {
+
+      this.sensors = <DisplaySensor[]>sensors;
+      this.plants = <Plant[]>plants;
 
     }, err => {
 
       this.alertService.warning("Sensor API Error.","Failed fetching sensor data. Please try again in a moment.", 4000)
-
-    });
-
-    this.plantService.getPlants().subscribe( plants => {
-
-      this.plants = plants;
-
-    }, err => {
-
-      this.alertService.warning("Plant API Error.","Failed fetching data for plants. Please try again in a moment.", 4000)
 
     });
 
@@ -81,7 +87,7 @@ export class DashboardComponent implements OnInit {
   }
 
   createSensor(sensor: Sensor){
-    this.sensors.push(sensor);
+    this.sensors.push(Sensor.toDisplaySensor(sensor, this.plants));
     switch(this.sortSetting.item){
       case 'type': 
         this.sortSensors(this.typeToStr);
