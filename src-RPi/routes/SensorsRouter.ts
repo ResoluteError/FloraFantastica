@@ -5,6 +5,8 @@ const router : express.Router = express.Router();
 
 router.get('/', SensorController.get_all);
 
+router.get('/available', SensorController.get_available_sensors);
+
 router.post('/', SensorController.post);
 
 router.get('/:sensorId', SensorController.get_by_id);

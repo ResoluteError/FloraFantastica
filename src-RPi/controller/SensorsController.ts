@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getManager, LessThan } from "typeorm";
+import { getManager, IsNull } from "typeorm";
 import { Sensor } from "../entity/Sensors";
 
 export class SensorController {
@@ -30,6 +30,21 @@ export class SensorController {
 
   }
 
+  static async get_available_sensors(req : Request, res: Response){
+
+    var manager = getManager();
+
+    var sensors = await manager.find(Sensor, {
+      where : [{
+        currentPlantId : IsNull(),
+      },{
+        currentPlantId : "",
+      }]
+    });
+
+    res.send(sensors);
+
+  }
 
   static async get_by_id(req : Request, res: Response){
     
