@@ -16,6 +16,7 @@ export class PlantDataObj {
   soilMoisture: number;
   lightIntensity: number;
   lastWatering: number;
+  lastHealth: number;
 
   constructor( dataStr : string ){
 
@@ -26,6 +27,7 @@ export class PlantDataObj {
     this.soilTemperature = latestSensorMeasurement[21] && latestSensorMeasurement[21].data || null;
     this.lightIntensity = latestSensorMeasurement[30] && latestSensorMeasurement[30].data || null;
     this.lastWatering = latestSensorMeasurement[40] && latestSensorMeasurement[40].data || null;
+    this.lastHealth = latestSensorMeasurement[90] && latestSensorMeasurement[90].data || null;
 
   }
 

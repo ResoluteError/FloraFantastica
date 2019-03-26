@@ -34,8 +34,10 @@ export class SensorManagerComponent implements OnInit, OnChanges {
 
   ngOnChanges(){
     if(this.sensors){
-      console.log("sorting sensors");
       this.sensors.forEach( sensor => {
+        if(sensor.type >= 90){
+          return;
+        }
         if(sensor.currentPlantId === this.plant.id){
           this.activeSensors.push(sensor);
         } else {
@@ -57,10 +59,13 @@ export class SensorManagerComponent implements OnInit, OnChanges {
   }
 
   unlinkSensor(unlinkSensor : Sensor){
+    var newState = unlinkSensor.state > 1 ? 1 : unlinkSensor.state;
     this.sensorService.patchSensor(unlinkSensor.id, {
-      currentPlantId: null
+      currentPlantId: null,
+      state: newState
     }).subscribe( result => {
       this.alertService.success("Success.", `Unlinked the sensor '${result.name}'`);
+      unlinkSensor.state = newState;
       for(var i =0; i < this.activeSensors.length; i++){
         if(this.activeSensors[i].id === result.id){
           this.availableSensors.push(this.activeSensors[i]);

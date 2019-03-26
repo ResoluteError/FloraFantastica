@@ -73,24 +73,41 @@
     <table class="table">
       <thead>
         <tr>
-          <th>Available Sensors</th>
-          <th class="text-center">Pin</th>
-          <th class="text-center">Type</th>
-          <th class="text-center">Actions</th>
+          <th width="17%" class="text-center">
+            Type
+          </th>
+          <th width="*">
+            Sensor
+          </th>
+          <th width="15%" class="text-center d-none d-md-table-cell">
+            Pin
+          </th>
+          <th width="10%" class="text-center">
+            Status
+          </th>
+          <th width="33%" class="text-center">
+            Actions
+          </th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let sensor of availableSensors">
-          <td width="40%">{{sensor.name}}</td>
-          <td width="15%" class="text-center">
+          <td class="text-center">
+            <div [ngbPopover]="sensor.typeLabel" triggers="mouseenter:mouseleave"
+            >
+              <app-custom-icon *ngFor="let icon of sensor.typeIcons" [iconName]="icon"></app-custom-icon>
+            </div>
+          </td>
+          <td>{{sensor.name}}</td>
+          <td class="text-center">
             {{sensor.pin || "?"}}
           </td>
-          <td width="15%" class="text-center">
+          <td class="text-center">
             <div [ngbPopover]="sensorTypeTooltip(sensor)" triggers="mouseenter:mouseleave">
               {{sensor.type}}
             </div>
           </td>
-          <td width="30%" class="text-center">
+          <td class="text-center">
             <div (click)="linkSensor(sensor)" class="d-inline-block ml-4" ngbPopover="Link Sensor" triggers="mouseenter:mouseleave">
               <fa-icon class="blue action-icon" [icon]="['fas','link']"></fa-icon>
             </div>

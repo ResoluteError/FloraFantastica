@@ -21,6 +21,8 @@ export class ActionsController {
       .execute();
 
     var dataDict = {};
+
+    console.log("times and type: ", timesAndTypes);
     
     for (var timeAndType of timesAndTypes){
 
@@ -32,6 +34,7 @@ export class ActionsController {
       .getOne()
 
     }
+    console.log("times and type: ", dataDict);
 
     var dataStr = JSON.stringify(dataDict);
 
@@ -40,6 +43,8 @@ export class ActionsController {
     await manager.update(Plant, plantId, {currentData : dataStr});
 
     var result = await manager.findOne(Plant, plantId);
+
+    console.log("plant: ", result);
 
     res.send(result);
 

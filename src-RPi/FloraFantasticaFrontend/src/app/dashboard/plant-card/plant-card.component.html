@@ -1,6 +1,8 @@
 <div class="card h-100">
   <div class="card-header">
-    <fa-icon [icon]="['fas','leaf']" class="mr-2"></fa-icon><b>{{plant.name}}</b>
+    <a [routerLink]="'/plant-details/'+plant.id" class="link-unstyled">
+      <fa-icon [icon]="['fas','leaf']" class="mr-2"></fa-icon><b>{{plant.name}}</b>
+    </a>
   </div>
   <!-- <img class="card-img-top" [src]="plant.icon" alt=""> -->
   <div class="card-body" *ngIf="currentView === 'data'">
@@ -20,7 +22,9 @@
           <p *ngIf="plantData.lightIntensity">{{plantData.lightIntensity}}<br>
           <span class="small"><b>Light Intensity</b></span></p> 
           <p *ngIf="plantData.lastWatering">{{plantData.lastWatering}}<br>
-          <span class="small"><b>Last Watered</b></span></p> 
+          <span class="small"><b>Last Watered</b></span></p>
+          <p *ngIf="plantData.lastHealth">{{plantData.lastHealth}}<br>
+          <span class="small"><b>Last Health Status</b></span></p>
           <p *ngIf="noPlantData" class="mt-5">No current data for this plant
           </p> 
       </div>

@@ -42,8 +42,14 @@ export class DashboardComponent implements OnInit {
 
     var combined = combineLatest( subs, (sensors : Sensor[], plants : Plant[]) => {
 
-      var dispSensors : DisplaySensor[] = (sensors).map( sensor => Sensor.toDisplaySensor(sensor, plants)
-      );
+      var dispSensors: DisplaySensor[] = [];
+
+      sensors.forEach( sensor => {
+        if(sensor.type >= 90){
+          return
+        }
+        dispSensors.push(Sensor.toDisplaySensor(sensor, plants));
+      })
       
       return [dispSensors, plants];
 
