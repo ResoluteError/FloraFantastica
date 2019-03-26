@@ -52,6 +52,27 @@ export class SensorService {
 
   }
 
+  getAvailableSensors(): Observable<Sensor>{
+
+    var url = this.httpOptions.apiUrl;
+    var options = this.httpOptions.options;
+
+    return new Observable( observer => {
+
+      this.http.get<Sensor>(url + "/sensors/available", options).subscribe( result => {
+        observer.next(result);
+        observer.complete();
+      }, err => {
+        observer.error(err);
+        observer.complete();
+      });
+
+    });
+
+  }
+  
+
+
   getSensorsByPlantId(plantId : string): Observable<Sensor[]>{
 
     var url = this.httpOptions.apiUrl;

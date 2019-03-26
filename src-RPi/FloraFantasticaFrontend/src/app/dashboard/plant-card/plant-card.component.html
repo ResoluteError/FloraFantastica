@@ -31,19 +31,28 @@
     <table class="table">
       <thead>
         <tr>
+          <th class="text-center">Type</th>
           <th>Sensor</th>
-          <th>Type</th>
+          <th>Pin</th>
+          <th class="text-center">Status</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let sensor of sensors">
-          <td>
-            <span [ngbPopover]="sensorStateTooltip(sensor)" triggers="mouseenter:mouseleave"><span [ngClass]="sensorStateClass(sensor)" ></span>{{sensor.name}}</span>
+          <td class="text-center">
+            <div [ngbPopover]="sensor.typeLabel" triggers="mouseenter:mouseleave"
+            >
+              <app-custom-icon *ngFor="let icon of sensor.typeIcons" [iconName]="icon"></app-custom-icon>
+            </div>
           </td>
           <td>
-            <span [ngbPopover]="sensorTypeTooltip(sensor)" triggers="mouseenter:mouseleave">
-              {{sensor.type}}
-            </span>
+              {{sensor.name}}
+          </td>
+          <td>{{sensor.pin || "?"}}</td>
+          <td class="text-center">
+            <div [ngbPopover]="sensor.stateLabel" triggers="mouseenter:mouseleave">
+              <fa-icon [icon]="sensor.stateIcon"></fa-icon>
+            </div>
           </td>
         </tr>
       </tbody>

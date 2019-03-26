@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Plant, PlantDataObj } from 'src/app/models/plant.model';
 import { SensorService } from 'src/app/services/sensor.service';
-import { Sensor } from 'src/app/models/sensor.model';
+import { Sensor, DisplaySensor } from 'src/app/models/sensor.model';
 import { ActionService } from 'src/app/services/action.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { PromptService } from 'src/app/services/prompt.service';
@@ -15,12 +15,12 @@ import { PlantService } from 'src/app/services/plant.service';
 export class PlantCardComponent implements OnInit {
 
   @Input( "plant" ) plant : Plant;
+  @Input() sensors: DisplaySensor[];
   @Output() delete = new EventEmitter<string>();
 
 
   currentView = "data";
   plantData : PlantDataObj;
-  sensors : Sensor[] = [];
 
   constructor(
     private sensorService : SensorService,
@@ -31,18 +31,8 @@ export class PlantCardComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
     this.plantData = new PlantDataObj(this.plant.currentData);
-
-    this.sensorService.getSensorsByPlantId(this.plant.id).subscribe( sensors => {
-
-      this.sensors = sensors;
-
-    }, err => {
-
-      this.alertService.warning("Sensor API Error.", "There was an issue getting the sensor data, please try again in a few minutes.", 4500);
-
-    })
+    this.sensors = this.sensors.filter( sensor => sensor.currentPlantId === this.plant.id);
   }
 
   updateCurrentPlantData(){
@@ -62,15 +52,6 @@ export class PlantCardComponent implements OnInit {
 
     this.currentView = view;
 
-  }
-
-  sensorStateClass( sensor : Sensor):string{
-    var stateClasses = [
-      'unknown',
-      'paused',
-      'active'
-    ]
-    return "sensor-state " + stateClasses[sensor.state];
   }
 
   sensorStateTooltip(sensor : Sensor){

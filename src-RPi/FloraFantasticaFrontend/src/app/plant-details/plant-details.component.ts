@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AlertService } from '../services/alert.service';
 import { ChartController } from '../controller/chart.controller';
 import { ChartUIController } from '../controller/chartUI.controller';
-import { forkJoin } from 'rxjs';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-plant-details',
@@ -34,6 +34,7 @@ export class PlantDetailsComponent implements OnInit {
   timeScope: number = 30;
   chartController : ChartController;
   chartUIController : ChartUIController;
+  sensors : Sensor[];
 
   ngOnInit() {
 
@@ -45,14 +46,19 @@ export class PlantDetailsComponent implements OnInit {
       this.alertService.warning("Plant API Error.","Failed getting plant data for the plant "+ plantId);
     });
 
-    var requests = forkJoin(
+    var requests = combineLatest(
       this.measurementService.getMeasurementsByPlantId(plantId),
-      this.sensorService.getSensorsByPlantId(plantId)
+      this.sensorService.getSensorsByPlantId(plantId),
+      this.sensorService.getAvailableSensors()
     );
 
-    requests.subscribe( results => {
-      var measurements = results[0];
-      var sensors = results[1];
+    requests.subscribe( ([measurements, plantSensors, availableSensors]) => {
+
+      console.log("availableSensors: ", availableSensors);
+
+      var sensors = plantSensors.concat(availableSensors).map( sensor =>
+        Sensor.toDisplaySensor(sensor, [this.plant])
+      )
       this.handleMeasurementImport(measurements, sensors);
     }, err => {
       this.alertService.warning("Measurement or Sensor API Error.","Failed getting measurement data for the plant "+ plantId);

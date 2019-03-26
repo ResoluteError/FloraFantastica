@@ -1,5 +1,5 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { Sensor } from 'src/app/models/sensor.model';
+import { Component, OnInit, Output, EventEmitter, Input, OnChanges } from '@angular/core';
+import { Sensor, DisplaySensor } from 'src/app/models/sensor.model';
 import { SensorService } from 'src/app/services/sensor.service';
 
 import { PromptService } from 'src/app/services/prompt.service';
@@ -16,9 +16,10 @@ export class SensorManagerComponent implements OnInit {
 
   @Output() change = new EventEmitter<Sensor[]>();
   @Input() plant : Plant;
+  @Input() sensors : DisplaySensor[];
 
-  activeSensors : Sensor[] = [];
-  availableSensors : Sensor[] = [];
+  activeSensors : DisplaySensor[] = [];
+  availableSensors : DisplaySensor[] = [];
 
   constructor(
     private sensorService : SensorService,
@@ -29,18 +30,9 @@ export class SensorManagerComponent implements OnInit {
 
 
   ngOnInit() {
-    this.sensorService.getSensors().subscribe( sensors => {
-      sensors.forEach( sensor => {
-        if(sensor.type >= 90){
-          return;
-        }
-        if (sensor.currentPlantId === this.plant.id){
-          this.activeSensors.push(sensor)
-        } else if(sensor.currentPlantId == null || sensor.currentPlantId === ""){
-          this.availableSensors.push(sensor);
-        }
-      });
-    });
+    this.sensors.forEach( sensor => {
+      sensor.currentPlantId
+    })
   }
 
   deleteSensor(deleteSensor : Sensor){
