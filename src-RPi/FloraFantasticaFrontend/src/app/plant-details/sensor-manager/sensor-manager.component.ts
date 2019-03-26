@@ -12,7 +12,7 @@ import { ActionService } from 'src/app/services/action.service';
   templateUrl: './sensor-manager.component.html',
   styleUrls: ['./sensor-manager.component.scss']
 })
-export class SensorManagerComponent implements OnInit {
+export class SensorManagerComponent implements OnInit, OnChanges {
 
   @Output() change = new EventEmitter<Sensor[]>();
   @Input() plant : Plant;
@@ -30,9 +30,19 @@ export class SensorManagerComponent implements OnInit {
 
 
   ngOnInit() {
-    this.sensors.forEach( sensor => {
-      sensor.currentPlantId
-    })
+  }
+
+  ngOnChanges(){
+    if(this.sensors){
+      console.log("sorting sensors");
+      this.sensors.forEach( sensor => {
+        if(sensor.currentPlantId === this.plant.id){
+          this.activeSensors.push(sensor);
+        } else {
+          this.availableSensors.push(sensor);
+        }
+      })
+    }
   }
 
   deleteSensor(deleteSensor : Sensor){
@@ -78,31 +88,16 @@ export class SensorManagerComponent implements OnInit {
     })
   }
 
-  resumeSensor(resumeSensor : Sensor){
+  updateSensorState(resumeSensor : Sensor, resume : boolean){
     this.sensorService.patchSensor(resumeSensor.id, {
-      state: 2
+      state: resume ? 2 : 1
     }).subscribe( result => {
-      this.alertService.success("Success.", `Resumed the sensor '${result.name}'`);
-      this.activeSensors = this.activeSensors.map( sensor => {
-        sensor.state = sensor.id !== result.id ? sensor.state : result.state
-        return sensor
-      });
+      this.alertService.success("Success.", `Changed the state of '${result.name}'`);
+      var updatedSensor = this.activeSensors.find( ({id}) => id === result.id);
+      updatedSensor.state = result.state;
+      updatedSensor.stateLabel = Sensor.stateToString(result.state);
     }, err => {
-      this.alertService.warning("Sensor API Error.", `Failed to resume the sensor '${resumeSensor.name}', please try again in a moment.`, 5000);
-    })
-  }
-
-  pauseSensor(pauseSensor : Sensor){
-    this.sensorService.patchSensor(pauseSensor.id, {
-      state: 1
-    }).subscribe( result => {
-      this.alertService.success("Success.", `Resumed the sensor '${result.name}'`);
-      this.activeSensors = this.activeSensors.map( sensor => {
-        sensor.state = sensor.id !== result.id ? sensor.state : result.state;
-        return sensor
-      });
-    }, err => {
-      this.alertService.warning("Sensor API Error.", `Failed to pause the sensor '${pauseSensor.name}', please try again in a moment.`, 5000);
+      this.alertService.warning("Sensor API Error.", `Failed to change the state of '${resumeSensor.name}', please try again in a moment.`, 5000);
     })
   }
 

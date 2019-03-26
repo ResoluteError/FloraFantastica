@@ -54,11 +54,11 @@ export class PlantDetailsComponent implements OnInit {
 
     requests.subscribe( ([measurements, plantSensors, availableSensors]) => {
 
-      console.log("availableSensors: ", availableSensors);
-
       var sensors = plantSensors.concat(availableSensors).map( sensor =>
         Sensor.toDisplaySensor(sensor, [this.plant])
       )
+      this.sensors = sensors;
+      
       this.handleMeasurementImport(measurements, sensors);
     }, err => {
       this.alertService.warning("Measurement or Sensor API Error.","Failed getting measurement data for the plant "+ plantId);
