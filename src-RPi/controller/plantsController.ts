@@ -35,9 +35,7 @@ export class PlantsController {
       var fileName = Date.now()+"."+mime.extensions[req.file.mimetype];
       plantData.icon = "/uploads/"+ fileName;
       fs.writeFileSync(__dirname + '/../public/uploads/'+fileName, req.file.buffer);
-      console.log("Wrote file: ", plantData.icon);
     } catch (err){
-      console.log("Error writing file: ",fileName, err);
     }
 
     plantData.state = plantData.state || 0;
@@ -81,9 +79,9 @@ export class PlantsController {
 
     var id = req.params.plantId;
 
-    var plantData : Partial<Plant> = req.body;
-
     var manager = getManager();
+
+    var plantData : Partial<Plant> = manager.create(Plant, req.body);
 
     var result = await manager.update(Plant, id, plantData);
 

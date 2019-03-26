@@ -79,9 +79,9 @@ export class SensorController {
 
     var id = req.params.sensorId;
 
-    var sensorData : Partial<Sensor> = req.body;
-
     var manager = getManager();
+
+    var sensorData : Partial<Sensor> = manager.create(Sensor, req.body);
 
     var result = await manager.update(Sensor, id, sensorData);
 
