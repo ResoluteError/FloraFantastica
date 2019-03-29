@@ -40,19 +40,29 @@
           <form #editForm>
             <div class="card mb-3 h-100">
               <div class="card-header">
-                <input type="text" name="name" [(value)]="editPlant.name" placeholder="Plant Name" class="form-control">
+                <b>Edit Plant</b>
+                <fa-icon [icon]="['far','times-circle']" class="float-right action-icon orange" (click)="quitEdit(false)"></fa-icon>
               </div>
               <div class="card-body">
-                <div class="input-group">
-                  <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="icon" name="plantImageUpload" aria-describedby="inputGroupFileAddon01" (change)="updateIconStr($event)">
-                    <label class="custom-file-label" for="plantImageUpload">{{ editPlant.icon | filename: "Choose file"}}</label>
+                <div class="form-group">
+                  <label for="plantNameEdit">Plant Name</label>
+                  <input type="text" id="plantNameEdit" name="name" [(value)]="editPlant.name" placeholder="Plant Name" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="plantIconEdit">Plant Icon</label>
+                  <div class="input-group">
+                    <div class="custom-file">
+                      <input type="file" class="custom-file-input" id="plantIconEdit" name="plantImageUpload" aria-describedby="inputGroupFileAddon01" (change)="updateIconStr($event)">
+                      <label class="custom-file-label" for="plantImageUpload">{{ editPlant.icon | filename: "Choose file"}}</label>
+                    </div>
                   </div>
                 </div>
-                <b>Description</b><br>
-                <textarea name="description" [(value)]="editPlant.description" class="form-control"></textarea>
-                <div class="text-center" *ngIf="!saving">
-                  <button type="button" class="btn btn-primary mt-2" (click)="quitEdit(true)">Save</button>
+                <div class="form-group">
+                  <label for="plantDescriptionEdit">Plant Description</label>
+                  <textarea name="description" [(value)]="editPlant.description" class="form-control" rows="6" id="plantDescriptionEdit"></textarea>
+                  <div class="text-center" *ngIf="!saving">
+                    <button type="button" class="btn btn-primary mt-2" (click)="quitEdit(true)">Save</button>
+                  </div>
                 </div>
                 <div class="text-center" *ngIf="saving">
                   <button type="button" class="btn btn-primary mt-2 disabled" disabled>Saving...</button>

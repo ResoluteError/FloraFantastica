@@ -28,12 +28,12 @@ import { SensorRowComponent } from './dashboard/sensor-row/sensor-row.component'
 import { library } from '@fortawesome/fontawesome-svg-core';
 
 import { faPause, faPlay, faUnlink, faFlask, faLink , faTrashAlt, faEdit as fasEdit, faSave, faTimesCircle, faLeaf, faCaretDown, faCaretUp, faSyncAlt} from '@fortawesome/free-solid-svg-icons';
-import { faPlayCircle, faPauseCircle, faQuestionCircle, faEdit } from '@fortawesome/free-regular-svg-icons';
+import { faPlayCircle, faPauseCircle, faQuestionCircle, faEdit, faTimesCircle as faTimesCircleRegular } from '@fortawesome/free-regular-svg-icons';
 import { AddSensorRowComponent } from './dashboard/add-sensor-row/add-sensor-row.component';
 import { CustomIconComponent } from './helper/custom-icon/custom-icon.component';
 import { FilenamePipe } from './pipes/filename.pipe';
 
-library.add(faQuestionCircle, faPause, faPlay, faPlayCircle, faPauseCircle, faTrashAlt, faUnlink, faFlask, faLink, faEdit, fasEdit, faSave, faTimesCircle, faLeaf, faCaretDown, faCaretUp, faSyncAlt);
+library.add(faQuestionCircle, faPause, faPlay, faPlayCircle, faPauseCircle, faTrashAlt, faUnlink, faFlask, faLink, faEdit, fasEdit, faSave, faTimesCircle, faLeaf, faCaretDown, faCaretUp, faSyncAlt, faTimesCircleRegular);
 
 @NgModule({
   declarations: [
