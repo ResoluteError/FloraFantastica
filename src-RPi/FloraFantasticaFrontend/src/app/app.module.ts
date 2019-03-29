@@ -31,6 +31,7 @@ import { faPause, faPlay, faUnlink, faFlask, faLink , faTrashAlt, faEdit as fasE
 import { faPlayCircle, faPauseCircle, faQuestionCircle, faEdit } from '@fortawesome/free-regular-svg-icons';
 import { AddSensorRowComponent } from './dashboard/add-sensor-row/add-sensor-row.component';
 import { CustomIconComponent } from './helper/custom-icon/custom-icon.component';
+import { FilenamePipe } from './pipes/filename.pipe';
 
 library.add(faQuestionCircle, faPause, faPlay, faPlayCircle, faPauseCircle, faTrashAlt, faUnlink, faFlask, faLink, faEdit, fasEdit, faSave, faTimesCircle, faLeaf, faCaretDown, faCaretUp, faSyncAlt);
 
@@ -49,7 +50,8 @@ library.add(faQuestionCircle, faPause, faPlay, faPlayCircle, faPauseCircle, faTr
     HealthInputComponent,
     SensorRowComponent,
     AddSensorRowComponent,
-    CustomIconComponent
+    CustomIconComponent,
+    FilenamePipe
   ],
   imports: [
     BrowserModule,
