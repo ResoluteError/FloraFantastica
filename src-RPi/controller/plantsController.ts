@@ -78,11 +78,19 @@ export class PlantsController {
   static async patch(req : Request, res: Response){
 
     var id = req.params.plantId;
+    
 
     var manager = getManager();
 
     var plantData : Partial<Plant> = manager.create(Plant, req.body);
 
+    try {
+      var fileName = Date.now()+"."+mime.extensions[req.file.mimetype];
+      plantData.icon = "/uploads/"+ fileName;
+      fs.writeFileSync(__dirname + '/../public/uploads/'+fileName, req.file.buffer);
+    } catch (err){
+    }
+    
     var result = await manager.update(Plant, id, plantData);
 
     var updatedEntity = await manager.findOne(Plant, id);

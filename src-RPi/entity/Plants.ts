@@ -18,4 +18,7 @@ export class Plant {
   @Column("text")
   currentData: string;
 
+  @Column({type: "text", nullable: true})
+  description: string;
+
 }

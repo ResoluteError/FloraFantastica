@@ -13,7 +13,7 @@ router.post('/', upload.single("plantImageUpload"), PlantsController.post);
 
 router.get('/:plantId', PlantsController.get_by_id);
 
-router.patch('/:plantId', PlantsController.patch);
+router.patch('/:plantId', upload.single("plantImageUpload"), PlantsController.patch);
 
 router.delete('/:plantId', PlantsController.delete);
 
