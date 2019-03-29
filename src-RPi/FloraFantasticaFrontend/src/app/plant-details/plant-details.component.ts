@@ -28,6 +28,7 @@ export class PlantDetailsComponent implements OnInit {
 
   @ViewChild("baseChart") baseChart : ElementRef;
   @ViewChild("chartUI") chartUI : ElementRef;
+  @ViewChild("editForm") editForm: ElementRef;
 
   plant : Plant;
   chart : Chart;
@@ -35,6 +36,9 @@ export class PlantDetailsComponent implements OnInit {
   chartController : ChartController;
   chartUIController : ChartUIController;
   sensors : Sensor[];
+  editMode: boolean = false;
+  saving: boolean = false;
+  editPlant: Plant;
 
   ngOnInit() {
 
@@ -125,6 +129,44 @@ export class PlantDetailsComponent implements OnInit {
 
   activeClass( days : number){
     return this.timeScope === days ? "active" : "";
+  }
+
+  toggleEdit( editMode : boolean){
+    if(editMode){
+      this.editPlant = this.plant;
+    }
+    this.editMode = true;
+  }
+
+  quitEdit( save: boolean){
+    if(save){
+      this.saving = true;
+      var form = this.editForm.nativeElement;
+      var formData = new FormData(form);
+      try {
+        var imgSize = formData.get("plantImageUpload")["size"];
+        if(imgSize === 0){
+          console.log("Not changing image!");
+          formData.delete("plantImageUpload");
+        }
+      } catch {
+
+      }
+      this.plantService.patchPlantForm(this.plant.id, formData).subscribe( result => {
+        this.plant = result;
+        this.editMode = false;
+      }, err => {
+        this.alertService.warning("Plant API Error.", "Failed saving plant details, please try again in a moment.");
+      }, () => {
+        this.saving = false;
+      });
+    } else {
+      this.editMode = false;
+    }
+  }
+
+  updateIconStr( event : Event ){
+    this.editPlant.icon = event.srcElement["value"];
   }
 
 }

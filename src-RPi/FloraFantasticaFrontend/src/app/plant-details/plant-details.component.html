@@ -22,17 +22,44 @@
   <div class="row mt-5">
     <div class="col-12 col-lg-4">
       <div class="row mb-3 mb-lg-0">
-        <div class="col-12 col-md-6 col-lg-12">
+        <div class="col-12 col-md-6 col-lg-12" *ngIf="!editMode">
           
           <div class="card mb-3 h-100">
             <div class="card-header">
               <b>{{plant.name}}</b>
-              <fa-icon [icon]="['fas','edit']" class="blue float-right action-icon"></fa-icon>
+              <fa-icon [icon]="['fas','edit']" class="blue float-right action-icon" (click)="toggleEdit(true)"></fa-icon>
             </div>
             <div class="card-body">
-              <p class="card-text">{{plant.description}}</p>
+              <img class="plant-icon mb-2" src="{{plant.icon}}">
+              <b>Description</b><br>
+              <p class="plant-description">{{plant.description || "No Description"}}</p>
             </div>
           </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-12" *ngIf="editMode">
+          <form #editForm>
+            <div class="card mb-3 h-100">
+              <div class="card-header">
+                <input type="text" name="name" [(value)]="editPlant.name" placeholder="Plant Name" class="form-control">
+              </div>
+              <div class="card-body">
+                <div class="input-group">
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="icon" name="plantImageUpload" aria-describedby="inputGroupFileAddon01" (change)="updateIconStr($event)">
+                    <label class="custom-file-label" for="plantImageUpload">{{ editPlant.icon | filename: "Choose file"}}</label>
+                  </div>
+                </div>
+                <b>Description</b><br>
+                <textarea name="description" [(value)]="editPlant.description" class="form-control"></textarea>
+                <div class="text-center" *ngIf="!saving">
+                  <button type="button" class="btn btn-primary mt-2" (click)="quitEdit(true)">Save</button>
+                </div>
+                <div class="text-center" *ngIf="saving">
+                  <button type="button" class="btn btn-primary mt-2 disabled" disabled>Saving...</button>
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
         <div class="col-12 col-md-6 col-lg-12 mt-3 mt-md-0 mt-lg-3">
           <app-health-input [plant]="plant" (postedHealth)="newHealthEntry($event)"></app-health-input>

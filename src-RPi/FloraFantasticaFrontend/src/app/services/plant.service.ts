@@ -75,7 +75,6 @@ export class PlantService {
   postPlantForm(plant: FormData): Observable<Plant>{
 
     var url = this.httpOptions.apiUrl;
-    var options = this.httpOptions.formOptions;
 
     return new Observable( observer => {
 
@@ -118,6 +117,24 @@ export class PlantService {
     return new Observable( observer => {
 
       this.http.patch<Plant>(url + "/plants/" + id, patchedValues, options).subscribe( result => {
+        observer.next(result);
+        observer.complete();
+      }, err => {
+        observer.error(err);
+        observer.complete();
+      });
+
+    })
+
+  }
+
+  patchPlantForm(id : string, patchedValues :  FormData) : Observable<Plant>{
+
+    var url = this.httpOptions.apiUrl;
+
+    return new Observable( observer => {
+
+      this.http.patch<Plant>(url + "/plants/" + id, patchedValues).subscribe( result => {
         observer.next(result);
         observer.complete();
       }, err => {

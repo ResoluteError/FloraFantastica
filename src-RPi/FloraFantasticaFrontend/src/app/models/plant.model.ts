@@ -5,6 +5,7 @@ export class Plant {
   icon : string;
   state : number;
   currentData : string;
+  description: string;
 
 }
 
