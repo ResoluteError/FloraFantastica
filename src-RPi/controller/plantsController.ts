@@ -32,9 +32,11 @@ export class PlantsController {
 
     var plantData : Partial<Plant> = req.body;
     try {
-      var fileName = Date.now()+"."+mime.extensions[req.file.mimetype];
-      plantData.icon = "/uploads/"+ fileName;
-      fs.writeFileSync(__dirname + '/../public/uploads/'+fileName, req.file.buffer);
+      plantData.icon = `/uploads/${folder}/${req.file.originalname}`;
+      var folder = Date.now();
+      var savePath = `${__dirname}/../public/uploads/${folder}/`;
+      fs.mkdirSync(savePath, {recursive: true});
+      fs.writeFileSync(savePath + req.file.originalname, req.file.buffer);
     } catch (err){
     }
 
@@ -85,12 +87,14 @@ export class PlantsController {
     var plantData : Partial<Plant> = manager.create(Plant, req.body);
 
     try {
-      var fileName = Date.now()+"."+mime.extensions[req.file.mimetype];
-      plantData.icon = "/uploads/"+ fileName;
-      fs.writeFileSync(__dirname + '/../public/uploads/'+fileName, req.file.buffer);
+      var folder = Date.now();
+      plantData.icon = `/uploads/${folder}/${req.file.originalname}`;
+      var savePath = `${__dirname}/../public/uploads/${folder}/`;
+      fs.mkdirSync(savePath, {recursive: true});
+      fs.writeFileSync(savePath + req.file.originalname, req.file.buffer);
     } catch (err){
     }
-    
+
     var result = await manager.update(Plant, id, plantData);
 
     var updatedEntity = await manager.findOne(Plant, id);
