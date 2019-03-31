@@ -182,7 +182,6 @@ export class ChartController {
         return;
       }
     }
-
   }
 
   
@@ -233,7 +232,6 @@ export class ChartController {
   setUIDelegate( delegate? : Function){
     
     this.canvas.onclick = (event) => {
-      console.log(event);
       delegate( this.chart.getElementsAtEvent(event), event);
 
     }

@@ -32,8 +32,8 @@ export class PlantsController {
 
     var plantData : Partial<Plant> = req.body;
     try {
-      plantData.icon = `/uploads/${folder}/${req.file.originalname}`;
       var folder = Date.now();
+      plantData.icon = `/uploads/${folder}/${req.file.originalname}`;
       var savePath = `${__dirname}/../public/uploads/${folder}/`;
       fs.mkdirSync(savePath, {recursive: true});
       fs.writeFileSync(savePath + req.file.originalname, req.file.buffer);

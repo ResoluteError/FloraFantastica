@@ -66,6 +66,8 @@ export class PlantDetailsComponent implements OnInit {
       this.handleMeasurementImport(measurements, sensors);
     }, err => {
       this.alertService.warning("Measurement or Sensor API Error.","Failed getting measurement data for the plant "+ plantId);
+    }, () => {
+      console.log("Requests completed");
     });
 
   }
@@ -75,11 +77,8 @@ export class PlantDetailsComponent implements OnInit {
 
     var chartController = new ChartController(this.baseChart);
 
-    if(measurements.length === 0){
-      chartController.draw("scatter");
-      return;
-    }
-  
+    chartController.setupXAxis(this.timeScope);
+
     Measurement.sortByDate(measurements);
 
     for(var sensor of sensors){
@@ -99,8 +98,6 @@ export class PlantDetailsComponent implements OnInit {
       chartController.addDataset(dataset, sensor);
 
     }
-
-    chartController.setupXAxis(this.timeScope);
 
     this.chart = chartController.draw("scatter");
 
@@ -122,9 +119,27 @@ export class PlantDetailsComponent implements OnInit {
   }
 
   newHealthEntry( entry : Measurement){
-    this.chartController.addMeasurementToDataset(
-      entry
-    );
+    if(this.chartController.sensors.findIndex( sensor => sensor.id === entry.sensorId) > -1){
+      this.chartController.addMeasurementToDataset(
+        entry
+      );
+      console.log("Adding to existing dataset");
+    } else {
+      console.log("Creating new dataset");
+      this.sensorService.getSensorById( entry.sensorId).subscribe(sensor => {
+        var dataset = {
+          data : [{
+            x: new Date(entry.measuredAt),
+            y: entry.data
+          }],
+          showLine: (entry.sensorType !== 40),
+          lineTension: 0
+        }
+        
+        this.chartController.addDataset(dataset, sensor);
+        this.chart = this.chartController.draw("scatter");
+      });
+    }
   }
 
   activeClass( days : number){

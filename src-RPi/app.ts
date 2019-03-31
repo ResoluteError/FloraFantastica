@@ -33,8 +33,7 @@ createConnection().then(async connection => {
   app.use("/seed/",seedRouter);
   
   app.use("/uploads", express.static(__dirname + "/public/uploads"));
-  console.log("Looging for: " + __dirname + "/public/uploads");
-  // app.use(express.static(__dirname + "/FloraFantasticaFrontend/dist/FloraFantasticaFrontend"));
+  app.use(express.static(__dirname + "/public/frontend-dist"));
   
   app.listen(8080, () => {
     console.log("Listening");
