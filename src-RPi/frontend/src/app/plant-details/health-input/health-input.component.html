@@ -1,0 +1,32 @@
+<div class="card h-100" *ngIf="!entryAdded">
+  <div class="card-header">
+    <b>New Health Entry</b>
+  </div>
+  <div class="card-body">
+    <div class="form-group">
+      <label for="plantHealth">
+        Plant Health
+      </label>
+      <input type="range" class="form-control-range" id="plantHealth" name="plantHealth" min="0" max="10" value="5" step="1" [(ngModel)]="health">
+    </div>
+    <div class="text-center">
+      <div class="alert alert-{{healthClass}}">
+        <b>Status ({{health}}):</b><br>{{healthDescription}}
+      </div>
+      <button *ngIf="!posting" class="btn btn-outline-primary" (click)="postHealth()">Add Entry</button>
+      <button *ngIf="posting" class="btn btn-outline-primary disabled" disabled>Saving...</button>
+    </div>
+  </div>
+</div>
+<div class="card h-100" *ngIf="entryAdded">
+  <div class="card-header">
+    <b>Entry added</b>
+  </div>
+  <div class="card-body">
+    <div class="text-center">
+      <div class="alert alert-{{healthClass}}">
+        <b>({{health}})</b><br>{{healthDescription}}
+      </div>
+    </div>
+  </div>
+</div>

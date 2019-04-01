@@ -1,0 +1,17 @@
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="userPromptModal" aria-hidden="true" #promptModal>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="userPromptModal" [innerHtml]="prompt.title"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" [innerHTML]="prompt.text">
+        </div>
+        <div class="modal-footer">
+          <button *ngFor="let action of prompt.actions" type="button" class="btn btn-{{action.class}}"  data-dismiss="modal" (click)="doAction(action.action)">{{action.text}}</button>´
+        </div>
+      </div>
+    </div>
+  </div>

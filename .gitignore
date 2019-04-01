@@ -1,4 +1,5 @@
-src-RPi/node_modules/
 **/.DS_Store
 .DS_Store
 src-RPi/public/uploads
+src-RPi/backend/node_modules
+src-RPi/frontend/node_modules
