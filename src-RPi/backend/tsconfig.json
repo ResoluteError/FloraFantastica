@@ -10,7 +10,6 @@
     "resolveJsonModule": true,
   },
   "exclude": [
-    "node_modules",
-    "FloraFantasticaFrontend"
+    "node_modules"
   ]
 }
