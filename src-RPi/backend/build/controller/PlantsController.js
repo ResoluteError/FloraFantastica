@@ -38,6 +38,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var Plants_1 = require("../entity/Plants");
 var fs = require("fs");
+var config_1 = require("../config");
 var PlantsController = (function () {
     function PlantsController() {
     }
@@ -84,7 +85,7 @@ var PlantsController = (function () {
                         try {
                             folder = Date.now();
                             plantData.icon = "/uploads/" + folder + "/" + req.file.originalname;
-                            savePath = __dirname + "/../public/uploads/" + folder + "/";
+                            savePath = config_1.CONFIG.UPLOADS_DIR + "/" + folder + "/";
                             fs.mkdirSync(savePath, { recursive: true });
                             fs.writeFileSync(savePath + req.file.originalname, req.file.buffer);
                         }
@@ -139,7 +140,7 @@ var PlantsController = (function () {
                         try {
                             folder = Date.now();
                             plantData.icon = "/uploads/" + folder + "/" + req.file.originalname;
-                            savePath = __dirname + "/../public/uploads/" + folder + "/";
+                            savePath = config_1.CONFIG.UPLOADS_DIR + "/" + folder + "/";
                             fs.mkdirSync(savePath, { recursive: true });
                             fs.writeFileSync(savePath + req.file.originalname, req.file.buffer);
                         }

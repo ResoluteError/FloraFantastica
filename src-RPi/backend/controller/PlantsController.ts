@@ -3,6 +3,7 @@ import { getManager, CreateDateColumn } from "typeorm";
 import { Plant } from "../entity/Plants";
 import fs = require('fs');
 import mime = require('mime-types');
+import { CONFIG } from "../config";
 
 export class PlantsController {
 
@@ -34,7 +35,7 @@ export class PlantsController {
     try {
       var folder = Date.now();
       plantData.icon = `/uploads/${folder}/${req.file.originalname}`;
-      var savePath = `${__dirname}/../public/uploads/${folder}/`;
+      var savePath = `${CONFIG.UPLOADS_DIR}/${folder}/`;
       fs.mkdirSync(savePath, {recursive: true});
       fs.writeFileSync(savePath + req.file.originalname, req.file.buffer);
     } catch (err){
@@ -89,7 +90,7 @@ export class PlantsController {
     try {
       var folder = Date.now();
       plantData.icon = `/uploads/${folder}/${req.file.originalname}`;
-      var savePath = `${__dirname}/../public/uploads/${folder}/`;
+      var savePath = `${CONFIG.UPLOADS_DIR}/${folder}/`;
       fs.mkdirSync(savePath, {recursive: true});
       fs.writeFileSync(savePath + req.file.originalname, req.file.buffer);
     } catch (err){
