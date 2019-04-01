@@ -8,6 +8,8 @@ import {router as actionsRouter} from "./routes/ActionsRouter";
 import { createConnection } from "typeorm";
 import bodyParser = require('body-parser')
 import {CONFIG} from './config'
+import path = require('path');
+import fs = require('fs');
 
 
 console.log(`Path to uploads: ${CONFIG.UPLOADS_DIR}`);
@@ -43,7 +45,12 @@ createConnection().then(async connection => {
   app.use("/seed/",seedRouter);
   
   app.use("/uploads", express.static(CONFIG.UPLOADS_DIR));
+
   app.use(express.static(CONFIG.FRONTEND_DIR));
+
+  app.get('*', (req, res) => {
+    res.sendFile(CONFIG.FRONTEND_DIR + "/index.html");
+  })
   
   app.listen(CONFIG.NODE_PORT, () => {
 
