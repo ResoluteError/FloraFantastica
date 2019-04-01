@@ -182,4 +182,4 @@ var SensorController = (function () {
     return SensorController;
 }());
 exports.SensorController = SensorController;
-//# sourceMappingURL=sensorsController.js.map
+//# sourceMappingURL=SensorsController.js.map

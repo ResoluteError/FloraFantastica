@@ -1,6 +1,6 @@
 import express = require("express");
 import { PlantsController } from "../controller/PlantsController"
-import { SensorController } from "../controller/sensorsController";
+import { SensorController } from "../controller/SensorsController";
 import multer = require('multer');
 
 let upload = multer();
