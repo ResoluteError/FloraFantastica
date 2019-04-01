@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { HttpHeaders } from '../../../node_modules/@angular/common/http';
 import { HttpOptions } from '../models/httpOptions.model';
 
@@ -28,11 +28,11 @@ export class HttpOptionsService {
   }
 
   get url(): string {
-    return "http://localhost:8080";
+    return isDevMode() ? "http://localhost:8080" : "http://[2a02:908:4c18:a040:fa24:52c6:14f4:b676]:8080";
   }
 
   get apiUrl(): string {
-    return "http://localhost:8080/api";
+    return isDevMode() ? "http://localhost:8080/api" : "http://[2a02:908:4c18:a040:fa24:52c6:14f4:b676]:8080/api";
   }
 
 
