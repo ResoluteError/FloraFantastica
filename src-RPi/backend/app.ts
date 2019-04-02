@@ -6,10 +6,8 @@ import {router as sensorsRouter} from "./routes/SensorsRouter";
 import {router as seedRouter} from "./routes/SeedRouter";
 import {router as actionsRouter} from "./routes/ActionsRouter";
 import { createConnection } from "typeorm";
-import bodyParser = require('body-parser')
-import {CONFIG} from './config'
-import path = require('path');
-import fs = require('fs');
+import bodyParser = require('body-parser');
+import {CONFIG} from './config';
 
 console.log("======= ENVIRONMENT DEBUG ======");
 console.log(`Path to uploads: ${CONFIG.UPLOADS_DIR}`);

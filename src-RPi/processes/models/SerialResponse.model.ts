@@ -2,16 +2,16 @@ export class SerialResponse {
 
   type : SerialResponseTypes;
   
-  requestId?: string;
+  queueId?: string;
 
 }
 
-export class SerialResponseTypes {
+export enum SerialResponseTypes {
 
-  Error = "error";
-  IsAlive = "isAlive";
-  IsBusy = "isBusy";
-  Measurement = "Measurement";
+  Error = "error",
+  IsAlive = "isAlive",
+  IsBusy = "isBusy",
+  Measurement = "Measurement"
 
 }
 

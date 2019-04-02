@@ -1,7 +1,7 @@
 export class QueueItem {
   
   id: string;
-  isSubmitted : boolean;
+  submitted? : number;
 
   type: QueueItemType
 
