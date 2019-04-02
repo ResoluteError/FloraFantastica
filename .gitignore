@@ -4,3 +4,5 @@ src-RPi/public/uploads
 src-RPi/public/*.db
 src-RPi/backend/node_modules
 src-RPi/frontend/node_modules
+src-RPi/processes/node_modules
+testing/

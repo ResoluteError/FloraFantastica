@@ -11,13 +11,14 @@ import {CONFIG} from './config'
 import path = require('path');
 import fs = require('fs');
 
-
+console.log("======= ENVIRONMENT DEBUG ======");
 console.log(`Path to uploads: ${CONFIG.UPLOADS_DIR}`);
 console.log(`Serving frontend from: ${CONFIG.FRONTEND_DIR}`);
-console.log(`TYPE_ORM Constants `)
-console.log(`TYPEORM_CONNECTION: ${process.env.TYPEORM_CONNECTION}`)
-console.log(`TYPEORM_DATABASE: ${process.env.TYPEORM_DATABASE}`)
-console.log(`TYPEORM_ENTITIES: ${process.env.TYPEORM_ENTITIES}`)
+console.log(`TYPE_ORM Constants `);
+console.log(`TYPEORM_CONNECTION: ${process.env.TYPEORM_CONNECTION}`);
+console.log(`TYPEORM_DATABASE: ${process.env.TYPEORM_DATABASE}`);
+console.log(`TYPEORM_ENTITIES: ${process.env.TYPEORM_ENTITIES}`);
+console.log("===================")
 
 createConnection().then(async connection => {
 
