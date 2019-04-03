@@ -1,11 +1,12 @@
-import { QueueItem, QueueItemType } from "./models/QueueItem.model";
+import { QueueItem, QueueItemType, SensorTypes } from "./models/QueueItem.model";
 import express = require("express");
 import { CONFIG } from "./config";
 import * as SerialPort from "serialport";
 import * as bodyParser from "body-parser";
 import * as uuid from "uuid/v1";
-import { SerialResponse, SerialResponseTypes } from "./models/SerialResponse.model";
+import { SerialResponse, SerialResponseTypes, SerialMeasurementResponse } from "./models/SerialResponse.model";
 import { Subject } from "rxjs"
+import * as request from "request";
 
 /*
 
@@ -21,7 +22,7 @@ import { Subject } from "rxjs"
 */
 
 
-class SerialManager{
+export class SerialManager{
 
 
   requestQueue : QueueItem[];
@@ -34,6 +35,7 @@ class SerialManager{
     
     this.setupExpress();
     this.setupSerial();
+    this.listenForSerial();
 
   }
 
@@ -73,10 +75,16 @@ class SerialManager{
         id: uuid(),
         type: req.body.type || QueueItemType.Webserver,
         sensorId : req.body.sensorId,
+        sensorType: req.body.sensorType,
         pin: req.body.pin
       };
 
-      this.pushToQueue(newQueue);
+      if(Object.values(SensorTypes).includes(newQueue.sensorType)){
+        this.pushToQueue(newQueue);
+      } else {
+        console.log(`[Serial Manager] Error - Sensor type ${newQueue.sensorType} is not an active sensor`);
+      }
+
     
     });
 
@@ -96,15 +104,20 @@ class SerialManager{
       switch(responseObj.type){
 
         case SerialResponseTypes.Error :
+          console.log("Received response type: Error Response");
           break;
 
         case SerialResponseTypes.IsAlive :
+          console.log("Received response type: IsAlive Response");
           break;
 
         case SerialResponseTypes.IsBusy :
+          console.log("Received response type: IsBusy Response");
           break;
 
         case SerialResponseTypes.Measurement :
+          console.log("Received response type: Measurement Response");
+          this.resolveMeasurement(<SerialMeasurementResponse>responseObj);
           break;
 
         default:
@@ -116,6 +129,53 @@ class SerialManager{
       console.log("Unspecified Serial String: ", response);
 
     }
+  }
+
+  resolveMeasurement( serialResponse : SerialMeasurementResponse): void{
+
+    if(serialResponse.queueId){
+
+      console.log("Measurement Type: Queue Initiated ");
+      // Was requested from queue
+      // Send to Server
+      // Drop Queue Item
+      // Start next Queue item if any 
+
+    } else {
+
+      console.log("Measurement Type: Arduino Initiated ");
+      request.get(`http://localhost:${CONFIG.WEBSERVER_PORT}/api/sensors/pin/${serialResponse.pin}`, (err : Error, httpResponse, body ) => {
+
+        if(err) {
+          console.log("Error getting sensor for pin: " + serialResponse.pin, err);
+        } 
+
+        if(!body.length){
+          console.log("WARNING: No Sensor found for pin ", serialResponse.pin);
+        }
+
+        try {
+          var sensor = JSON.parse(body);
+          var measurement = {
+            sensorId: sensor.id,
+            data: serialResponse.data
+          };
+
+          request.post(`http://localhost:${CONFIG.WEBSERVER_PORT}/api/measurements`,{json : measurement}, (err, httpResponse, body) => {
+            console.log("Successfully posted measurement to sensor: ", sensor.name);
+          });
+
+        } catch (err) {
+
+          console.log("Sensor API Response was no valid json: ", body);
+          console.log(err);
+
+        }
+
+      });
+
+    }
+
   }
 
 }
