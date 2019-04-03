@@ -29,6 +29,21 @@ export class SensorController {
     res.send(sensors);
 
   }
+  
+  static async get_by_pin(req : Request, res: Response){
+
+    var pin = req.params.pin;
+    var manager = getManager();
+
+    var sensor = await manager.findOne(Sensor, {
+      where : {
+        pin : pin
+      }
+    });
+
+    res.send(sensor);
+
+  }
 
   static async get_available_sensors(req : Request, res: Response){
 

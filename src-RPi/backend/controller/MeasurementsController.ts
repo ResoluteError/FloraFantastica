@@ -100,6 +100,8 @@ export class MeasurementController {
 
     var manager = getManager();
 
+    console.log("Got Measurement POST Request: ", typeof req.body, req.body);
+
     var newMeasurement = manager.create(Measurement, req.body);
 
     var sensor = await manager.findOne( Sensor, newMeasurement.sensorId);
