@@ -10,7 +10,6 @@
 #define DHTTYPE DHT11
 #define WATERING_BTN_PIN 2
 #define DELIMETER "\n"
-#define WATERING_VALVE_PIN 40
 
 const size_t capacity = JSON_OBJECT_SIZE(4) + 150;
 
@@ -131,9 +130,6 @@ float measureSoilTemperature(int pin){
 
   float data = sensor.getTempCByIndex(0);
 
-  Serial.print("Temperature: ");
-  Serial.println(data);
-
   return data;
   
 }
@@ -186,12 +182,6 @@ void conductMeasurement( StaticJsonDocument<capacity> request){
   
 }
 
-void toggleValve(bool openValve){
-
-  digitalWrite(WATERING_VALVE_PIN, openValve);
-  
-}
-
 void ISR_btnAction(){
 
   if(digitalRead(WATERING_BTN_PIN)){
@@ -201,7 +191,6 @@ void ISR_btnAction(){
     }
     buttonDown = true;
     debounced = false;
-    toggleValve(true);
      
   } else {
     
@@ -219,7 +208,6 @@ void setup() {
   Serial.begin(500000);
   attachInterrupt(digitalPinToInterrupt(WATERING_BTN_PIN), ISR_btnAction, CHANGE);
   pinMode(WATERING_BTN_PIN, INPUT);
-  pinMode(WATERING_VALVE_PIN, OUTPUT);
     
 }
 
@@ -234,7 +222,6 @@ void loop() {
     
     if((millis() > buttonDebounceTimer + 100)){
       buttonDown = false;
-      toggleValve(false);
       int difference = (buttonReleasedTimer - buttonPressedTimer);
       sendMeasurement( WATERING_BTN_PIN, difference);   
     }
