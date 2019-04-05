@@ -1,12 +1,25 @@
-export class SerialResponse {
+export class SerialCommunicationBase {
 
-  type : SerialResponseTypes;
-  
-  queueId?: string;
+  type : SerialCommunicationTypes;
 
 }
 
-export enum SerialResponseTypes {
+export class SerialRequest extends SerialCommunicationBase{
+  queueId: string;
+}
+
+export class SerialResponse extends SerialCommunicationBase {
+  queueId?: string;
+}
+
+export class SerialMeasurementRequest extends SerialRequest {
+
+  pin: number;
+  sensorType: number;
+
+}
+
+export enum SerialCommunicationTypes {
 
   Error = "error",
   IsAlive = "isAlive",
@@ -26,7 +39,8 @@ export enum SerialErrorCode {
 
   JSON_REQUEST_PARSING = 400,
   SENSOR_NOT_FOUND = 404,
-  SENSOR_ERROR = 500
+  SENSOR_ERROR = 500,
+  INVALID_SERIAL_RESPONSE = 502
 
 }
 

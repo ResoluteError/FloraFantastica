@@ -7,7 +7,7 @@ export class QueueItem {
 
   sensorId : string;
   sensorType : SensorTypes;
-  pin: string;
+  pin: number;
   value?: number;
 
 }
