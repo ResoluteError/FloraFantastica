@@ -51,9 +51,9 @@ createConnection().then(async connection => {
     res.sendFile(CONFIG.FRONTEND_DIR + "/index.html");
   })
   
-  app.listen(CONFIG.NODE_PORT, () => {
+  app.listen(CONFIG.WEBSERVER_PORT, () => {
 
-    console.log(`Started FloraFantastica Server, listening on Port: ${CONFIG.NODE_PORT}`);
+    console.log(`Started FloraFantastica Server, listening on Port: ${CONFIG.WEBSERVER_PORT}`);
 
   });
 

@@ -9,7 +9,7 @@ router.get('/available', SensorController.get_available_sensors);
 
 router.get('/pin/:pin', SensorController.get_by_pin);
 
-router.get('/type/:sesorType', SensorController.get_by_type);
+router.get('/type/:sensorType', SensorController.get_by_type);
 
 router.post('/', SensorController.post);
 

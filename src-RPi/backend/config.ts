@@ -9,7 +9,9 @@ export const CONFIG = {
   // Path to folder where the built frontend is served from 
   FRONTEND_DIR : process.env.FRONTEND_DIR || __dirname + "/../frontend/dist",
 
-  // On which Port to listen 
-  NODE_PORT : process.env.NODE_PORT || 8080
+  // On which Port the webserver should listen 
+  WEBSERVER_PORT : process.env.WEBSERVER_PORT || 8080,
+  
+  QUEUE_MANAGER_PORT : process.env.QUEUE_MANAGER_PORT || 8081,
   
 }

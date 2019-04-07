@@ -48,7 +48,7 @@ export class SensorController {
   static async get_available_sensors(req : Request, res: Response){
 
     var manager = getManager();
-
+    
     var sensors = await manager.find(Sensor, {
       where : [{
         currentPlantId : IsNull(),

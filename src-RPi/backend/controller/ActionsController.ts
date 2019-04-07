@@ -3,6 +3,11 @@ import { getManager, EntityManager, getRepository } from "typeorm";
 import { Measurement } from "../entity/Measurement";
 import { Plant } from "../entity/Plants";
 import { Sensor } from "../entity/Sensors";
+import * as request from "request";
+import { Observable } from "rxjs";
+
+import express = require("express");
+import { CONFIG } from "../config";
 
 export class ActionsController {
   
@@ -21,8 +26,6 @@ export class ActionsController {
       .execute();
 
     var dataDict = {};
-
-    console.log("times and type: ", timesAndTypes);
     
     for (var timeAndType of timesAndTypes){
 
@@ -34,7 +37,6 @@ export class ActionsController {
       .getOne()
 
     }
-    console.log("times and type: ", dataDict);
 
     var dataStr = JSON.stringify(dataDict);
 
@@ -43,8 +45,6 @@ export class ActionsController {
     await manager.update(Plant, plantId, {currentData : dataStr});
 
     var result = await manager.findOne(Plant, plantId);
-
-    console.log("plant: ", result);
 
     res.send(result);
 
@@ -90,5 +90,48 @@ export class ActionsController {
 
     res.send(postedEntity);
   }
+
+  static async checkSensorStatus(req : express.Request, res: express.Response){
+
+    var manager = getManager();
+
+    var sensorId = req.params.sensorId;
+
+    var sensor = await manager.findOne(Sensor,sensorId);
+
+    var measurementRequest = {
+      type: "webserver",
+      sensorId: sensorId,
+      sensorType: sensor.type,
+      pin: sensor.pin
+    }
+
+    const sensorReqOptions = {  
+      url: `http://localhost:${CONFIG.QUEUE_MANAGER_PORT}/queue`,
+      method: 'POST',
+      headers: {
+          'Accept': 'application/json',
+          'Accept-Charset': 'utf-8'
+      },
+      json: measurementRequest
+    };
+
+    request(sensorReqOptions, async (err, measureRes, body) =>  {
+
+      if(err || measureRes.statusCode >= 400){
+        res.status(measureRes.statusCode).send(err || "{}");
+        return;
+      }
+
+      sensor.state = 2;
+
+      var updatedSensor = await manager.save(sensor);
+
+      res.send(updatedSensor);
+
+    });
+
+  }
+
 
 }

@@ -78,8 +78,8 @@ typeorm_1.createConnection().then(function (connection) { return __awaiter(_this
                 app.get('*', function (req, res) {
                     res.sendFile(config_1.CONFIG.FRONTEND_DIR + "/index.html");
                 });
-                app.listen(config_1.CONFIG.NODE_PORT, function () {
-                    console.log("Started FloraFantastica Server, listening on Port: " + config_1.CONFIG.NODE_PORT);
+                app.listen(config_1.CONFIG.WEBSERVER_PORT, function () {
+                    console.log("Started FloraFantastica Server, listening on Port: " + config_1.CONFIG.WEBSERVER_PORT);
                 });
                 return [2];
         }
