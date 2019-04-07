@@ -9,15 +9,15 @@
 
 #define DHTTYPE DHT11
 #define WATERING_BTN_PIN 2
-#define DELIMETER "\n"
+#define WATERING_VALVE_PIN 3
+#define DELIMETER "\r\n"
 
 const size_t capacity = JSON_OBJECT_SIZE(4) + 150;
 
-volatile bool buttonDown = false;
+volatile bool watering = false;
+volatile bool watered = false;
 volatile float buttonReleasedTimer;
 volatile float buttonPressedTimer;
-volatile float buttonDebounceTimer;
-volatile bool debounced = false;
 
 void confirmRequest(char* queueId){
   
@@ -104,11 +104,8 @@ float measureSoilMoisture(int pin){
   }
   
   if (FreqCount.available()) {
-    Serial.println("Moisture Sensor ready");
     data = FreqCount.read();
-  } else {
-    Serial.println("Moisture Sensor NOT ready");
-  }
+  } 
 
   FreqCount.end();
 
@@ -185,20 +182,30 @@ void conductMeasurement( StaticJsonDocument<capacity> request){
 void ISR_btnAction(){
 
   if(digitalRead(WATERING_BTN_PIN)){
-    
-    if(!buttonDown){
-      buttonPressedTimer = millis();
-    }
-    buttonDown = true;
-    debounced = false;
-     
-  } else {
-    
-    buttonReleasedTimer = millis();
-    
-  }
 
-  
+    if(!watered && !watering){
+      watering = true;
+      buttonPressedTimer = millis();
+      digitalWrite(WATERING_VALVE_PIN, HIGH);
+      return;
+    }
+
+    if(watered){
+      watered = false;
+      watering = true;
+      digitalWrite(WATERING_VALVE_PIN, HIGH);
+      return;
+    }
+    
+    if(watering){
+      watering = false;
+      watered = true;
+      buttonReleasedTimer = millis();
+      digitalWrite(WATERING_VALVE_PIN, LOW);
+      return;
+    }
+     
+  }
   
 }
 
@@ -206,26 +213,20 @@ void ISR_btnAction(){
 void setup() {
 
   Serial.begin(500000);
-  attachInterrupt(digitalPinToInterrupt(WATERING_BTN_PIN), ISR_btnAction, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(WATERING_BTN_PIN), ISR_btnAction, RISING);
   pinMode(WATERING_BTN_PIN, INPUT);
+  pinMode(WATERING_VALVE_PIN, OUTPUT);
+  digitalWrite(WATERING_VALVE_PIN, LOW);
     
 }
 
 void loop() {
 
-  if( buttonDown && (digitalRead(WATERING_BTN_PIN) == LOW)){
 
-    if(!debounced){
-      buttonDebounceTimer = millis();
-      debounced = true;
-    }
-    
-    if((millis() > buttonDebounceTimer + 100)){
-      buttonDown = false;
-      int difference = (buttonReleasedTimer - buttonPressedTimer);
-      sendMeasurement( WATERING_BTN_PIN, difference);   
-    }
-    
+  if(watered){
+    watered = false;
+    int difference = (buttonReleasedTimer - buttonPressedTimer);
+    sendMeasurement( WATERING_BTN_PIN, difference);   
   }
 
   if(Serial.available()){
@@ -240,7 +241,8 @@ void loop() {
       if(error){
         sendError(error.c_str(), 400);
       } else {
-        confirmRequest(inputDoc["queueId"]);
+        char* queueId = inputDoc["queueId"];
+        confirmRequest(queueId);
         conductMeasurement(inputDoc);
       } 
     }
