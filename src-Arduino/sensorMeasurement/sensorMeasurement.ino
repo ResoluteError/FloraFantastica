@@ -8,9 +8,11 @@
 #include <ArduinoJson.h>
 
 #define DHTTYPE DHT11
+#define SENSOR_POWER_PIN 50
 #define WATERING_BTN_PIN 2
-#define WATERING_VALVE_PIN 3
-#define DELIMETER "\r\n"
+#define WATERING_VALVE_PIN 51
+#define DELIMETER "\n"
+#define SERIAL_BUFFER_SIZE 512
 
 const size_t capacity = JSON_OBJECT_SIZE(4) + 150;
 
@@ -109,6 +111,10 @@ float measureSoilMoisture(int pin){
 
   FreqCount.end();
 
+  if(data == 0){
+    data = sqrt(-1); // set NaN
+  }
+
   return data;
   
 }
@@ -126,6 +132,10 @@ float measureSoilTemperature(int pin){
   sensor.requestTemperatures();
 
   float data = sensor.getTempCByIndex(0);
+
+  if( data < -100){
+    data = sqrt(-1);
+  }
 
   return data;
   
@@ -174,7 +184,7 @@ void conductMeasurement( StaticJsonDocument<capacity> request){
     sendError("Sensor responded with NaN", 500, queueId);
     return;
   }
-
+  
   sendMeasurement(pin, data, queueId);
   
 }
@@ -209,6 +219,26 @@ void ISR_btnAction(){
   
 }
 
+void readBuffer(){
+  int byteCount = 0;
+  char _serialBuffer[capacity];
+  // This is blocking - potentially adjust for non-blocking?
+  byteCount = Serial.readBytesUntil("\n", _serialBuffer, capacity);
+  if( byteCount > 0){
+    StaticJsonDocument<capacity> inputDoc;
+    DeserializationError error = deserializeJson(inputDoc, _serialBuffer);
+    if(error){
+      sendError(error.c_str(), 400);
+    } else {
+      digitalWrite(SENSOR_POWER_PIN, HIGH);
+      char* queueId = inputDoc["queueId"];
+      confirmRequest(queueId);
+      conductMeasurement(inputDoc);
+    }
+    Serial.flush();
+  }
+}
+
 
 void setup() {
 
@@ -216,6 +246,8 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(WATERING_BTN_PIN), ISR_btnAction, RISING);
   pinMode(WATERING_BTN_PIN, INPUT);
   pinMode(WATERING_VALVE_PIN, OUTPUT);
+  pinMode(SENSOR_POWER_PIN, OUTPUT);
+  pinMode(SENSOR_POWER_PIN, LOW);
   digitalWrite(WATERING_VALVE_PIN, LOW);
     
 }
@@ -228,24 +260,9 @@ void loop() {
     int difference = (buttonReleasedTimer - buttonPressedTimer);
     sendMeasurement( WATERING_BTN_PIN, difference);   
   }
-
+  
   if(Serial.available()){
-    int byteCount = 0;
-    char _serialBuffer[capacity];
-    // This is blocking - potentially adjust for non-blocking?
-    byteCount = Serial.readBytesUntil(DELIMETER, _serialBuffer, capacity);
-    if( byteCount > 0){
-      
-      StaticJsonDocument<capacity> inputDoc;
-      DeserializationError error = deserializeJson(inputDoc, _serialBuffer);
-      if(error){
-        sendError(error.c_str(), 400);
-      } else {
-        char* queueId = inputDoc["queueId"];
-        confirmRequest(queueId);
-        conductMeasurement(inputDoc);
-      } 
-    }
+    readBuffer();
   }
 
 }
