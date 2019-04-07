@@ -24,7 +24,8 @@ export enum SerialCommunicationTypes {
   Error = "error",
   IsAlive = "isAlive",
   IsBusy = "isBusy",
-  Measurement = "measurement"
+  Measurement = "measurement",
+  Confirmation = "confirmation"
 
 }
 

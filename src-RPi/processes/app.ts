@@ -1,4 +1,4 @@
-import { SerialManager } from "./SerialManager";
+import { QueueManager } from "./QueueManager";
 
 
-var serial = new SerialManager();
+var serial = new QueueManager();

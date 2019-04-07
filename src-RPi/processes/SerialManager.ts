@@ -1,4 +1,4 @@
-import { QueueItem, QueueItemType, SensorTypes } from "./models/QueueItem.model";
+import { QueueItem } from "./models/QueueItem.model";
 import { CONFIG } from "./config";
 import * as SerialPort from "serialport";
 import { SerialResponse, SerialCommunicationTypes, SerialMeasurementResponse, SerialMeasurementRequest, SerialErrorResponse, SerialErrorCode } from "./models/SerialCommunication.model";
@@ -24,10 +24,10 @@ export class SerialManager{
   requestQueue : QueueItem[];
   parser : SerialPort.parsers.Readline;
   port : SerialPort;
+  private portReady : boolean = false;
 
 
   constructor(
-    private queueSubscribeable: Subject<QueueItem>,
     private responseSubscribeabe: Subject<SerialResponse>
   ){
     
@@ -41,14 +41,29 @@ export class SerialManager{
 
     this.port = new SerialPort(CONFIG.ARDUINO_PORT, {
       baudRate: CONFIG.ARDUINO_BAUD_RATE
+    }, (err) => {
+      if(err){
+        console.log("[SerialManager] Error opening serial port!");
+        console.log(err);
+        return;
+      }
+      this.portReady = true;
     });
-
     var readline = new SerialPort.parsers.Readline({ delimiter : '\r\n'});
     this.parser = this.port.pipe(readline);
   }
 
-  listenForSerial(){
+  getPortStatus(): boolean{
+    console.log("[SerialManager] Port Status: " + this.portReady);
+    return this.portReady;
+  }
 
+  kill(){
+    console.log("[SerialManager] Killing Process");
+    return process.exit();
+  }
+
+  listenForSerial(){
     this.parser.on( 'data', data => {
       
       try {

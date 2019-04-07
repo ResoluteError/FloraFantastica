@@ -2,7 +2,7 @@ import { SerialManager } from "./SerialManager";
 import { CONFIG } from "./config";
 import express = require("express");
 import { Subject } from "rxjs";
-import { SerialResponse, SerialMeasurementResponse, SerialCommunicationTypes } from "./models/SerialCommunication.model";
+import { SerialResponse, SerialMeasurementResponse, SerialCommunicationTypes, SerialErrorResponse } from "./models/SerialCommunication.model";
 import { QueueItem, QueueItemType, SensorTypes } from "./models/QueueItem.model";
 import * as bodyParser from "body-parser";
 import * as uuid from "uuid/v1";
@@ -11,18 +11,24 @@ import * as request from "request";
 export class QueueManager {
 
   serialManager : SerialManager;
-  queueSubscribeable: Subject<QueueItem>;
-  responseSubscribeabe: Subject<SerialResponse>;
+  responseSubscribeable: Subject<SerialResponse>;
   queue : QueueItem[];
+  queueListener : Subject<QueueItem[]>;
   app : express.Application;
+  portErrCounter : number = 0;
 
   constructor(){
 
+    this.responseSubscribeable = new Subject();
+    this.queueListener = new Subject();
+
     this.serialManager = new SerialManager(
-      this.queueSubscribeable,
-      this.responseSubscribeabe
+      this.responseSubscribeable
     );
     this.setupExpress();
+    this.listenForHttp();
+    this.listenForResponse();
+    this.executionLoop();
 
   }
 
@@ -32,9 +38,6 @@ export class QueueManager {
     this.app = express();
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({extended : true}));
-    this.listenForHttp();
-    this.listenForResponse();
-    this.executionLoop();
 
   }
 
@@ -51,27 +54,37 @@ export class QueueManager {
       };
 
       if(Object.values(SensorTypes).includes(newQueue.sensorType)){
-        this.pushToQueue(newQueue);
+        this.pushToQueue(newQueue, newQueue.type === QueueItemType.Webserver);
       } else {
-        console.log(`[Serial Manager] Error - Sensor type ${newQueue.sensorType} is not an active sensor`);
+        console.log(`[QueueManager] ERROR - Sensor type ${newQueue.sensorType} is not an active sensor`);
       }
 
     
     });
 
     this.app.listen(CONFIG.SERIAL_MANAGER_PORT, ()=>{
-      console.log("[Serial Manager] Listening on port: " + CONFIG.SERIAL_MANAGER_PORT);
+      console.log("[QueueManager] STATUS - Listening on port: " + CONFIG.SERIAL_MANAGER_PORT);
     });
   }
 
 
-  pushToQueue(queueItem : QueueItem): void{
-
+  pushToQueue(queueItem : QueueItem, prioritize?: boolean): void{
+    if(prioritize){
+      if(this.queue.length > 0 && this.queue[0].submitted){
+        this.queue = [this.queue[0], queueItem].concat(this.queue.slice(1));
+      } else {
+        this.queue = [queueItem].concat(this.queue.slice());
+      }
+    } else {
+      this.queue.push(queueItem)
+    }
+    this.queueListener.next(this.queue);
   }
+
 
   listenForResponse(){
 
-    this.responseSubscribeabe.subscribe ( response => {
+    this.responseSubscribeable.subscribe ( response => {
 
       this.resolveResponse(response);
 
@@ -84,25 +97,59 @@ export class QueueManager {
     switch(response.type){
 
       case SerialCommunicationTypes.Error :
-        console.log("Received response type: Error Response");
+        console.log("[QueueManager] STATUS - Received response type: Error Response");
+        console.log(response);
+        this.resolveError(<SerialErrorResponse>response);
         break;
 
       case SerialCommunicationTypes.IsAlive :
-        console.log("Received response type: IsAlive Response");
+        console.log("[QueueManager] STATUS - Received response type: IsAlive Response");
+        console.log(response);
         break;
 
       case SerialCommunicationTypes.IsBusy :
-        console.log("Received response type: IsBusy Response");
+        console.log("[QueueManager]  TATUS - Received response type: IsBusy Response");
+        console.log(response);
+        break;
+
+      case SerialCommunicationTypes.Confirmation :
+        console.log("[QueueManager] STATUS - Received response type: Confirmation Response");
+        this.resolveConfirmation(response);
         break;
 
       case SerialCommunicationTypes.Measurement :
-        console.log("Received response type: Measurement Response");
+        console.log("[QueueManager] STATUS - Received response type: Measurement Response");
         this.resolveMeasurement(<SerialMeasurementResponse>response);
         break;
 
       default:
-        console.log("Unknown response type: " , response);
+        console.log("[QueueManager] WARNING - Unknown response type: " , response);
     }
+  }
+
+  resolveConfirmation( response : SerialResponse){
+
+    console.log(`[QueueManager] STATUS - Queue item ${response.queueId} request was confirmed`);
+
+    if(response.queueId === this.queue[0].id){
+
+      this.queue[0].confirmed = Date.now();
+      this.queueListener.next(this.queue);
+
+    } else {
+
+      var index = this.queue.findIndex( item => item.id === response.queueId);
+      if(index > -1){
+        console.log(`[QueueManager] WARNING - Confirmation for index ${index} insteaf of 0`);
+        this.queue[index].confirmed = Date.now();
+        this.queueListener.next(this.queue);
+      } else {
+        console.log(`[QueueManager] WARNING - Confirmed item is not part of queue!`);
+        console.log("[QueueManager] Queue: ", this.queue, ", Response: ", response);
+      }
+
+    }
+
   }
 
   async resolveMeasurement( serialResponse : SerialMeasurementResponse){
@@ -113,7 +160,7 @@ export class QueueManager {
 
       var queueIndex : number = 0;
 
-      console.log("Measurement Type: Queue Initiated ");
+      console.log("[QueueManager] STATUS - Measurement Type: Queue Initiated ");
       if(serialResponse.queueId === this.queue[0].id){
 
         postMeasurement = {
@@ -121,34 +168,45 @@ export class QueueManager {
           data: serialResponse.data
         };
 
+        this.queue[0].value = serialResponse.data;
+
       } else {
-        console.log("[WARNING ]Measurement Response does not match queue!");
-        console.log("Queue: ", this.queue);
-        console.log("Response: ", serialResponse);  
+        console.log("[QueueManager] WARNING - Measurement Response does not match queue!");
+        console.log("[QueueManager] Queue: ", this.queue);
+        console.log("[QueueManager] Response: ", serialResponse);  
 
-        queueIndex = this.queue.findIndex( item => item.id === serialResponse.queueId)
+        queueIndex = this.queue.findIndex( item => item.id === serialResponse.queueId);
 
-        postMeasurement = {
-          sensorId: this.queue[queueIndex].sensorId,
-          data: serialResponse.data
-        };
+        if(queueIndex > -1){
+
+          postMeasurement = {
+            sensorId: this.queue[queueIndex].sensorId,
+            data: serialResponse.data
+          };
+  
+          this.queue[queueIndex].value = serialResponse.data;
+
+        } else {
+
+          console.log("[QueueManager] WARNING - No Queue item found for measurement!");
+          console.log("[QueueManager] Queue: ", this.queue, ", Measurement: ", serialResponse);
+
+        }
 
       }
 
-      this.queue.splice(queueIndex, 1);
-
     } else {
 
-      console.log("Measurement Type: Arduino Initiated ");
+      console.log("[QueueManager] STATUS - Measurement Type: Arduino Initiated ");
       await request.get(`http://localhost:${CONFIG.WEBSERVER_PORT}/api/sensors/pin/${serialResponse.pin}`, (err : Error, httpResponse, body ) => {
 
         if(err) {
-          console.log("Server Error: Getting sensor for pin: " + serialResponse.pin, err);
+          console.log("[QueueManager] SERVER ERROR - Getting sensor for pin: " + serialResponse.pin, err);
           return;
         } 
 
         if(!body.length){
-          console.log("Servser Response Error: No Sensor found for pin ", serialResponse.pin);
+          console.log("[QueueManager] HTTP RESPONSE ERROR - No Sensor found for pin ", serialResponse.pin);
           return;
         }
 
@@ -161,7 +219,7 @@ export class QueueManager {
 
         } catch (err) {
 
-          console.log("Sensor API Response was no valid json: ", body);
+          console.log("[QueueManager] ERROR - Sensor API Response was no valid json: ", body);
           console.log(err);
           return;
 
@@ -171,12 +229,143 @@ export class QueueManager {
     }
 
     request.post(`http://localhost:${CONFIG.WEBSERVER_PORT}/api/measurements`,{json : postMeasurement}, (err, httpResponse, body) => {
-      console.log("Successfully posted measurement to sensor: ", postMeasurement.sensorId);
+      console.log("[QueueManager] STATUS - Successfully posted measurement to sensor: ", postMeasurement.sensorId);
+    });
+
+    this.queueListener.next(this.queue);
+
+  }
+
+  resolveError( response : SerialErrorResponse){
+
+    var queueIndex = this.queue.findIndex( item => item.id === response.queueId);
+    if(queueIndex > -1){
+
+      var sensorId = this.queue[queueIndex].sensorId;
+
+      this.deactivateSensor(sensorId);
+
+      this.queue.splice(queueIndex, 1);
+      this.queueListener.next(this.queue);
+
+    } else {
+
+      console.log("[QueueManager] WARNING - Serial error not queue item related!");
+      console.log("[QueueManager] Serial Response: ", response, ", Queue: ", this.queue);
+
+    }
+
+  }
+
+  deactivateSensor( sensorId : string){
+
+    console.log("[QueueManager] STATUS - Deactivating Sesnor " + sensorId);
+
+    request.patch(`http://localhost:${CONFIG.WEBSERVER_PORT}/api/sensors/${sensorId}`, {json : {
+      state : 0
+    }}, (err, response, body) => {
+      
+      if(err){
+        console.log("[QueueManager] SERVER ERROR - Failed patching sensor!");
+        console.log("[QueueManager] Serial Response: ", response, ", Error: ", err);
+      }
+
     });
 
   }
 
   executionLoop(){
+
+
+    // Fallback to re-check the status every 10 minutes
+    // Technically there should be no szenario, where this is actually needed
+    // But you never know...
+    setInterval( () => {
+      this.queueListener.next(this.queue);
+    }, 1000 * 60 * 60 * 10);
+
+
+    this.queueListener.subscribe( (changedQueue : QueueItem[]) => {
+
+      if(!this.serialManager.getPortStatus){
+        this.portErrCounter++;
+        console.log("[QueueManager] ERROR - Failed reaching Port");
+        if(this.portErrCounter < 10){
+
+          setTimeout( () => {
+            this.queueListener.next(
+              this.queue
+            );
+          }, 500);
+          return;
+
+        } else {
+
+          console.log("[QueueManager] KILLING PROCESS - PortErrCounter Exceeded Limit");
+          return process.exit();
+
+        }
+
+      } else {
+
+        this.portErrCounter = 0;
+
+      }
+      
+      if(changedQueue.length > 0){
+
+        if(changedQueue[0].submitted){
+
+          if(changedQueue[0].confirmed){
+
+            if(changedQueue[0].value){
+
+              // Got all required data
+              console.log("[QueueManager] STATUS - Removing completed Item from Que: ", this.queue[0]);
+              this.queue.splice(0, 1);
+              this.queueListener.next(this.queue);
+              return;
+
+            }
+
+            if(changedQueue[0].confirmed > Date.now() - 15*1000){
+
+              // Measurement Timed Out
+              console.log("[QueueManager] WARNING - Removing measurement-timeout Item from Que: ", this.queue[0]);
+              this.deactivateSensor( this.queue[0].sensorId);
+              this.queue.splice(0, 1);
+              this.queueListener.next(this.queue);
+              return;
+
+            }
+
+            return;
+
+          }
+
+          if(changedQueue[0].submitted > Date.now() - 15*1000){
+
+            // Measurement Timed Out
+            console.log("[QueueManager] WARNING - Removing confirmation-timeout Item from Que: ", this.queue[0]);
+            this.deactivateSensor( this.queue[0].sensorId);
+            this.queue.splice(0, 1);
+            this.queueListener.next(this.queue);
+            return;
+
+          }
+
+          return;
+
+        }
+        
+        console.log("[QueueManager] STATUS - Requesting new measurement: ", this.queue[0]);
+        this.serialManager.requestMeasurementSerial(this.queue[0]);
+        this.queue[0].submitted = Date.now();
+        this.queueListener.next(this.queue);
+
+      }
+
+    });
 
   }
 

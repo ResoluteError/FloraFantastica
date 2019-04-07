@@ -2,6 +2,7 @@ export class QueueItem {
   
   id: string;
   submitted? : number;
+  confirmed? : number;
 
   type: QueueItemType;
 
