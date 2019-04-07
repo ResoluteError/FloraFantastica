@@ -10,7 +10,7 @@ export const CONFIG = {
   FRONTEND_DIR : process.env.FRONTEND_DIR || __dirname + "/../frontend/dist",
 
   // On which Port the webserver should listen 
-  WEBSERVER_PORT : process.env.NODE_PORT || 8080,
+  WEBSERVER_PORT : process.env.WEBSERVER_PORT || 8080,
   
   QUEUE_MANAGER_PORT : process.env.QUEUE_MANAGER_PORT || 8081,
 

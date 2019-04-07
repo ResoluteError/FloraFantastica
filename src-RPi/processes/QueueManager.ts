@@ -51,14 +51,14 @@ export class QueueManager {
         type: req.body.type || QueueItemType.Webserver,
         sensorId : req.body.sensorId,
         sensorType: req.body.sensorType,
-        pin: req.body.pin
+        pin: req.body.pin,
+        res: res
       };
 
       console.log("[QueueManager] STATUS - Added to queue");
 
       if(Object.values(SensorTypes).includes(newQueue.sensorType)){
         this.pushToQueue(newQueue, newQueue.type === QueueItemType.Webserver);
-        res.status(200).send("Added to queue!");
       } else {
         console.log(`[QueueManager] ERROR - Sensor type ${newQueue.sensorType} is not an active sensor`);
         res.status(500).error("Wrong sensor type!");
@@ -247,7 +247,8 @@ export class QueueManager {
 
       this.deactivateSensor(sensorId);
 
-      this.queue.splice(queueIndex, 1);
+      var item = this.queue.splice(queueIndex, 1);
+      item[0].res.status(404).send(new Error("Sensor Measurement resulted in Error"));
       this.queueListener.next(this.queue);
 
     } else {
@@ -323,8 +324,9 @@ export class QueueManager {
             if(changedQueue[0].value){
 
               // Got all required data
-              console.log("[QueueManager] STATUS - Removing completed Item from Que: ", this.queue[0]);
-              this.queue.splice(0, 1);
+              console.log("[QueueManager] STATUS - Removing completed Item from Que");
+              var item = this.queue.splice(0, 1);
+              item[0].res.status(200).send({data:item[0].value});
               this.queueListener.next(this.queue);
               return;
 
@@ -333,9 +335,12 @@ export class QueueManager {
             if(changedQueue[0].confirmed && changedQueue[0].confirmed < Date.now() - 15*1000){
 
               // Measurement Timed Out
-              console.log("[QueueManager] WARNING - Removing measurement-timeout Item from Que: ", this.queue[0]);
+              console.log("[QueueManager] WARNING - Removing measurement-timeout Item from Que. Sensor ID: ", this.queue[0].sensorId);
               this.deactivateSensor( this.queue[0].sensorId);
-              this.queue.splice(0, 1);
+
+              var item = this.queue.splice(0, 1);
+              item[0].res.send(new Error("Sensor measurement timed out!"));
+
               this.queueListener.next(this.queue);
               return;
 
@@ -348,9 +353,10 @@ export class QueueManager {
           if(changedQueue[0].submitted && changedQueue[0].submitted < Date.now() - 15*1000){
 
             // Measurement Timed Out
-            console.log("[QueueManager] WARNING - Removing confirmation-timeout Item from Que: ", this.queue[0]);
+            console.log("[QueueManager] WARNING - Removing confirmation-timeout Item from Que. Sensor ID: ", this.queue[0].sensorId);
             this.deactivateSensor( this.queue[0].sensorId);
-            this.queue.splice(0, 1);
+            var item = this.queue.splice(0, 1);
+            item[0].res.send(new Error("Sensor confirmation timed out!"));
             this.queueListener.next(this.queue);
             return;
 

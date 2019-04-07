@@ -9,24 +9,25 @@
 
 import * as request from "request";
 import { CONFIG } from "./config";
-import { Observable, observable } from "rxjs";
+import { Observable } from "rxjs";
 
 (async function (){
     
   var args = parseCliArguments();
-
-  console.log("args: ", args);
   
   if(typeof args["types"]==="string"){
-    getAllSensors().subscribe( sensors => {
-      var sensorArr = JSON.parse(sensors);
-      console.log("all sensors: ", sensorArr, typeof sensorArr);
-      checkSensors(sensorArr);
-    });
+    if(args["types"] === "ALL"){
+      getAllSensors().subscribe( sensors => {
+        checkSensors(sensors);
+      });
+    } else {
+      getSensorsByType(+args["types"]).subscribe( sensors => {
+        checkSensors(sensors);
+      });
+    }
   } else {
     for( var type of args["types"]){
       var sensors = await getSensorsByType(type).toPromise();
-      console.log("typed ", type, " sensors: " , sensors);
       checkSensors(sensors);
     }
   }
@@ -58,32 +59,45 @@ import { Observable, observable } from "rxjs";
 
   }
 
-  function getSensorsByType(type : number){
-
+  function getSensorsByType(type : number): Observable<string>{
+    const options = {  
+      url: `http://localhost:${CONFIG.WEBSERVER_PORT}/api/sensors/type/${type}`,
+      method: 'GET',
+      headers: {
+          'Accept': 'application/json',
+          'Accept-Charset': 'utf-8'
+      }
+    };
     return new Observable( observer => {
-      request.get(`http://localhost:${CONFIG.WEBSERVER_PORT}/api/sensors/type/${type}`, (err, httpResponse, body) => {
+      request(options, function(err, res, body){
         if(err){
           observer.error(err);
           observer.complete();
           return;
         }
-        observer.next(body);
+        observer.next(JSON.parse(body));
         observer.complete();  
-      })
+      });
     });
   }
 
   function getAllSensors(): Observable<string>{
-
+    const options = {  
+      url: `http://localhost:${CONFIG.WEBSERVER_PORT}/api/sensors`,
+      method: 'GET',
+      headers: {
+          'Accept': 'application/json',
+          'Accept-Charset': 'utf-8'
+      }
+    };
     return new Observable( observer => {
-      request.get(`http://localhost:${CONFIG.WEBSERVER_PORT}/api/sensors`, (err, httpResponse, body) => {
+      request(options, (err, httpResponse, body) => {
         if(err){
           observer.error(err);
           observer.complete();
           return;
         }
-        console.log("Body: ", body);
-        observer.next(body);
+        observer.next(JSON.parse(body));
         observer.complete();  
       })
     });
@@ -92,14 +106,22 @@ import { Observable, observable } from "rxjs";
   function requestSensorMeasurement( sensor ){
 
     return new Observable( observer => {
-      request.post(`http://localhost:${CONFIG.QUEUE_MANAGER_PORT}/queue`,{
+      const options = {  
+        url: `http://localhost:${CONFIG.QUEUE_MANAGER_PORT}/queue`,
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Accept-Charset': 'utf-8'
+        },
         json: {
           type: "cron",
           sensorId: sensor.id,
           sensorType: sensor.type,
           pin: sensor.pin
         }
-      }, (err, httpResponse, body) => {
+      };
+
+      request(options, (err, httpResponse, body) => {
         if(err){
           observer.error(err);
           observer.complete();
@@ -112,7 +134,7 @@ import { Observable, observable } from "rxjs";
 
   }
 
-  function checkSensors(sensors){
+  async function checkSensors(sensors){
 
     for( var sensor of sensors){
 
@@ -120,9 +142,9 @@ import { Observable, observable } from "rxjs";
 
         if(sensor.state === 2){
 
-          requestSensorMeasurement(sensor);
+          var request = await requestSensorMeasurement(sensor).toPromise();
 
-        }
+        } 
 
       }
 

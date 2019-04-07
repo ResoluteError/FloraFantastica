@@ -60,28 +60,43 @@ var rxjs_1 = require("rxjs");
             return execArgs;
         }
         function getSensorsByType(type) {
+            var options = {
+                url: "http://localhost:" + config_1.CONFIG.WEBSERVER_PORT + "/api/sensors/type/" + type,
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Accept-Charset': 'utf-8'
+                }
+            };
             return new rxjs_1.Observable(function (observer) {
-                request.get("http://localhost:" + config_1.CONFIG.WEBSERVER_PORT + "/api/sensors/type/" + type, function (err, httpResponse, body) {
+                request(options, function (err, res, body) {
                     if (err) {
                         observer.error(err);
                         observer.complete();
                         return;
                     }
-                    observer.next(body);
+                    observer.next(JSON.parse(body));
                     observer.complete();
                 });
             });
         }
         function getAllSensors() {
+            var options = {
+                url: "http://localhost:" + config_1.CONFIG.WEBSERVER_PORT + "/api/sensors",
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Accept-Charset': 'utf-8'
+                }
+            };
             return new rxjs_1.Observable(function (observer) {
-                request.get("http://localhost:" + config_1.CONFIG.WEBSERVER_PORT + "/api/sensors", function (err, httpResponse, body) {
+                request("http://localhost:" + config_1.CONFIG.WEBSERVER_PORT + "/api/sensors", function (err, httpResponse, body) {
                     if (err) {
                         observer.error(err);
                         observer.complete();
                         return;
                     }
-                    console.log("Body: ", body);
-                    observer.next(body);
+                    observer.next(JSON.parse(body));
                     observer.complete();
                 });
             });
@@ -107,27 +122,54 @@ var rxjs_1 = require("rxjs");
             });
         }
         function checkSensors(sensors) {
-            for (var _i = 0, sensors_1 = sensors; _i < sensors_1.length; _i++) {
-                var sensor = sensors_1[_i];
-                if (sensor.currentPlantId) {
-                    if (sensor.state === 2) {
-                        requestSensorMeasurement(sensor);
+            return __awaiter(this, void 0, void 0, function () {
+                var _i, sensors_1, sensor, request;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            _i = 0, sensors_1 = sensors;
+                            _a.label = 1;
+                        case 1:
+                            if (!(_i < sensors_1.length)) return [3, 7];
+                            sensor = sensors_1[_i];
+                            if (!sensor.currentPlantId) return [3, 5];
+                            if (!(sensor.state === 2)) return [3, 3];
+                            return [4, requestSensorMeasurement(sensor).toPromise()];
+                        case 2:
+                            request = _a.sent();
+                            console.log("Request: ", request);
+                            return [3, 4];
+                        case 3:
+                            console.log("Sensor " + sensor.name + " current state is " + sensor.state);
+                            _a.label = 4;
+                        case 4: return [3, 6];
+                        case 5:
+                            console.log("Sensor " + sensor.name + " current plant Id is " + sensor.currentPlantId);
+                            _a.label = 6;
+                        case 6:
+                            _i++;
+                            return [3, 1];
+                        case 7: return [2];
                     }
-                }
-            }
+                });
+            });
         }
         var args, _i, _a, type, sensors;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
                     args = parseCliArguments();
-                    console.log("args: ", args);
                     if (!(typeof args["types"] === "string")) return [3, 1];
-                    getAllSensors().subscribe(function (sensors) {
-                        var sensorArr = JSON.parse(sensors);
-                        console.log("all sensors: ", sensorArr, typeof sensorArr);
-                        checkSensors(sensorArr);
-                    });
+                    if (args["types"] === "ALL") {
+                        getAllSensors().subscribe(function (sensors) {
+                            checkSensors(sensors);
+                        });
+                    }
+                    else {
+                        getSensorsByType(+args["types"]).subscribe(function (sensors) {
+                            checkSensors(sensors);
+                        });
+                    }
                     return [3, 5];
                 case 1:
                     _i = 0, _a = args["types"];
@@ -138,8 +180,8 @@ var rxjs_1 = require("rxjs");
                     return [4, getSensorsByType(type).toPromise()];
                 case 3:
                     sensors = _b.sent();
-                    console.log("typed ", type, " sensors: ", sensors);
                     checkSensors(sensors);
+                    console.log("Type: ", type);
                     _b.label = 4;
                 case 4:
                     _i++;

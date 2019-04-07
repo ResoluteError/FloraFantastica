@@ -1,6 +1,9 @@
+
+import express = require("express");
 export class QueueItem {
   
   id: string;
+  res: express.Response;
   submitted? : number;
   confirmed? : number;
 

@@ -68,7 +68,7 @@ export class SerialManager{
       
       try {
         var response : SerialResponse = JSON.parse(data);
-        console.log(`[SerialManager] Received JSON response`);
+        console.log(`[SerialManager] Received JSON response`, response);
         this.responseSubscribeabe.next(response);
       } catch {
         console.log("[SerialManager] String not JSON parseable " + data);
@@ -95,7 +95,7 @@ export class SerialManager{
 
     }
 
-    this.port.write( JSON.stringify(sendData) + "\n", ( err ) => {
+    this.port.write( JSON.stringify(sendData), ( err ) => {
   
       console.log(`[SerialManager] Requested Measurement`);
   
