@@ -21,6 +21,7 @@ export class QueueManager {
 
     this.responseSubscribeable = new Subject();
     this.queueListener = new Subject();
+    this.queue = [];
 
     this.serialManager = new SerialManager(
       this.responseSubscribeable
@@ -46,17 +47,22 @@ export class QueueManager {
     this.app.post("/queue", (req: express.Request, res: express.Response) => {
 
       var newQueue : QueueItem = {
-        id: uuid(),
+        // id: uuid(),
+        id: "123",
         type: req.body.type || QueueItemType.Webserver,
         sensorId : req.body.sensorId,
         sensorType: req.body.sensorType,
         pin: req.body.pin
       };
 
+      console.log("[QueueManager] STATUS - Added to queue");
+
       if(Object.values(SensorTypes).includes(newQueue.sensorType)){
         this.pushToQueue(newQueue, newQueue.type === QueueItemType.Webserver);
+        res.status(200).send("Added to queue!");
       } else {
         console.log(`[QueueManager] ERROR - Sensor type ${newQueue.sensorType} is not an active sensor`);
+        res.status(500).error("Wrong sensor type!");
       }
 
     
@@ -98,7 +104,6 @@ export class QueueManager {
 
       case SerialCommunicationTypes.Error :
         console.log("[QueueManager] STATUS - Received response type: Error Response");
-        console.log(response);
         this.resolveError(<SerialErrorResponse>response);
         break;
 
@@ -172,8 +177,6 @@ export class QueueManager {
 
       } else {
         console.log("[QueueManager] WARNING - Measurement Response does not match queue!");
-        console.log("[QueueManager] Queue: ", this.queue);
-        console.log("[QueueManager] Response: ", serialResponse);  
 
         queueIndex = this.queue.findIndex( item => item.id === serialResponse.queueId);
 
@@ -259,7 +262,7 @@ export class QueueManager {
 
   deactivateSensor( sensorId : string){
 
-    console.log("[QueueManager] STATUS - Deactivating Sesnor " + sensorId);
+    console.log("[QueueManager] STATUS - Deactivating Sensor " + sensorId);
 
     request.patch(`http://localhost:${CONFIG.WEBSERVER_PORT}/api/sensors/${sensorId}`, {json : {
       state : 0
@@ -328,7 +331,7 @@ export class QueueManager {
 
             }
 
-            if(changedQueue[0].confirmed > Date.now() - 15*1000){
+            if(changedQueue[0].confirmed && changedQueue[0].confirmed < Date.now() - 15*1000){
 
               // Measurement Timed Out
               console.log("[QueueManager] WARNING - Removing measurement-timeout Item from Que: ", this.queue[0]);
@@ -343,7 +346,7 @@ export class QueueManager {
 
           }
 
-          if(changedQueue[0].submitted > Date.now() - 15*1000){
+          if(changedQueue[0].submitted && changedQueue[0].submitted < Date.now() - 15*1000){
 
             // Measurement Timed Out
             console.log("[QueueManager] WARNING - Removing confirmation-timeout Item from Que: ", this.queue[0]);
@@ -358,7 +361,7 @@ export class QueueManager {
 
         }
         
-        console.log("[QueueManager] STATUS - Requesting new measurement: ", this.queue[0]);
+        console.log("[QueueManager] STATUS - Requesting new measurement of type ", this.queue[0].sensorType);
         this.serialManager.requestMeasurementSerial(this.queue[0]);
         this.queue[0].submitted = Date.now();
         this.queueListener.next(this.queue);

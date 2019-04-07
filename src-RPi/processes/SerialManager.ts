@@ -68,13 +68,14 @@ export class SerialManager{
       
       try {
         var response : SerialResponse = JSON.parse(data);
+        console.log(`[SerialManager] Received JSON response`);
         this.responseSubscribeabe.next(response);
       } catch {
         console.log("[SerialManager] String not JSON parseable " + data);
         var errorResponse : SerialErrorResponse = {
           type : SerialCommunicationTypes.Error,
           code: SerialErrorCode.INVALID_SERIAL_RESPONSE,
-          message: "Serial string NOT parseable: " + data
+          message: "Serial string NOT parseable: '" + data + "'"
         }
         this.responseSubscribeabe.next(errorResponse);
       }
@@ -90,13 +91,14 @@ export class SerialManager{
       type: SerialCommunicationTypes.Measurement,
       queueId: data.id,
       sensorType: data.sensorType,
-      pin: data.pin
+      pin: data.pin,
+      test : data.id
 
     }
 
-    this.port.write( JSON.stringify(data) + "\n", ( err ) => {
+    this.port.write( JSON.stringify(sendData) + "\n", ( err ) => {
   
-      console.log(`[SerialManager] Requested Measurement: ${sendData.sensorType} | ${sendData.pin} --`);
+      console.log(`[SerialManager] Requested Measurement`);
   
       if(err){
         console.log("[SerialManager] An error occured: ", err);
