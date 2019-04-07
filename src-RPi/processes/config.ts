@@ -12,9 +12,7 @@ export const CONFIG = {
   // On which Port the webserver should listen 
   WEBSERVER_PORT : process.env.NODE_PORT || 8080,
   
-  SERIAL_MANAGER_PORT : process.env.SERIAL_MANAGER_PORT || 8081,
-
-  SENSOR_CRON_PORT : process.env.SENSOR_CRON_PORT || 8082,
+  QUEUE_MANAGER_PORT : process.env.QUEUE_MANAGER_PORT || 8081,
 
   ARDUINO_PORT : process.env.ARDUINO_PORT || '/dev/tty.usbmodem14201',
 

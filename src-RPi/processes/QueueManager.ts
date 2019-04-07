@@ -47,8 +47,7 @@ export class QueueManager {
     this.app.post("/queue", (req: express.Request, res: express.Response) => {
 
       var newQueue : QueueItem = {
-        // id: uuid(),
-        id: "123",
+        id: uuid(),
         type: req.body.type || QueueItemType.Webserver,
         sensorId : req.body.sensorId,
         sensorType: req.body.sensorType,
@@ -68,8 +67,8 @@ export class QueueManager {
     
     });
 
-    this.app.listen(CONFIG.SERIAL_MANAGER_PORT, ()=>{
-      console.log("[QueueManager] STATUS - Listening on port: " + CONFIG.SERIAL_MANAGER_PORT);
+    this.app.listen(CONFIG.QUEUE_MANAGER_PORT, ()=>{
+      console.log("[QueueManager] STATUS - Listening on port: " + CONFIG.QUEUE_MANAGER_PORT);
     });
   }
 

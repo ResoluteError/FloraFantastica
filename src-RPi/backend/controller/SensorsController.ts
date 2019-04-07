@@ -61,6 +61,21 @@ export class SensorController {
 
   }
 
+  static async get_by_type(req : Request, res: Response){
+    
+    var type = req.params.sensorType;
+
+    var manager = getManager();
+
+    var data = await manager.find(Sensor, {
+      where : {
+        type: type
+      }
+    });
+
+    res.send(data);
+
+  }
   static async get_by_id(req : Request, res: Response){
     
     var id = req.params.sensorId;
