@@ -6,6 +6,7 @@ import { PromptService } from 'src/app/services/prompt.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { Plant } from 'src/app/models/plant.model';
 import { ActionService } from 'src/app/services/action.service';
+import { Measurement } from 'src/app/models/measurement.model';
 
 @Component({
   selector: 'app-sensor-manager',
@@ -15,6 +16,7 @@ import { ActionService } from 'src/app/services/action.service';
 export class SensorManagerComponent implements OnInit, OnChanges {
 
   @Output() change = new EventEmitter<Sensor[]>();
+  @Output() measurement = new EventEmitter<Measurement>();
   @Input() plant : Plant;
   @Input() sensors : DisplaySensor[];
 
@@ -34,6 +36,8 @@ export class SensorManagerComponent implements OnInit, OnChanges {
 
   ngOnChanges(){
     if(this.sensors){
+      this.activeSensors = [];
+      this.availableSensors = [];
       this.sensors.forEach( sensor => {
         if(sensor.type >= 90){
           return;
@@ -125,6 +129,7 @@ export class SensorManagerComponent implements OnInit, OnChanges {
         this.alertService.warning("Sensor Measure Error.",`Failed to get a new measurement for '${sensor.name}'`, 4000);
       } else {
         this.alertService.success("Success.",`New measurement for '${sensor.name}': ${result.data}`);
+        this.measurement.emit(result);
       }
     }, err => {
       this.alertService.warning("Action API Error.",`Failed to get a measurement for '${sensor.name}'`, 4000);
