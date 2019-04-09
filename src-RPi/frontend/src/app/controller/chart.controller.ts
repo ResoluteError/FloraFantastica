@@ -43,7 +43,7 @@ export class ChartController {
           fontSize: 15,
           padding: 15
         },
-        position: "top",
+        position: "right",
       },
       tooltips : {
         callbacks : {
@@ -68,7 +68,13 @@ export class ChartController {
             }
           }
         }],
-        yAxes : []
+        yAxes : [{
+          ticks: {
+            min : 0,
+            max: 100,
+            display: false
+          }
+        }]
       },
       responsive: true
     }
@@ -224,7 +230,8 @@ export class ChartController {
       id : id,
       label : Sensor.typeToLabel(sensorType),
       type : "linear",
-      ticks : ticksByType[sensorType]
+      ticks : ticksByType[sensorType],
+      display : false
     }
     return yAxis;
   }
