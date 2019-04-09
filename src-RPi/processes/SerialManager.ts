@@ -34,33 +34,6 @@ export class SerialManager{
     this.setupSerial();
     this.listenForSerial();
 
-    setTimeout( () => {this.requestMeasurementSerial({
-      id: "6a12a4d5-e9e6-4568-afcc-34c70b24a668",
-      sensorType: 10,
-      pin: 9
-    })}, 1000);
-
-
-    setTimeout( () => {this.requestMeasurementSerial({
-      id: "6a12a4d5-e9e6-4568-afcc-34c70b24a668",
-      sensorType: 11,
-      pin: 9
-    })}, 4000);
-
-
-    setTimeout( () => {this.requestMeasurementSerial({
-      id: "6a12a4d5-e9e6-4568-afcc-34c70b24a668",
-      sensorType: 20,
-      pin: 47
-    })}, 7000);
-
-
-    setTimeout( () => {this.requestMeasurementSerial({
-      id: "6a12a4d5-e9e6-4568-afcc-34c70b24a668",
-      sensorType: 30,
-      pin: 8
-    })}, 10000);
-
   }
 
 
@@ -93,21 +66,19 @@ export class SerialManager{
   listenForSerial(){
     this.parser.on( 'data', data => {
     
-      // try {
-      //   var response : SerialResponse = JSON.parse(data);
-      //   console.log(`[SerialManager] Received JSON response`, response);
-      //   this.responseSubscribeabe.next(response);
-      // } catch {
-      //   console.log("[SerialManager] String not JSON parseable " + data);
-      //   var errorResponse : SerialErrorResponse = {
-      //     type : SerialCommunicationTypes.Error,
-      //     code: SerialErrorCode.INVALID_SERIAL_RESPONSE,
-      //     message: "Serial string NOT parseable: '" + data + "'"
-      //   }
-      //   this.responseSubscribeabe.next(errorResponse);
-      // }
-      
-      console.log(`[SerialManager] Received response`, data);
+      try {
+        var response : SerialResponse = JSON.parse(data);
+        console.log(`[SerialManager] Received JSON response`, response);
+        this.responseSubscribeabe.next(response);
+      } catch {
+        console.log("[SerialManager] String not JSON parseable " + data);
+        var errorResponse : SerialErrorResponse = {
+          type : SerialCommunicationTypes.Error,
+          code: SerialErrorCode.INVALID_SERIAL_RESPONSE,
+          message: "Serial string NOT parseable: '" + data + "'"
+        }
+        this.responseSubscribeabe.next(errorResponse);
+      }
       
     });
 
