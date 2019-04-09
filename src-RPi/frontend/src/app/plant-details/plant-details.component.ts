@@ -113,6 +113,10 @@ export class PlantDetailsComponent implements OnInit {
 
   }
 
+  handleNewMeasurement( measurement : Measurement): void {
+    this.chartController.addMeasurementToDataset(measurement);
+  }
+
   updateChartScope( days : number){
     this.timeScope = days;
     this.chartController.setupXAxis(days);
@@ -123,9 +127,7 @@ export class PlantDetailsComponent implements OnInit {
       this.chartController.addMeasurementToDataset(
         entry
       );
-      console.log("Adding to existing dataset");
     } else {
-      console.log("Creating new dataset");
       this.sensorService.getSensorById( entry.sensorId).subscribe(sensor => {
         var dataset = {
           data : [{
@@ -161,14 +163,15 @@ export class PlantDetailsComponent implements OnInit {
       try {
         var imgSize = formData.get("plantImageUpload")["size"];
         if(imgSize === 0){
-          console.log("Not changing image!");
           formData.delete("plantImageUpload");
         }
       } catch {
 
       }
       this.plantService.patchPlantForm(this.plant.id, formData).subscribe( result => {
-        this.plant = result;
+        this.plant.name = result.name;
+        this.plant.icon = result.icon;
+        this.plant.description = result.description;
         this.editMode = false;
       }, err => {
         this.alertService.warning("Plant API Error.", "Failed saving plant details, please try again in a moment.");
