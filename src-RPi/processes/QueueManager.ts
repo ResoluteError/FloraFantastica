@@ -149,7 +149,7 @@ export class QueueManager {
         this.queueListener.next(this.queue);
       } else {
         console.log(`[QueueManager] WARNING - Confirmed item is not part of queue!`);
-        console.log("[QueueManager] Queue: ", this.queue, ", Response: ", response);
+        console.log("[QueueManager] Response: ", response);
       }
 
     }
@@ -167,11 +167,6 @@ export class QueueManager {
       console.log("[QueueManager] STATUS - Measurement Type: Queue Initiated ");
       if(serialResponse.queueId === this.queue[0].id){
 
-        postMeasurement = {
-          sensorId: this.queue[0].sensorId,
-          data: serialResponse.data
-        };
-
         this.queue[0].value = serialResponse.data;
 
       } else {
@@ -180,18 +175,13 @@ export class QueueManager {
         queueIndex = this.queue.findIndex( item => item.id === serialResponse.queueId);
 
         if(queueIndex > -1){
-
-          postMeasurement = {
-            sensorId: this.queue[queueIndex].sensorId,
-            data: serialResponse.data
-          };
   
           this.queue[queueIndex].value = serialResponse.data;
 
         } else {
 
           console.log("[QueueManager] WARNING - No Queue item found for measurement!");
-          console.log("[QueueManager] Queue: ", this.queue, ", Measurement: ", serialResponse);
+          console.log("[QueueManager] Measurement: ", serialResponse);
 
         }
 
@@ -219,6 +209,17 @@ export class QueueManager {
             data: serialResponse.data
           };
 
+          request.post(`http://localhost:${CONFIG.WEBSERVER_PORT}/api/measurements`,{json : postMeasurement}, (err, httpResponse, body) => {
+
+            if(err){
+              console.log("[QueueManager] ERROR - Failed posting arduino initiated measurement!");
+              console.log("[QueueManager] ", err);
+              return;
+            }
+
+            console.log("[QueueManager] STATUS - Successfully posted measurement to sensor: ", postMeasurement.sensorId);
+          });
+
         } catch (err) {
 
           console.log("[QueueManager] ERROR - Sensor API Response was no valid json: ", body);
@@ -229,10 +230,6 @@ export class QueueManager {
 
       });
     }
-
-    request.post(`http://localhost:${CONFIG.WEBSERVER_PORT}/api/measurements`,{json : postMeasurement}, (err, httpResponse, body) => {
-      console.log("[QueueManager] STATUS - Successfully posted measurement to sensor: ", postMeasurement.sensorId);
-    });
 
     this.queueListener.next(this.queue);
 
@@ -245,8 +242,6 @@ export class QueueManager {
 
       var sensorId = this.queue[queueIndex].sensorId;
 
-      this.deactivateSensor(sensorId);
-
       var item = this.queue.splice(queueIndex, 1);
       item[0].res.status(404).send(new Error("Sensor Measurement resulted in Error"));
       this.queueListener.next(this.queue);
@@ -254,26 +249,9 @@ export class QueueManager {
     } else {
 
       console.log("[QueueManager] WARNING - Serial error not queue item related!");
-      console.log("[QueueManager] Serial Response: ", response, ", Queue: ", this.queue);
+      console.log("[QueueManager] Serial Response: ", response);
 
     }
-
-  }
-
-  deactivateSensor( sensorId : string){
-
-    console.log("[QueueManager] STATUS - Deactivating Sensor " + sensorId);
-
-    request.patch(`http://localhost:${CONFIG.WEBSERVER_PORT}/api/sensors/${sensorId}`, {json : {
-      state : 0
-    }}, (err, response, body) => {
-      
-      if(err){
-        console.log("[QueueManager] SERVER ERROR - Failed patching sensor!");
-        console.log("[QueueManager] Serial Response: ", response, ", Error: ", err);
-      }
-
-    });
 
   }
 
@@ -336,10 +314,9 @@ export class QueueManager {
 
               // Measurement Timed Out
               console.log("[QueueManager] WARNING - Removing measurement-timeout Item from Que. Sensor ID: ", this.queue[0].sensorId);
-              this.deactivateSensor( this.queue[0].sensorId);
 
               var item = this.queue.splice(0, 1);
-              item[0].res.send(new Error("Sensor measurement timed out!"));
+              item[0].res.status(408).send(new Error("Sensor measurement timed out!"));
 
               this.queueListener.next(this.queue);
               return;
@@ -354,9 +331,8 @@ export class QueueManager {
 
             // Measurement Timed Out
             console.log("[QueueManager] WARNING - Removing confirmation-timeout Item from Que. Sensor ID: ", this.queue[0].sensorId);
-            this.deactivateSensor( this.queue[0].sensorId);
             var item = this.queue.splice(0, 1);
-            item[0].res.send(new Error("Sensor confirmation timed out!"));
+            item[0].res.status(408).send(new Error("Sensor confirmation timed out!"));
             this.queueListener.next(this.queue);
             return;
 
