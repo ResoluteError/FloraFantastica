@@ -91,11 +91,12 @@ export class ActionsController {
     res.send(postedEntity);
   }
 
-  static async checkSensorStatus(req : express.Request, res: express.Response){
+  static async checkSensor(req : express.Request, res: express.Response){
 
     var manager = getManager();
 
     var sensorId = req.params.sensorId;
+    var action = req.params.sensorAction;
 
     var sensor = await manager.findOne(Sensor,sensorId);
 
@@ -116,6 +117,8 @@ export class ActionsController {
       json: measurementRequest
     };
 
+    console.log("Checking Sensor Status of sensor: ", sensor.name);
+
     request(sensorReqOptions, async (err, measureRes, body) =>  {
 
       if(err || measureRes.statusCode >= 400){
@@ -123,15 +126,36 @@ export class ActionsController {
         return;
       }
 
-      sensor.state = 2;
+      if(action === "check"){
 
-      var updatedSensor = await manager.save(sensor);
+        sensor.state = 2;
 
-      res.send(updatedSensor);
+        var updatedSensor = await manager.save(sensor);
+        console.log("Updated sensor status: ", sensor);
+
+        res.send(sensor);
+
+      } else if(action === "measure"){
+
+        var newMeasurement : Measurement = {
+          sensorId : sensor.id,
+          sensorType : sensor.type,
+          data : body.data,
+          plantId : sensor.currentPlantId,
+          measuredAt : new Date().toISOString(),
+          id : null
+        }
+
+        var measurement = await manager.insert(Measurement, newMeasurement);
+
+        console.log("Created measurement: ", newMeasurement);
+
+        res.status(202).send(newMeasurement);
+
+      }
 
     });
 
   }
-
 
 }

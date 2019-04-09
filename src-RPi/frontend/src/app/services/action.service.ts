@@ -38,7 +38,7 @@ export class ActionService {
     var options = this.httpOptions.options;
 
     return new Observable( observer => {
-      this.http.post<Measurement>(url + "/actions/sensor/" + sensorId + "/measure", {}, options).subscribe( result => {
+      this.http.post<Measurement>(url + "/actions/sensor/" + sensorId + "/check-status", {}, options).subscribe( result => {
         observer.next(result);
         observer.complete();
       }, err => {
@@ -54,7 +54,7 @@ export class ActionService {
     var options = this.httpOptions.options;
 
     return new Observable( observer => {
-      this.http.post<Sensor>(url + "/actions/sensor/" + sensorId + "/check", {}, options).subscribe( result => {
+      this.http.post<Sensor>(url + "/actions/sensor/" + sensorId + "/check-status", {}, options).subscribe( result => {
         observer.next(result);
         observer.complete();
       }, err => {

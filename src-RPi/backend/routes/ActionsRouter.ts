@@ -7,6 +7,6 @@ router.post("/plant/:plantId/update-current-data", ActionsController.updatePlant
 
 router.post("/plant/:plantId/post-health-entry", ActionsController.postHealthEntry);
 
-router.post("/sensor/:sensorId/check-status", ActionsController.checkSensorStatus);
+router.post("/sensor/:sensorId/:sensorAction", ActionsController.checkSensor);
 
 export {router};
