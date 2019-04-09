@@ -7,19 +7,23 @@
 #include <DHT.h>
 #include <ArduinoJson.h>
 
-#define DHTTYPE DHT11
-#define SENSOR_POWER_PIN 50
+#define DHTTYPE DHT22
 #define WATERING_BTN_PIN 2
-#define WATERING_VALVE_PIN 51
+#define WATERING_VALVE_PIN 22
 #define DELIMETER "\n"
-#define SERIAL_BUFFER_SIZE 512
+#define ON_LED_PIN 40
+#define WATERING_LED_PIN 44
+#define MEASURING_LED_PIN 48
+#define AUTOPILOT_LED_PIN 52
 
-const size_t capacity = JSON_OBJECT_SIZE(4) + 150;
+#define JSON_BUFFER_SIZE 128
+
+const size_t capacity = JSON_OBJECT_SIZE(4) + 100;
 
 volatile bool watering = false;
 volatile bool watered = false;
-volatile float buttonReleasedTimer;
-volatile float buttonPressedTimer;
+volatile unsigned long buttonReleasedTimer;
+volatile unsigned long buttonPressedTimer;
 
 void confirmRequest(char* queueId){
   
@@ -62,7 +66,7 @@ void sendBusy( bool busy ){
 
 float measureAirTemperature(int pin){
 
-  DHT dht(pin, DHT11);
+  DHT dht(pin, DHTTYPE);
   dht.begin();
   float data;
   int i = 0;
@@ -79,7 +83,7 @@ float measureAirTemperature(int pin){
 
 float measureAirHumidity(int pin){
 
-  DHT dht(pin, DHT11);
+  DHT dht(pin, DHTTYPE);
   dht.begin();
   float data;
   int i = 0;
@@ -179,6 +183,8 @@ void conductMeasurement( StaticJsonDocument<capacity> request){
       break;
     
   }
+  
+  digitalWrite(MEASURING_LED_PIN, LOW);
 
   if(isnan(data)){
     sendError("Sensor responded with NaN", 500, queueId);
@@ -195,23 +201,19 @@ void ISR_btnAction(){
 
     if(!watered && !watering){
       watering = true;
+      watered = false;
       buttonPressedTimer = millis();
       digitalWrite(WATERING_VALVE_PIN, HIGH);
-      return;
-    }
-
-    if(watered){
-      watered = false;
-      watering = true;
-      digitalWrite(WATERING_VALVE_PIN, HIGH);
+      digitalWrite(WATERING_LED_PIN, HIGH);
       return;
     }
     
-    if(watering){
+    if(watering && buttonPressedTimer < millis() - 1000){
       watering = false;
       watered = true;
       buttonReleasedTimer = millis();
       digitalWrite(WATERING_VALVE_PIN, LOW);
+      digitalWrite(WATERING_LED_PIN, LOW);
       return;
     }
      
@@ -221,21 +223,22 @@ void ISR_btnAction(){
 
 void readBuffer(){
   int byteCount = 0;
-  char _serialBuffer[capacity];
-  // This is blocking - potentially adjust for non-blocking?
-  byteCount = Serial.readBytesUntil("\n", _serialBuffer, capacity);
+  
+  char _serialBuffer[JSON_BUFFER_SIZE];
+  memset(_serialBuffer, 0, JSON_BUFFER_SIZE);
+  
+  byteCount = Serial.readBytesUntil("\r\n", _serialBuffer, JSON_BUFFER_SIZE);
   if( byteCount > 0){
-    StaticJsonDocument<capacity> inputDoc;
+    DynamicJsonDocument inputDoc(capacity);
     DeserializationError error = deserializeJson(inputDoc, _serialBuffer);
     if(error){
       sendError(error.c_str(), 400);
     } else {
-      digitalWrite(SENSOR_POWER_PIN, HIGH);
+      digitalWrite(MEASURING_LED_PIN, HIGH);
       char* queueId = inputDoc["queueId"];
       confirmRequest(queueId);
       conductMeasurement(inputDoc);
     }
-    Serial.flush();
   }
 }
 
@@ -244,16 +247,28 @@ void setup() {
 
   Serial.begin(500000);
   attachInterrupt(digitalPinToInterrupt(WATERING_BTN_PIN), ISR_btnAction, RISING);
+  
   pinMode(WATERING_BTN_PIN, INPUT);
   pinMode(WATERING_VALVE_PIN, OUTPUT);
-  pinMode(SENSOR_POWER_PIN, OUTPUT);
-  pinMode(SENSOR_POWER_PIN, LOW);
+  
+  pinMode(ON_LED_PIN, OUTPUT);
+  digitalWrite(ON_LED_PIN, HIGH);
+  
+  pinMode(WATERING_LED_PIN, OUTPUT);
+  digitalWrite(WATERING_LED_PIN, LOW);
+  
+  pinMode(MEASURING_LED_PIN, OUTPUT);
+  digitalWrite(MEASURING_LED_PIN, LOW);
+  
+  pinMode(AUTOPILOT_LED_PIN, OUTPUT);
+  digitalWrite(AUTOPILOT_LED_PIN, LOW);
+  
+  pinMode(WATERING_VALVE_PIN, OUTPUT);
   digitalWrite(WATERING_VALVE_PIN, LOW);
     
 }
 
 void loop() {
-
 
   if(watered){
     watered = false;
@@ -264,5 +279,6 @@ void loop() {
   if(Serial.available()){
     readBuffer();
   }
+
 
 }
