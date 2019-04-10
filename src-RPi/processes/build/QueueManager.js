@@ -69,12 +69,12 @@ var QueueManager = (function () {
                 type: req.body.type || QueueItem_model_1.QueueItemType.Webserver,
                 sensorId: req.body.sensorId,
                 sensorType: req.body.sensorType,
-                pin: req.body.pin
+                pin: req.body.pin,
+                res: res
             };
             console.log("[QueueManager] STATUS - Added to queue");
             if (Object.values(QueueItem_model_1.SensorTypes).includes(newQueue.sensorType)) {
                 _this.pushToQueue(newQueue, newQueue.type === QueueItem_model_1.QueueItemType.Webserver);
-                res.status(200).send("Added to queue!");
             }
             else {
                 console.log("[QueueManager] ERROR - Sensor type " + newQueue.sensorType + " is not an active sensor");
@@ -146,7 +146,7 @@ var QueueManager = (function () {
             }
             else {
                 console.log("[QueueManager] WARNING - Confirmed item is not part of queue!");
-                console.log("[QueueManager] Queue: ", this.queue, ", Response: ", response);
+                console.log("[QueueManager] Response: ", response);
             }
         }
     };
@@ -160,25 +160,17 @@ var QueueManager = (function () {
                         queueIndex = 0;
                         console.log("[QueueManager] STATUS - Measurement Type: Queue Initiated ");
                         if (serialResponse.queueId === this.queue[0].id) {
-                            postMeasurement = {
-                                sensorId: this.queue[0].sensorId,
-                                data: serialResponse.data
-                            };
                             this.queue[0].value = serialResponse.data;
                         }
                         else {
                             console.log("[QueueManager] WARNING - Measurement Response does not match queue!");
                             queueIndex = this.queue.findIndex(function (item) { return item.id === serialResponse.queueId; });
                             if (queueIndex > -1) {
-                                postMeasurement = {
-                                    sensorId: this.queue[queueIndex].sensorId,
-                                    data: serialResponse.data
-                                };
                                 this.queue[queueIndex].value = serialResponse.data;
                             }
                             else {
                                 console.log("[QueueManager] WARNING - No Queue item found for measurement!");
-                                console.log("[QueueManager] Queue: ", this.queue, ", Measurement: ", serialResponse);
+                                console.log("[QueueManager] Measurement: ", serialResponse);
                             }
                         }
                         return [3, 3];
@@ -199,6 +191,14 @@ var QueueManager = (function () {
                                         sensorId: sensor.id,
                                         data: serialResponse.data
                                     };
+                                    request.post("http://localhost:" + config_1.CONFIG.WEBSERVER_PORT + "/api/measurements", { json: postMeasurement }, function (err, httpResponse, body) {
+                                        if (err) {
+                                            console.log("[QueueManager] ERROR - Failed posting arduino initiated measurement!");
+                                            console.log("[QueueManager] ", err);
+                                            return;
+                                        }
+                                        console.log("[QueueManager] STATUS - Successfully posted measurement to sensor: ", postMeasurement.sensorId);
+                                    });
                                 }
                                 catch (err) {
                                     console.log("[QueueManager] ERROR - Sensor API Response was no valid json: ", body);
@@ -210,9 +210,6 @@ var QueueManager = (function () {
                         _a.sent();
                         _a.label = 3;
                     case 3:
-                        request.post("http://localhost:" + config_1.CONFIG.WEBSERVER_PORT + "/api/measurements", { json: postMeasurement }, function (err, httpResponse, body) {
-                            console.log("[QueueManager] STATUS - Successfully posted measurement to sensor: ", postMeasurement.sensorId);
-                        });
                         this.queueListener.next(this.queue);
                         return [2];
                 }
@@ -223,25 +220,14 @@ var QueueManager = (function () {
         var queueIndex = this.queue.findIndex(function (item) { return item.id === response.queueId; });
         if (queueIndex > -1) {
             var sensorId = this.queue[queueIndex].sensorId;
-            this.deactivateSensor(sensorId);
-            this.queue.splice(queueIndex, 1);
+            var item = this.queue.splice(queueIndex, 1);
+            item[0].res.status(404).send(new Error("Sensor Measurement resulted in Error"));
             this.queueListener.next(this.queue);
         }
         else {
             console.log("[QueueManager] WARNING - Serial error not queue item related!");
-            console.log("[QueueManager] Serial Response: ", response, ", Queue: ", this.queue);
+            console.log("[QueueManager] Serial Response: ", response);
         }
-    };
-    QueueManager.prototype.deactivateSensor = function (sensorId) {
-        console.log("[QueueManager] STATUS - Deactivating Sensor " + sensorId);
-        request.patch("http://localhost:" + config_1.CONFIG.WEBSERVER_PORT + "/api/sensors/" + sensorId, { json: {
-                state: 0
-            } }, function (err, response, body) {
-            if (err) {
-                console.log("[QueueManager] SERVER ERROR - Failed patching sensor!");
-                console.log("[QueueManager] Serial Response: ", response, ", Error: ", err);
-            }
-        });
     };
     QueueManager.prototype.executionLoop = function () {
         var _this = this;
@@ -270,24 +256,25 @@ var QueueManager = (function () {
                 if (changedQueue[0].submitted) {
                     if (changedQueue[0].confirmed) {
                         if (changedQueue[0].value) {
-                            console.log("[QueueManager] STATUS - Removing completed Item from Que: ", _this.queue[0]);
-                            _this.queue.splice(0, 1);
+                            console.log("[QueueManager] STATUS - Removing completed Item from Que");
+                            var item = _this.queue.splice(0, 1);
+                            item[0].res.status(200).send({ data: item[0].value });
                             _this.queueListener.next(_this.queue);
                             return;
                         }
                         if (changedQueue[0].confirmed && changedQueue[0].confirmed < Date.now() - 15 * 1000) {
-                            console.log("[QueueManager] WARNING - Removing measurement-timeout Item from Que: ", _this.queue[0]);
-                            _this.deactivateSensor(_this.queue[0].sensorId);
-                            _this.queue.splice(0, 1);
+                            console.log("[QueueManager] WARNING - Removing measurement-timeout Item from Que. Sensor ID: ", _this.queue[0].sensorId);
+                            var item = _this.queue.splice(0, 1);
+                            item[0].res.status(408).send(new Error("Sensor measurement timed out!"));
                             _this.queueListener.next(_this.queue);
                             return;
                         }
                         return;
                     }
                     if (changedQueue[0].submitted && changedQueue[0].submitted < Date.now() - 15 * 1000) {
-                        console.log("[QueueManager] WARNING - Removing confirmation-timeout Item from Que: ", _this.queue[0]);
-                        _this.deactivateSensor(_this.queue[0].sensorId);
-                        _this.queue.splice(0, 1);
+                        console.log("[QueueManager] WARNING - Removing confirmation-timeout Item from Que. Sensor ID: ", _this.queue[0].sensorId);
+                        var item = _this.queue.splice(0, 1);
+                        item[0].res.status(408).send(new Error("Sensor confirmation timed out!"));
                         _this.queueListener.next(_this.queue);
                         return;
                     }

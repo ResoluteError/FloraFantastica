@@ -38,7 +38,7 @@ var SerialManager = (function () {
         this.parser.on('data', function (data) {
             try {
                 var response = JSON.parse(data);
-                console.log("[SerialManager] Received JSON response");
+                console.log("[SerialManager] Received JSON response", response);
                 _this.responseSubscribeabe.next(response);
             }
             catch (_a) {
@@ -59,8 +59,9 @@ var SerialManager = (function () {
             sensorType: data.sensorType,
             pin: data.pin
         };
-        this.port.write(JSON.stringify(sendData) + "\n", function (err) {
-            console.log("[SerialManager] Requested Measurement");
+        var serializedSendData = JSON.stringify(sendData) + "\0\r\n";
+        console.log("[SerialManager] Sending Data: ", serializedSendData);
+        this.port.write(JSON.stringify(sendData), function (err) {
             if (err) {
                 console.log("[SerialManager] An error occured: ", err);
             }

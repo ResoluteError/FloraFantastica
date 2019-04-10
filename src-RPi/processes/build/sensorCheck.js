@@ -90,7 +90,7 @@ var rxjs_1 = require("rxjs");
                 }
             };
             return new rxjs_1.Observable(function (observer) {
-                request("http://localhost:" + config_1.CONFIG.WEBSERVER_PORT + "/api/sensors", function (err, httpResponse, body) {
+                request(options, function (err, httpResponse, body) {
                     if (err) {
                         observer.error(err);
                         observer.complete();
@@ -103,14 +103,21 @@ var rxjs_1 = require("rxjs");
         }
         function requestSensorMeasurement(sensor) {
             return new rxjs_1.Observable(function (observer) {
-                request.post("http://localhost:" + config_1.CONFIG.QUEUE_MANAGER_PORT + "/queue", {
+                var options = {
+                    url: "http://localhost:" + config_1.CONFIG.QUEUE_MANAGER_PORT + "/queue",
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Accept-Charset': 'utf-8'
+                    },
                     json: {
                         type: "cron",
                         sensorId: sensor.id,
                         sensorType: sensor.type,
                         pin: sensor.pin
                     }
-                }, function (err, httpResponse, body) {
+                };
+                request(options, function (err, httpResponse, body) {
                     if (err) {
                         observer.error(err);
                         observer.complete();
@@ -130,26 +137,18 @@ var rxjs_1 = require("rxjs");
                             _i = 0, sensors_1 = sensors;
                             _a.label = 1;
                         case 1:
-                            if (!(_i < sensors_1.length)) return [3, 7];
+                            if (!(_i < sensors_1.length)) return [3, 4];
                             sensor = sensors_1[_i];
-                            if (!sensor.currentPlantId) return [3, 5];
+                            if (!sensor.currentPlantId) return [3, 3];
                             if (!(sensor.state === 2)) return [3, 3];
                             return [4, requestSensorMeasurement(sensor).toPromise()];
                         case 2:
                             request = _a.sent();
-                            console.log("Request: ", request);
-                            return [3, 4];
+                            _a.label = 3;
                         case 3:
-                            console.log("Sensor " + sensor.name + " current state is " + sensor.state);
-                            _a.label = 4;
-                        case 4: return [3, 6];
-                        case 5:
-                            console.log("Sensor " + sensor.name + " current plant Id is " + sensor.currentPlantId);
-                            _a.label = 6;
-                        case 6:
                             _i++;
                             return [3, 1];
-                        case 7: return [2];
+                        case 4: return [2];
                     }
                 });
             });
@@ -181,7 +180,6 @@ var rxjs_1 = require("rxjs");
                 case 3:
                     sensors = _b.sent();
                     checkSensors(sensors);
-                    console.log("Type: ", type);
                     _b.label = 4;
                 case 4:
                     _i++;
