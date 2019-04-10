@@ -1,8 +1,13 @@
+
 <div class="container" *ngIf="plant">
   <div class="row">
     <div class="col-12">
       <h1 class="text-center mt-4 mb-4">Detail View</h1>
-      <div class="btn-group btn-group-sm float-right" role="group" aria-label="Timeframe">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 text-center">
+      <div class="btn-group btn-group-sm" role="group" aria-label="Timeframe">
         <button type="button" class="btn btn-secondary {{activeClass(1)}}" (click)="updateChartScope(1)">1 Day</button>
         <button type="button" class="btn btn-secondary {{activeClass(7)}}" (click)="updateChartScope(7)">7 Days</button>
         <button type="button" class="btn btn-secondary {{activeClass(30)}}" (click)="updateChartScope(30)">30 Days</button>
@@ -10,7 +15,7 @@
       </div>
     </div>
   </div>
-  <div class="row">
+  <div class="row mt-3">
 
     <div class="col-12 canvas-container">
         <canvas #baseChart>

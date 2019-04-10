@@ -32,7 +32,7 @@ export class PlantDetailsComponent implements OnInit {
 
   plant : Plant;
   chart : Chart;
-  timeScope: number = 30;
+  timeScope: number = 1;
   chartController : ChartController;
   chartUIController : ChartUIController;
   sensors : Sensor[];
