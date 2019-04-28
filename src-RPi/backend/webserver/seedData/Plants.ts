@@ -1,4 +1,4 @@
-import { Plant } from "../entity/Plants";
+import { Plant } from "../entities/Plants";
 
 export class PlantSeedData {
 

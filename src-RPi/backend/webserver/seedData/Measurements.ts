@@ -1,5 +1,5 @@
-import { Sensor } from "../entity/Sensors";
-import { Measurement } from "../entity/Measurement";
+import { Sensor } from "../entities/Sensors";
+import { Measurement } from "../entities/Measurement";
 
 export class MeasurementSeedData {
 

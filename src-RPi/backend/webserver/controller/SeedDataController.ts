@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { getManager, getConnection } from "typeorm";
-import { Plant } from "../entity/Plants";
+import { Plant } from "../entities/Plants";
 import { PlantSeedData } from "../seedData/Plants";
-import { Measurement } from "../entity/Measurement";
-import { Sensor } from "../entity/Sensors";
+import { Measurement } from "../entities/Measurement";
+import { Sensor } from "../entities/Sensors";
 import { SensorSeedData } from "../seedData/Sensors";
 import { MeasurementSeedData } from "../seedData/Measurements";
 

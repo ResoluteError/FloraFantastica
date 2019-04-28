@@ -1,0 +1,17 @@
+{
+  "name": "cronscript",
+  "version": "1.0.0",
+  "description": "Script triggered via cron to regularly request sensor updates",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "douglasreiser",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^11.13.8",
+    "@types/request": "^2.48.1",
+    "request": "^2.88.0",
+    "rxjs": "^6.5.1"
+  }
+}

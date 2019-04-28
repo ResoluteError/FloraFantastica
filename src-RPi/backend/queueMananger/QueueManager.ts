@@ -61,7 +61,7 @@ export class QueueManager {
         this.pushToQueue(newQueue, newQueue.type === QueueItemType.Webserver);
       } else {
         console.log(`[QueueManager] ERROR - Sensor type ${newQueue.sensorType} is not an active sensor`);
-        res.status(500).error("Wrong sensor type!");
+        res.status(500).send("Wrong sensor type!");
       }
 
     

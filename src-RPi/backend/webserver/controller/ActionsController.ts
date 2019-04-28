@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { getManager, EntityManager, getRepository } from "typeorm";
-import { Measurement } from "../entity/Measurement";
-import { Plant } from "../entity/Plants";
-import { Sensor } from "../entity/Sensors";
+import { Measurement } from "../entities/Measurement";
+import { Plant } from "../entities/Plants";
+import { Sensor } from "../entities/Sensors";
 import * as request from "request";
 import { Observable } from "rxjs";
 

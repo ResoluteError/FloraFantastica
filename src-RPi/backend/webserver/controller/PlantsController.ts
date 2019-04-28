@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { getManager, CreateDateColumn } from "typeorm";
-import { Plant } from "../entity/Plants";
+import { Plant } from "../entities/Plants";
 import fs = require('fs');
 import mime = require('mime-types');
 import { CONFIG } from "../config";

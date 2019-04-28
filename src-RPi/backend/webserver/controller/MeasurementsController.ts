@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { getManager } from "typeorm";
-import { Measurement } from "../entity/Measurement";
-import { Sensor } from "../entity/Sensors";
+import { Measurement } from "../entities/Measurement";
+import { Sensor } from "../entities/Sensors";
 
 
 export class MeasurementController {

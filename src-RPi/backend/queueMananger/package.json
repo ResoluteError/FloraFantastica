@@ -1,0 +1,26 @@
+{
+  "name": "queuemananger",
+  "version": "1.0.0",
+  "description": "Responsible for managing the communication between the rpi and arduino",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node-dev --respawn --transpileOnly ./app.ts"
+  },
+  "author": "douglasreiser",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^4.16.1",
+    "@types/node": "^11.13.8",
+    "@types/request": "^2.48.1",
+    "@types/serialport": "^7.0.2",
+    "@types/uuid": "^3.4.4",
+    "express": "^4.16.4",
+    "request": "^2.88.0",
+    "rxjs": "^6.5.1",
+    "serialport": "^7.1.5",
+    "ts-node-dev": "^1.0.0-pre.32",
+    "typescript": "^3.4.5",
+    "uuid": "^3.3.2"
+  }
+}

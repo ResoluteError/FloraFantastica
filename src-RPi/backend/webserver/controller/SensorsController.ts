@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { getManager, IsNull } from "typeorm";
-import { Sensor } from "../entity/Sensors";
+import { Sensor } from "../entities/Sensors";
 
 export class SensorController {
 
