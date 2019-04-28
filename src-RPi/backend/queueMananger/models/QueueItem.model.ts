@@ -11,7 +11,8 @@ export class QueueItem {
 
   sensorId : string;
   sensorType : SensorTypes;
-  pin: number;
+  dataPin: number;
+  powerPin: number;
   value?: number;
 
 }

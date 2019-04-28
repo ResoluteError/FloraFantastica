@@ -14,7 +14,10 @@
   <input class="form-control" type="text" placeholder="Sensor Name" name="create-sensor-name" [(ngModel)]="sensor.name">
 </td>
 <td>
-  <input class="form-control" type="text" placeholder="A0" maxlength="2" name="create-sensor-pin" [(ngModel)]="sensor.pin">
+  <input class="form-control" type="text" placeholder="0" maxlength="2" name="create-sensor-data-pin" [(ngModel)]="sensor.dataPin">
+</td>
+<td>
+  <input class="form-control" type="text" placeholder="5" maxlength="2" name="create-sensor-ppwer-pin" [(ngModel)]="sensor.powerPin">
 </td>
 <td>
   <select class="custom-select" name="create-sensor-plantId" [(ngModel)]="sensor.currentPlantId">

@@ -8,7 +8,8 @@
   <td>
     {{sensor.name}}
   </td>
-  <td>{{sensor.pin || "?"}}</td>
+  <td>{{sensor.dataPin || "?"}}</td>
+  <td>{{sensor.powerPin || "?"}}</td>
   <td>
     <a [routerLink]="'/plant-details/'+sensor.currentPlantId" *ngIf="sensor.currentPlantId">
       {{sensor.currentPlantName}}
@@ -38,7 +39,10 @@
     <input type="text" name="name-{{editSensor.id}}" [(ngModel)]="editSensor.name" class="form-control">
   </td>
   <td>
-    <input type="text" name="pin-{{editSensor.id}}" [(ngModel)]="editSensor.pin" class="form-control" maxlength="2">
+    <input type="text" name="pin-{{editSensor.id}}" [(ngModel)]="editSensor.dataPin" class="form-control" maxlength="2">
+  </td>
+  <td>
+    <input type="text" name="pin-{{editSensor.id}}" [(ngModel)]="editSensor.powerPin" class="form-control" maxlength="2">
   </td>
   <td>
     <select class="custom-select" name="plantId-{{editSensor.id}}" [(ngModel)]="editSensor.currentPlantId">

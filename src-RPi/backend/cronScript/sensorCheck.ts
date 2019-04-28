@@ -117,7 +117,8 @@ import { Observable } from "rxjs";
           type: "cron",
           sensorId: sensor.id,
           sensorType: sensor.type,
-          pin: sensor.pin
+          dataPin: sensor.dataPin,
+          powerPin: sensor.powerPin
         }
       };
 

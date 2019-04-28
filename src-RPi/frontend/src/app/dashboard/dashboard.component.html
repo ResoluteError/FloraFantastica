@@ -34,9 +34,13 @@
             Name 
             <fa-icon class="ml-2" *ngIf="sortSetting.item === 'name'" [icon]="getSortIcon('name')"></fa-icon>
           </th>
-          <th (click)="toggleSort('pin')" width="10%" class="sorting-header">
-            Pin 
-            <fa-icon class="ml-2" *ngIf="sortSetting.item === 'pin'" [icon]="getSortIcon('pin')"></fa-icon>
+          <th (click)="toggleSort('dataPin')" width="10%" class="sorting-header">
+            Data Pin 
+            <fa-icon class="ml-2" *ngIf="sortSetting.item === 'dataPin'" [icon]="getSortIcon('dataPin')"></fa-icon>
+          </th>
+          <th (click)="toggleSort('powerPin')" width="10%" class="sorting-header">
+            Power Pin 
+            <fa-icon class="ml-2" *ngIf="sortSetting.item === 'powerPin'" [icon]="getSortIcon('powerPin')"></fa-icon>
           </th>
           <th (click)="toggleSort('currentPlantId', plantIdToStr)" width="30%" class="sorting-header">
             Assinged Plant 

@@ -4,7 +4,6 @@ import { Measurement } from "../entities/Measurement";
 import { Plant } from "../entities/Plants";
 import { Sensor } from "../entities/Sensors";
 import * as request from "request";
-import { Observable } from "rxjs";
 
 import express = require("express");
 import { CONFIG } from "../config";
@@ -69,7 +68,8 @@ export class ActionsController {
       var result = await manager.insert(Sensor, {
         currentPlantId: plantId,
         name: "Health Entries",
-        pin: null,
+        dataPin: null,
+        powerPin: null,
         type: 90,
         state: 0
       });
@@ -104,7 +104,8 @@ export class ActionsController {
       type: "webserver",
       sensorId: sensorId,
       sensorType: sensor.type,
-      pin: sensor.pin
+      dataPin: sensor.dataPin,
+      powerPin: sensor.powerPin
     }
 
     const sensorReqOptions = {  

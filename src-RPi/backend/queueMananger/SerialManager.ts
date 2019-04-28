@@ -91,8 +91,8 @@ export class SerialManager{
       type: SerialCommunicationTypes.Measurement,
       queueId: data.id,
       sensorType: data.sensorType,
-      pin: data.pin
-
+      dataPin: data.dataPin,
+      powerPin: data.powerPin
     }
 
     var serializedSendData = JSON.stringify(sendData) + "\0\r\n";

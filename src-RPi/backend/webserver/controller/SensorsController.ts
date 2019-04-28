@@ -30,9 +30,9 @@ export class SensorController {
 
   }
   
-  static async get_by_pin(req : Request, res: Response){
+  static async get_by_data_pin(req : Request, res: Response){
 
-    var pin = req.params.pin;
+    var pin = req.params.dataPin;
     var manager = getManager();
 
     var sensor = await manager.findOne(Sensor, {

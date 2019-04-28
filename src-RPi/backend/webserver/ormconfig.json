@@ -2,6 +2,6 @@
   "type" : "sqlite",
   "database" : "../public/flora_fantastica.db",
   "entities": [
-    "../entities/*.ts"
+    "./entities/*.ts"
   ]
 }

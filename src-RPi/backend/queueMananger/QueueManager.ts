@@ -51,7 +51,8 @@ export class QueueManager {
         type: req.body.type || QueueItemType.Webserver,
         sensorId : req.body.sensorId,
         sensorType: req.body.sensorType,
-        pin: req.body.pin,
+        dataPin: req.body.dataPin,
+        powerPin: req.body.powerPin,
         res: res
       };
 
@@ -190,15 +191,15 @@ export class QueueManager {
     } else {
 
       console.log("[QueueManager] STATUS - Measurement Type: Arduino Initiated ");
-      await request.get(`http://localhost:${CONFIG.WEBSERVER_PORT}/api/sensors/pin/${serialResponse.pin}`, (err : Error, httpResponse, body ) => {
+      await request.get(`http://localhost:${CONFIG.WEBSERVER_PORT}/api/sensors/pin/${serialResponse.dataPin}`, (err : Error, httpResponse, body ) => {
 
         if(err) {
-          console.log("[QueueManager] SERVER ERROR - Getting sensor for pin: " + serialResponse.pin, err);
+          console.log("[QueueManager] SERVER ERROR - Getting sensor for pin: " + serialResponse.dataPin, err);
           return;
         } 
 
         if(!body.length){
-          console.log("[QueueManager] HTTP RESPONSE ERROR - No Sensor found for pin ", serialResponse.pin);
+          console.log("[QueueManager] HTTP RESPONSE ERROR - No Sensor found for pin ", serialResponse.dataPin);
           return;
         }
 

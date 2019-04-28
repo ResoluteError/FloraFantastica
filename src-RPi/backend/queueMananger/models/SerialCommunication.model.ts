@@ -14,7 +14,8 @@ export class SerialResponse extends SerialCommunicationBase {
 
 export class SerialMeasurementRequest extends SerialRequest {
 
-  pin: number;
+  powerPin: number;
+  dataPin: number;
   sensorType: number;
 
 }
@@ -60,6 +61,6 @@ export class SerialIsBusyResponse extends SerialResponse{
 export class SerialMeasurementResponse extends SerialResponse{
 
   data: number;
-  pin: number;
+  dataPin: number;
 
 }
