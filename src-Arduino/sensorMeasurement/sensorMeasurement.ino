@@ -34,10 +34,10 @@ void confirmRequest(char* queueId){
   
 }
 
-void sendMeasurement(int pin, float data, char* queueId = NULL){
+void sendMeasurement(int dataPin, float data, char* queueId = NULL){
 
   StaticJsonDocument<capacity> outputDoc;
-  outputDoc["pin"] = pin;
+  outputDoc["dataPin"] = dataPin;
   outputDoc["data"] = data;
   outputDoc["type"] = "measurement";
   outputDoc["queueId"] = queueId;
@@ -64,9 +64,9 @@ void sendBusy( bool busy ){
   
 }
 
-float measureAirTemperature(int pin){
+float measureAirTemperature(int dataPin){
 
-  DHT dht(pin, DHTTYPE);
+  DHT dht(dataPin, DHTTYPE);
   dht.begin();
   float data;
   int i = 0;
@@ -81,9 +81,9 @@ float measureAirTemperature(int pin){
 }
 
 
-float measureAirHumidity(int pin){
+float measureAirHumidity(int dataPin){
 
-  DHT dht(pin, DHTTYPE);
+  DHT dht(dataPin, DHTTYPE);
   dht.begin();
   float data;
   int i = 0;
@@ -97,7 +97,8 @@ float measureAirHumidity(int pin){
   
 }
 
-float measureSoilMoisture(int pin){
+// dataPin is ignored because this sensor requires the specific timer pin 47
+float measureSoilMoisture(int dataPin){
   
   FreqCount.begin(1000);
   
@@ -123,9 +124,9 @@ float measureSoilMoisture(int pin){
   
 }
 
-float measureSoilTemperature(int pin){
+float measureSoilTemperature(int dataPin){
   
-  OneWire oneWirePin(pin);
+  OneWire oneWirePin(dataPin);
   DallasTemperature sensor(&oneWirePin);
 
   pinMode(pin, INPUT);
@@ -145,9 +146,9 @@ float measureSoilTemperature(int pin){
   
 }
 
-float measureLightIntensity(int pin){
+float measureLightIntensity(int dataPin){
 
-  float data = analogRead(pin);
+  float data = analogRead(dataPin);
 
   return data;
   
@@ -155,31 +156,36 @@ float measureLightIntensity(int pin){
 
 void conductMeasurement( StaticJsonDocument<capacity> request){
 
-  int pin = request["pin"];
+  int dataPin = request["dataPin"];
+  int powerPin = request["powerPin"];
   int type = request["sensorType"];
   char* queueId = request["queueId"];
   float data = 0.0f;
 
+  pinMode(powerPin, OUTPUT);
+  digitalWrite(powerPin, HIGH);
+  delay(1000);
+
   switch(type){
 
     case 10:
-      data = measureAirTemperature(pin);
+      data = measureAirTemperature(dataPin);
       break;
 
     case 11:
-      data = measureAirHumidity(pin);
+      data = measureAirHumidity(dataPin);
       break;
 
     case 20: 
-      data = measureSoilMoisture(pin);
+      data = measureSoilMoisture(dataPin);
       break;
 
     case 21:
-      data = measureSoilTemperature(pin);
+      data = measureSoilTemperature(dataPin);
       break;
 
     case 30:
-      data = measureLightIntensity(pin);
+      data = measureLightIntensity(dataPin);
       break;
     
   }
@@ -191,7 +197,7 @@ void conductMeasurement( StaticJsonDocument<capacity> request){
     return;
   }
   
-  sendMeasurement(pin, data, queueId);
+  sendMeasurement(dataPin, data, queueId);
   
 }
 

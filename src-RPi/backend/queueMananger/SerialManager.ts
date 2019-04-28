@@ -28,7 +28,7 @@ export class SerialManager{
 
 
   constructor(
-    private responseSubscribeabe: Subject<SerialResponse>
+    private responseSubscribeable: Subject<SerialResponse>
   ){
     
     this.setupSerial();
@@ -69,7 +69,7 @@ export class SerialManager{
       try {
         var response : SerialResponse = JSON.parse(data);
         console.log(`[SerialManager] Received JSON response`, response);
-        this.responseSubscribeabe.next(response);
+        this.responseSubscribeable.next(response);
       } catch {
         console.log("[SerialManager] String not JSON parseable " + data);
         var errorResponse : SerialErrorResponse = {
@@ -77,7 +77,7 @@ export class SerialManager{
           code: SerialErrorCode.INVALID_SERIAL_RESPONSE,
           message: "Serial string NOT parseable: '" + data + "'"
         }
-        this.responseSubscribeabe.next(errorResponse);
+        this.responseSubscribeable.next(errorResponse);
       }
       
     });
