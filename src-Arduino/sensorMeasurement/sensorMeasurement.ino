@@ -12,8 +12,8 @@
 #define WATERING_VALVE_PIN 22
 #define DELIMETER "\n"
 #define ON_LED_PIN 40
-#define WATERING_LED_PIN 44
-#define MEASURING_LED_PIN 48
+#define WATERING_LED_PIN 51
+#define BUSY_LED_PIN 50
 #define AUTOPILOT_LED_PIN 52
 
 #define JSON_BUFFER_SIZE 128
@@ -28,7 +28,7 @@ volatile unsigned long buttonPressedTimer;
 void confirmRequest(char* queueId){
   
   StaticJsonDocument<capacity> outputDoc;
-  outputDoc["type"]="confirmation";
+  outputDoc["type"]= 1;
   outputDoc["queueId"] = queueId;
   Serial.println(outputDoc.as<String>());
   
@@ -39,7 +39,16 @@ void sendMeasurement(int dataPin, float data, char* queueId = NULL){
   StaticJsonDocument<capacity> outputDoc;
   outputDoc["dataPin"] = dataPin;
   outputDoc["data"] = data;
-  outputDoc["type"] = "measurement";
+  outputDoc["type"] = 2;
+  outputDoc["queueId"] = queueId;
+  Serial.println(outputDoc.as<String>());
+
+}
+
+void sendAction(char* queueId = NULL){
+
+  StaticJsonDocument<capacity> outputDoc;
+  outputDoc["type"] = 3;
   outputDoc["queueId"] = queueId;
   Serial.println(outputDoc.as<String>());
 
@@ -50,7 +59,7 @@ void sendError( char* errorMsg, int code, char* queueId = NULL){
   StaticJsonDocument<capacity> outputDoc;
   outputDoc["code"] = code;
   outputDoc["error"] = errorMsg;
-  outputDoc["type"] = "error";
+  outputDoc["type"] = 0;
   outputDoc["queueId"] = queueId;
   Serial.println(outputDoc.as<String>());
   
@@ -59,7 +68,7 @@ void sendError( char* errorMsg, int code, char* queueId = NULL){
 void sendBusy( bool busy ){
   
   StaticJsonDocument<capacity> outputDoc;
-  outputDoc["type"] = "isBusy";
+  outputDoc["type"] = 5;
   outputDoc["busy"] = busy;
   
 }
@@ -129,7 +138,6 @@ float measureSoilTemperature(int dataPin){
   OneWire oneWirePin(dataPin);
   DallasTemperature sensor(&oneWirePin);
 
-  pinMode(pin, INPUT);
   sensor.begin();
 
   delay(1000); // wait for sensor to start up
@@ -189,8 +197,6 @@ void conductMeasurement( StaticJsonDocument<capacity> request){
       break;
     
   }
-  
-  digitalWrite(MEASURING_LED_PIN, LOW);
 
   if(isnan(data)){
     sendError("Sensor responded with NaN", 500, queueId);
@@ -198,6 +204,36 @@ void conductMeasurement( StaticJsonDocument<capacity> request){
   }
   
   sendMeasurement(dataPin, data, queueId);
+  
+}
+
+void executeAction( StaticJsonDocument<capacity> request){
+  
+  char* queueId = request["queueId"];
+  unsigned int actionType = request["actionType"]; // enum: 0 = watering; 1 = LED
+  unsigned int activationType = request["activationType"]; // enum: 0 = TurnOff, 1 = TurnOn, 2 = Duration
+  unsigned int actionPin = request["actionPin"];
+  unsigned long duration = request["duration"];
+
+  pinMode(actionPin, OUTPUT);
+
+  switch (activationType){
+    case 0: 
+            digitalWrite(actionPin, LOW);
+            break;
+    case 1: 
+            digitalWrite(actionPin, HIGH);
+            break;
+    case 2: 
+            digitalWrite(actionPin, HIGH);
+            delay(duration);
+            digitalWrite(actionPin, LOW);
+            break;
+            
+    default: break;
+  }
+
+  sendAction(queueId);
   
 }
 
@@ -240,10 +276,19 @@ void readBuffer(){
     if(error){
       sendError(error.c_str(), 400);
     } else {
-      digitalWrite(MEASURING_LED_PIN, HIGH);
+      digitalWrite(BUSY_LED_PIN, HIGH);
       char* queueId = inputDoc["queueId"];
       confirmRequest(queueId);
-      conductMeasurement(inputDoc);
+
+      unsigned int requestType = inputDoc["type"]; 
+
+      if(requestType == 0){
+        conductMeasurement(inputDoc);
+      } else if(requestType == 1){
+        executeAction(inputDoc);
+      }
+
+      digitalWrite(BUSY_LED_PIN, LOW);
     }
   }
 }
@@ -263,8 +308,8 @@ void setup() {
   pinMode(WATERING_LED_PIN, OUTPUT);
   digitalWrite(WATERING_LED_PIN, LOW);
   
-  pinMode(MEASURING_LED_PIN, OUTPUT);
-  digitalWrite(MEASURING_LED_PIN, LOW);
+  pinMode(BUSY_LED_PIN, OUTPUT);
+  digitalWrite(BUSY_LED_PIN, LOW);
   
   pinMode(AUTOPILOT_LED_PIN, OUTPUT);
   digitalWrite(AUTOPILOT_LED_PIN, LOW);

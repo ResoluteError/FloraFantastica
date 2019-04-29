@@ -184,15 +184,33 @@ export class QueueManager {
 
   resolveAction( serialResponse : SerialActionResponse){
 
-    if(serialResponse.queueId){
+    console.log("[QueueManager] STATUS - Action Type: Queue Initiated ");
 
-      console.log("[QueueManager] STATUS - Action Type: Queue Initiated ");
+    if(serialResponse.queueId === this.queue[0].id){
 
-      if(serialResponse.queueId === this.queue[0].id){
-        this.queue[0]
+      var completedAction = this.queue.splice(0,1)[0];
+      completedAction.res.status(200).send({success:true});
+
+    } else {
+
+      console.log("[QueueManager] WARNING - Actions Response does not match queue!");
+      
+      var queueIndex = this.queue.findIndex( item => item.id === serialResponse.queueId);
+
+      if(queueIndex > -1){
+
+        var queueItem = <ActionQueueItem>this.queue.splice(queueIndex, 1)[0];
+        completedAction.res.status(200).send({success:true});
+
+      } else {
+
+        console.log("[QueueManager] WARNING - No Queue item found for measurement!");
+        console.log("[QueueManager] Measurement: ", serialResponse);
+
       }
-
     }
+
+    this.queueListener.next(this.queue);
 
   }
 

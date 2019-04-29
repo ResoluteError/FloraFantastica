@@ -39,11 +39,12 @@ export class SerialMeasurementRequest extends SerialRequest {
 export enum SerialResponseType {
 
   Error = 0,
+  Confirmation,
   Measurement,
+  Action,
   IsAlive,
   IsBusy,
-  Confirmation,
-  Action
+  
 
 }
 
