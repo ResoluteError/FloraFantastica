@@ -2,8 +2,8 @@ import { SerialManager } from "./SerialManager";
 import { CONFIG } from "./config";
 import express = require("express");
 import { Subject } from "rxjs";
-import { SerialResponse, SerialMeasurementResponse, SerialCommunicationTypes, SerialErrorResponse } from "./models/SerialCommunication.model";
-import { QueueItem, QueueItemType, SensorTypes } from "./models/QueueItem.model";
+import { SerialResponse, SerialMeasurementResponse, SerialResponseType, SerialRequestType, SerialErrorResponse, SerialActionResponse } from "./models/SerialCommunication.model";
+import { QueueItem, SensorTypes, ActionQueueItem, MeasurementQueueItem, QueueItemOrigin, QueueItemStatus } from "./models/QueueItem.model";
 import * as bodyParser from "body-parser";
 import * as uuid from "uuid/v1";
 import * as request from "request";
@@ -48,22 +48,42 @@ export class QueueManager {
 
       var newQueue : QueueItem = {
         id: uuid(),
-        type: req.body.type || QueueItemType.Webserver,
-        sensorId : req.body.sensorId,
-        sensorType: req.body.sensorType,
-        dataPin: req.body.dataPin,
-        powerPin: req.body.powerPin,
-        res: res
+        origin: req.body.origin || QueueItemOrigin.Webserver,
+        res: res,
+        type: req.body.type
       };
 
-      console.log("[QueueManager] STATUS - Added to queue");
+      switch(newQueue.type){
 
-      if(Object.values(SensorTypes).includes(newQueue.sensorType)){
-        this.pushToQueue(newQueue, newQueue.type === QueueItemType.Webserver);
-      } else {
-        console.log(`[QueueManager] ERROR - Sensor type ${newQueue.sensorType} is not an active sensor`);
-        res.status(500).send("Wrong sensor type!");
+        case SerialRequestType.Measurement : 
+          var newMeasurementQueueItem : MeasurementQueueItem = {
+            ...newQueue,
+            sensorId : req.body.sensorId,
+            sensorType: req.body.sensorType,
+            dataPin: req.body.dataPin,
+            powerPin: req.body.powerPin,
+          }
+          if(Object.values(SensorTypes).includes(newMeasurementQueueItem.sensorType)){
+            this.pushToQueue(newMeasurementQueueItem, newMeasurementQueueItem.origin === QueueItemOrigin.Webserver);
+          } else {
+            console.log(`[QueueManager] ERROR - Sensor type ${newMeasurementQueueItem.sensorType} is not an active sensor`);
+            res.status(500).send("Wrong sensor type!");
+          }
+          break;
+
+        case SerialRequestType.Action : 
+          var newActionQueueItem : ActionQueueItem = {
+            ...newQueue,
+            actionType : req.body.actionType,
+            actionPin : req.body.actionPin,
+            activationType: req.body.activationType,
+            duration : req.body.duration
+          }
+          this.pushToQueue(newActionQueueItem, newActionQueueItem.origin === QueueItemOrigin.Webserver);
+          break;
       }
+
+      console.log("[QueueManager] STATUS - Added to queue");
 
     
     });
@@ -102,29 +122,34 @@ export class QueueManager {
   resolveResponse( response: SerialResponse): void{
     switch(response.type){
 
-      case SerialCommunicationTypes.Error :
+      case SerialResponseType.Error :
         console.log("[QueueManager] STATUS - Received response type: Error Response");
         this.resolveError(<SerialErrorResponse>response);
         break;
 
-      case SerialCommunicationTypes.IsAlive :
+      case SerialResponseType.IsAlive :
         console.log("[QueueManager] STATUS - Received response type: IsAlive Response");
         console.log(response);
         break;
 
-      case SerialCommunicationTypes.IsBusy :
+      case SerialResponseType.IsBusy :
         console.log("[QueueManager]  TATUS - Received response type: IsBusy Response");
         console.log(response);
         break;
 
-      case SerialCommunicationTypes.Confirmation :
+      case SerialResponseType.Confirmation :
         console.log("[QueueManager] STATUS - Received response type: Confirmation Response");
         this.resolveConfirmation(response);
         break;
 
-      case SerialCommunicationTypes.Measurement :
+      case SerialResponseType.Measurement :
         console.log("[QueueManager] STATUS - Received response type: Measurement Response");
         this.resolveMeasurement(<SerialMeasurementResponse>response);
+        break;
+
+      case SerialResponseType.Action :
+        console.log("[QueueManager] STATUS - Received response type: Measurement Response");
+        this.resolveAction(<SerialActionResponse>response);
         break;
 
       default:
@@ -157,6 +182,20 @@ export class QueueManager {
 
   }
 
+  resolveAction( serialResponse : SerialActionResponse){
+
+    if(serialResponse.queueId){
+
+      console.log("[QueueManager] STATUS - Action Type: Queue Initiated ");
+
+      if(serialResponse.queueId === this.queue[0].id){
+        this.queue[0]
+      }
+
+    }
+
+  }
+
   async resolveMeasurement( serialResponse : SerialMeasurementResponse){
 
     var postMeasurement;
@@ -168,7 +207,8 @@ export class QueueManager {
       console.log("[QueueManager] STATUS - Measurement Type: Queue Initiated ");
       if(serialResponse.queueId === this.queue[0].id){
 
-        this.queue[0].value = serialResponse.data;
+        var queueItem = <MeasurementQueueItem>this.queue[0];
+        queueItem.value = serialResponse.data;
 
       } else {
         console.log("[QueueManager] WARNING - Measurement Response does not match queue!");
@@ -176,8 +216,9 @@ export class QueueManager {
         queueIndex = this.queue.findIndex( item => item.id === serialResponse.queueId);
 
         if(queueIndex > -1){
-  
-          this.queue[queueIndex].value = serialResponse.data;
+
+          var queueItem = <MeasurementQueueItem>this.queue[queueIndex];
+          queueItem.value = serialResponse.data;
 
         } else {
 
@@ -241,8 +282,6 @@ export class QueueManager {
     var queueIndex = this.queue.findIndex( item => item.id === response.queueId);
     if(queueIndex > -1){
 
-      var sensorId = this.queue[queueIndex].sensorId;
-
       var item = this.queue.splice(queueIndex, 1);
       item[0].res.status(404).send(new Error("Sensor Measurement resulted in Error"));
       this.queueListener.next(this.queue);
@@ -253,6 +292,76 @@ export class QueueManager {
       console.log("[QueueManager] Serial Response: ", response);
 
     }
+
+  }
+
+
+  retryAtPortError(){
+    this.portErrCounter++;
+    console.log("[QueueManager] ERROR - Failed reaching Port");
+
+    if(this.portErrCounter < 10){
+
+      setTimeout( () => {
+        this.queueListener.next(
+          this.queue
+        );
+      }, 500);
+
+      return;
+    } else {
+
+      console.log("[QueueManager] KILLING PROCESS - PortErrCounter Exceeded Limit");
+      return process.exit();
+
+    }
+
+  }
+
+  getQueueItemStatus( queueItem : QueueItem) : QueueItemStatus{
+
+    var confirmedTimeOutThreshold = 1000 * 15;
+
+    switch(queueItem.type){
+      case SerialRequestType.Action :
+        var actionItem : ActionQueueItem = <ActionQueueItem> queueItem;
+        
+        if(actionItem.duration){
+          confirmedTimeOutThreshold += actionItem.duration;
+        }
+
+        break;
+      case SerialRequestType.Measurement :
+        var measurementItem : MeasurementQueueItem = <MeasurementQueueItem> queueItem;
+
+        if(typeof measurementItem.value === "number"){
+          return QueueItemStatus.Completed;
+        }
+
+        break;
+    }
+
+    if( queueItem.confirmed < Date.now() - confirmedTimeOutThreshold){
+      return QueueItemStatus.ConfirmedTimeOut;
+    }
+
+    if( queueItem.confirmed){
+      return QueueItemStatus.Confirmed;
+    }
+
+    if( queueItem.submitted < Date.now() - 1000 * 15){
+      return QueueItemStatus.SubmittedTimeOut;
+    }
+
+    if( queueItem.submitted){
+      return QueueItemStatus.Submitted;
+    }
+
+    if( queueItem.id){
+      return QueueItemStatus.ReadyForSubmit;
+    }
+
+    return QueueItemStatus.Unknown;
 
   }
 
@@ -270,89 +379,69 @@ export class QueueManager {
     this.queueListener.subscribe( (changedQueue : QueueItem[]) => {
 
       if(!this.serialManager.getPortStatus){
-        this.portErrCounter++;
-        console.log("[QueueManager] ERROR - Failed reaching Port");
-        if(this.portErrCounter < 10){
-
-          setTimeout( () => {
-            this.queueListener.next(
-              this.queue
-            );
-          }, 500);
-          return;
-
-        } else {
-
-          console.log("[QueueManager] KILLING PROCESS - PortErrCounter Exceeded Limit");
-          return process.exit();
-
-        }
-
+        this.retryAtPortError();
       } else {
-
         this.portErrCounter = 0;
-
       }
       
       if(changedQueue.length > 0){
 
-        if(changedQueue[0].submitted){
+        var firstQueueItem = changedQueue[0]
+        var status = this.getQueueItemStatus(firstQueueItem)
 
-          if(changedQueue[0].confirmed){
+        switch(status){
 
-            if(changedQueue[0].value){
-
-              // Got all required data
-              console.log("[QueueManager] STATUS - Removing completed Item from Que");
-              var item = this.queue.splice(0, 1);
-              item[0].res.status(200).send({data:item[0].value});
+          case QueueItemStatus.Completed:
+            console.log("[QueueManager] STATUS - Removing completed Item from Que");
+            if(firstQueueItem.type = SerialRequestType.Measurement){
+              var removedItem = <MeasurementQueueItem> this.queue.splice(0, 1)[0];
+              removedItem.res.status(200).send({data:removedItem.value});
               this.queueListener.next(this.queue);
               return;
-
             }
+            break;
 
-            if(changedQueue[0].confirmed && changedQueue[0].confirmed < Date.now() - 15*1000){
+          case QueueItemStatus.ConfirmedTimeOut,
+          QueueItemStatus.SubmittedTimeOut:
 
-              // Measurement Timed Out
-              console.log("[QueueManager] WARNING - Removing measurement-timeout Item from Que. Sensor ID: ", this.queue[0].sensorId);
-
-              var item = this.queue.splice(0, 1);
-              item[0].res.status(408).send(new Error("Sensor measurement timed out!"));
-
-              this.queueListener.next(this.queue);
-              return;
-
-            }
-
-            return;
-
-          }
-
-          if(changedQueue[0].submitted && changedQueue[0].submitted < Date.now() - 15*1000){
-
-            // Measurement Timed Out
-            console.log("[QueueManager] WARNING - Removing confirmation-timeout Item from Que. Sensor ID: ", this.queue[0].sensorId);
-            var item = this.queue.splice(0, 1);
-            item[0].res.status(408).send(new Error("Sensor confirmation timed out!"));
+            console.log("[QueueManager] WARNING - Removing timeout item from Que.");
+            var item = this.queue.splice(0, 1)[0];
+            item.res.status(408).send(new Error("Sensor measurement timed out!"));
             this.queueListener.next(this.queue);
-            return;
 
-          }
+            break;
 
-          return;
+          case QueueItemStatus.Confirmed, 
+            QueueItemStatus.Submitted:
+            break;
+
+          case QueueItemStatus.ReadyForSubmit:
+          
+            switch(firstQueueItem.type){
+              case SerialRequestType.Action:
+                console.log("[QueueManager] STATUS - Requesting new action");
+                this.serialManager.requestActionSerial(firstQueueItem);
+                break;
+
+              case SerialRequestType.Measurement:
+                console.log("[QueueManager] STATUS - Requesting new measurement");
+                this.serialManager.requestMeasurementSerial(firstQueueItem);
+                break;
+
+            }
+
+            break;
+
+          case QueueItemStatus.Unknown:
+            console.log("[QueueManager] WARNING - Removing unknown queue item.");
+            console.log(firstQueueItem);
+            this.queue.splice(0,1);
+            this.queueListener.next(this.queue);
+            break;
 
         }
-        
-        console.log("[QueueManager] STATUS - Requesting new measurement of type ", this.queue[0].sensorType);
-        this.serialManager.requestMeasurementSerial(this.queue[0]);
-        this.queue[0].submitted = Date.now();
-        this.queueListener.next(this.queue);
-
       }
-
     });
-
   }
-
 
 }

@@ -1,7 +1,7 @@
 import { QueueItem } from "./models/QueueItem.model";
 import { CONFIG } from "./config";
 import * as SerialPort from "serialport";
-import { SerialResponse, SerialCommunicationTypes, SerialMeasurementResponse, SerialMeasurementRequest, SerialErrorResponse, SerialErrorCode } from "./models/SerialCommunication.model";
+import { SerialResponse, SerialMeasurementRequest, SerialErrorResponse, SerialErrorCode, SerialResponseType, SerialRequestType, SerialActionRequest, SerialRequest, SerialActionActivationType } from "./models/SerialCommunication.model";
 import { Subject } from "rxjs"
 
 /*
@@ -73,7 +73,7 @@ export class SerialManager{
       } catch {
         console.log("[SerialManager] String not JSON parseable " + data);
         var errorResponse : SerialErrorResponse = {
-          type : SerialCommunicationTypes.Error,
+          type : SerialResponseType.Error,
           code: SerialErrorCode.INVALID_SERIAL_RESPONSE,
           message: "Serial string NOT parseable: '" + data + "'"
         }
@@ -88,12 +88,39 @@ export class SerialManager{
 
     var sendData : SerialMeasurementRequest = {
 
-      type: SerialCommunicationTypes.Measurement,
+      type: SerialRequestType.Measurement,
       queueId: data.id,
       sensorType: data.sensorType,
       dataPin: data.dataPin,
       powerPin: data.powerPin
     }
+
+    this.sendRequest(sendData);
+  
+  }
+
+  requestActionSerial( data : any){
+
+    var sendData : SerialActionRequest = {
+
+      type: SerialRequestType.Action,
+      queueId: data.id,
+      actionType : data.actionType,
+      actionPin : data.actionPin,
+      activationType : data.activationType
+
+    }
+
+    if ( data.activationType === SerialActionActivationType.Duration){
+      sendData.duration = data.duration;
+    }
+
+    this.sendRequest(sendData);
+
+  }
+
+
+  sendRequest(sendData : SerialRequest){
 
     var serializedSendData = JSON.stringify(sendData) + "\0\r\n";
 
@@ -106,9 +133,7 @@ export class SerialManager{
       }
   
     });
-  
   }
-
   
 
 }

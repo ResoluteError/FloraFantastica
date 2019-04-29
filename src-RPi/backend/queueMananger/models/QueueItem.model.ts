@@ -1,14 +1,20 @@
 
 import express = require("express");
+import { SerialRequestType, SerialActionType, SerialActionActivationType } from "./SerialCommunication.model";
 export class QueueItem {
   
   id: string;
+  origin: QueueItemOrigin;
   res: express.Response;
   submitted? : number;
   confirmed? : number;
+  type: SerialRequestType
 
-  type: QueueItemType;
+}
 
+export class MeasurementQueueItem extends QueueItem {
+
+  type = SerialRequestType.Measurement;
   sensorId : string;
   sensorType : SensorTypes;
   dataPin: number;
@@ -17,7 +23,17 @@ export class QueueItem {
 
 }
 
-export enum QueueItemType {
+export class ActionQueueItem extends QueueItem{
+
+  type = SerialRequestType.Action;
+  actionType : SerialActionType;
+  actionPin : number;
+  activationType: SerialActionActivationType;
+  duration? : number;
+
+}
+
+export enum QueueItemOrigin {
 
   Self="self",
   Cron="cron",
@@ -34,5 +50,18 @@ export enum SensorTypes {
   SOIL_MOIST = 20,
   SOIL_TEMP = 21,
   LIGHT_INT = 30
+
+}
+
+export enum QueueItemStatus {
+
+  Completed = 0,
+  ConfirmedTimeOut,
+  Confirmed,
+  SubmittedTimeOut,
+  Submitted,
+  ReadyForSubmit,
+  Unknown
+
 
 }
