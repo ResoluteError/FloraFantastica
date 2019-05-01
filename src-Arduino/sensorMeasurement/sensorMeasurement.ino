@@ -9,12 +9,11 @@
 
 #define DHTTYPE DHT22
 #define WATERING_BTN_PIN 2
-#define WATERING_VALVE_PIN 22
+#define WATERING_VALVE_PIN 38
 #define DELIMETER "\n"
-#define ON_LED_PIN 40
-#define WATERING_LED_PIN 51
-#define BUSY_LED_PIN 50
-#define AUTOPILOT_LED_PIN 52
+#define ON_LED_PIN 30
+#define WATERING_LED_PIN 28
+#define BUSY_LED_PIN 34
 
 #define JSON_BUFFER_SIZE 128
 
@@ -219,15 +218,27 @@ void executeAction( StaticJsonDocument<capacity> request){
 
   switch (activationType){
     case 0: 
+            if(actionType == 0){
+              digitalWrite(WATERING_LED_PIN, LOW);
+            }
             digitalWrite(actionPin, LOW);
             break;
     case 1: 
+            if(actionType == 0){
+              digitalWrite(WATERING_LED_PIN, HIGH);
+            }
             digitalWrite(actionPin, HIGH);
             break;
     case 2: 
+            if(actionType == 0){
+              digitalWrite(WATERING_LED_PIN, LOW);
+            }
             digitalWrite(actionPin, HIGH);
             delay(duration);
             digitalWrite(actionPin, LOW);
+            if(actionType == 0){
+              digitalWrite(WATERING_LED_PIN, HIGH);
+            }
             break;
             
     default: break;
