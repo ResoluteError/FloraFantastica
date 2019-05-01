@@ -7,6 +7,7 @@ import { AlertService } from 'src/app/services/alert.service';
 import { Plant } from 'src/app/models/plant.model';
 import { ActionService } from 'src/app/services/action.service';
 import { Measurement } from 'src/app/models/measurement.model';
+import { Table } from 'src/app/helper/table/Table';
 
 @Component({
   selector: 'app-sensor-manager',
@@ -21,7 +22,9 @@ export class SensorManagerComponent implements OnInit, OnChanges {
   @Input() sensors : DisplaySensor[];
 
   activeSensors : DisplaySensor[] = [];
+  activeSensorsTable = new Table([]);
   availableSensors : DisplaySensor[] = [];
+  availableSensorsTable = new Table([]);
 
   constructor(
     private sensorService : SensorService,
@@ -47,7 +50,17 @@ export class SensorManagerComponent implements OnInit, OnChanges {
         } else {
           this.availableSensors.push(sensor);
         }
-      })
+      });
+      if(this.availableSensorsTable.data.length === 0){
+        this.availableSensorsTable = new Table(this.availableSensors);
+      } else {
+        this.availableSensorsTable.updateData(this.availableSensors);
+      }
+      if(this.activeSensorsTable.data.length === 0){
+        this.activeSensorsTable = new Table(this.activeSensors);
+      } else {
+        this.activeSensorsTable.updateData(this.activeSensors);
+      }
     }
   }
 
@@ -56,6 +69,7 @@ export class SensorManagerComponent implements OnInit, OnChanges {
       this.sensorService.deleteSensor(deleteSensor.id).subscribe( result => {
         this.alertService.success("Success.", `Deleted the sensor '${result.name}'`);
         this.availableSensors = this.availableSensors.filter( sensor => sensor.id !== deleteSensor.id);
+        this.availableSensorsTable.updateData(this.availableSensors);
       }, err => {
         this.alertService.warning("Sensor API Error.", `Failed to delete the sensor '${deleteSensor.name}', please try again in a moment.`, 5000);
       })
@@ -76,6 +90,8 @@ export class SensorManagerComponent implements OnInit, OnChanges {
           this.activeSensors.splice(i,1);
         }
       }
+      this.availableSensorsTable.updateData(this.availableSensors);
+      this.activeSensorsTable.updateData(this.activeSensors);
     }, err => {
       this.alertService.warning("Sensor API Error.", `Failed to unlink the sensor '${unlinkSensor.name}', please try again in a moment.`, 5000);
     })
@@ -92,6 +108,8 @@ export class SensorManagerComponent implements OnInit, OnChanges {
           this.availableSensors.splice(i,1);
         }
       }
+      this.availableSensorsTable.updateData(this.availableSensors);
+      this.activeSensorsTable.updateData(this.activeSensors);
     }, err => {
       this.alertService.warning("Sensor API Error.", `Failed to link the sensor '${unlinkSensor.name}', please try again in a moment.`, 5000);
     })
@@ -105,6 +123,7 @@ export class SensorManagerComponent implements OnInit, OnChanges {
       var updatedSensor = this.activeSensors.find( ({id}) => id === result.id);
       updatedSensor.state = result.state;
       updatedSensor.stateLabel = Sensor.stateToString(result.state);
+      this.activeSensorsTable.updateData(this.activeSensors);
     }, err => {
       this.alertService.warning("Sensor API Error.", `Failed to change the state of '${resumeSensor.name}', please try again in a moment.`, 5000);
     })
@@ -117,6 +136,7 @@ export class SensorManagerComponent implements OnInit, OnChanges {
       } else {
         this.activeSensors.find( item => item.id === sensor.id).state = result.state;
         this.alertService.success("State Updated.", `The state of '${sensor.name}' has changed`);
+        this.activeSensorsTable.updateData(this.activeSensors);
       }
     }, err => {
       this.alertService.warning("Action API Error.",`Failed to check the sensor status for '${sensor.name}'`, 4000);
@@ -130,6 +150,7 @@ export class SensorManagerComponent implements OnInit, OnChanges {
       } else {
         this.alertService.success("Success.",`New measurement for '${sensor.name}': ${result.data}`);
         this.measurement.emit(result);
+        this.activeSensorsTable.updateData(this.activeSensors);
       }
     }, err => {
       this.alertService.warning("Action API Error.",`Failed to get a measurement for '${sensor.name}'`, 4000);

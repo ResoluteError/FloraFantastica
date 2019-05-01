@@ -26,35 +26,35 @@
 
       <thead>
         <tr>
-          <th (click)="toggleSort('type')" width="10%" class="sorting-header text-center">
+          <th (click)="sensorTable.toggleSort('type')" width="10%" class="sorting-header text-center">
             Type 
-            <fa-icon class="ml-2" *ngIf="sortSetting.item === 'type'" [icon]="getSortIcon('type')"></fa-icon>
+            <fa-icon class="ml-2" *ngIf="sensorTable.isSortedBy('type')" [icon]="sensorTable.getSortIcon('type')"></fa-icon>
           </th>
-          <th (click)="toggleSort('name')" width="30%" class="sorting-header">
+          <th (click)="sensorTable.toggleSort('name')" width="25%" class="sorting-header">
             Name 
-            <fa-icon class="ml-2" *ngIf="sortSetting.item === 'name'" [icon]="getSortIcon('name')"></fa-icon>
+            <fa-icon class="ml-2" *ngIf="sensorTable.isSortedBy('name')" [icon]="sensorTable.getSortIcon('name')"></fa-icon>
           </th>
-          <th (click)="toggleSort('dataPin')" width="10%" class="sorting-header">
+          <th (click)="sensorTable.toggleSort('dataPin')" width="15%" class="sorting-header">
             Data Pin 
-            <fa-icon class="ml-2" *ngIf="sortSetting.item === 'dataPin'" [icon]="getSortIcon('dataPin')"></fa-icon>
+            <fa-icon class="ml-2" *ngIf="sensorTable.isSortedBy('dataPin')" [icon]="sensorTable.getSortIcon('dataPin')"></fa-icon>
           </th>
-          <th (click)="toggleSort('powerPin')" width="10%" class="sorting-header">
+          <th (click)="sensorTable.toggleSort('powerPin')" width="15%" class="sorting-header">
             Power Pin 
-            <fa-icon class="ml-2" *ngIf="sortSetting.item === 'powerPin'" [icon]="getSortIcon('powerPin')"></fa-icon>
+            <fa-icon class="ml-2" *ngIf="sensorTable.isSortedBy('powerPin')" [icon]="sensorTable.getSortIcon('powerPin')"></fa-icon>
           </th>
-          <th (click)="toggleSort('currentPlantId', plantIdToStr)" width="30%" class="sorting-header">
+          <th (click)="sensorTable.toggleSort('currentPlantId')" width="25%" class="sorting-header">
             Assinged Plant 
-            <fa-icon class="ml-2" *ngIf="sortSetting.item === 'currentPlantId'" [icon]="getSortIcon('currentPlantId')"></fa-icon>
+            <fa-icon class="ml-2" *ngIf="sensorTable.isSortedBy('currentPlantId')" [icon]="sensorTable.getSortIcon('currentPlantId')"></fa-icon>
           </th>
-          <th (click)="toggleSort('state')" width="10%" class="sorting-header text-center">
+          <th (click)="sensorTable.toggleSort('state')" width="10%" class="sorting-header text-center">
             Status 
-            <fa-icon class="ml-2" *ngIf="sortSetting.item === 'state'" [icon]="getSortIcon('state')"></fa-icon>
+            <fa-icon class="ml-2" *ngIf="sensorTable.isSortedBy('state')" [icon]="sensorTable.getSortIcon('state')"></fa-icon>
           </th>
           <th width="10%"></th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let sensor of sensors" sensor-row [sensor]="sensor" [plants]="plants" (delete)="removeSensor($event)">
+        <tr *ngFor="let sensor of sensorTable.data" sensor-row [sensor]="sensor" [plants]="plants" (delete)="removeSensor($event)">
 
         </tr>
         <tr>

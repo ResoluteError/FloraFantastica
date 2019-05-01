@@ -7,14 +7,18 @@
     <table class="table">
       <thead>
         <tr>
-          <th width="17%" class="text-center">
-            Type
+          <th (click)="activeSensorsTable.toggleSort('type')" width="17%" class="sorting-header text-center">
+            Type 
+            <fa-icon class="ml-2" *ngIf="activeSensorsTable.isSortedBy('type')" [icon]="activeSensorsTable.getSortIcon('type')"></fa-icon>
           </th>
-          <th width="*">
-            Sensor
+
+          <th (click)="activeSensorsTable.toggleSort('name')" width="*" class="sorting-header">
+            Name 
+            <fa-icon class="ml-2" *ngIf="activeSensorsTable.isSortedBy('name')" [icon]="activeSensorsTable.getSortIcon('name')"></fa-icon>
           </th>
-          <th width="10%" class="text-center">
-            Status
+          <th (click)="activeSensorsTable.toggleSort('state')" width="15%" class="sorting-header text-center">
+            Status 
+            <fa-icon class="ml-2" *ngIf="activeSensorsTable.isSortedBy('state')" [icon]="activeSensorsTable.getSortIcon('state')"></fa-icon>
           </th>
           <th width="33%" class="text-center">
             Actions
@@ -72,14 +76,18 @@
     <table class="table">
       <thead>
         <tr>
-          <th width="17%" class="text-center">
-            Type
+          <th (click)="availableSensorsTable.toggleSort('type')" width="17%" class="sorting-header text-center">
+            Type 
+            <fa-icon class="ml-2" *ngIf="availableSensorsTable.isSortedBy('type')" [icon]="availableSensorsTable.getSortIcon('type')"></fa-icon>
           </th>
-          <th width="*">
-            Sensor
+
+          <th (click)="availableSensorsTable.toggleSort('name')" width="*" class="sorting-header">
+            Name 
+            <fa-icon class="ml-2" *ngIf="availableSensorsTable.isSortedBy('name')" [icon]="availableSensorsTable.getSortIcon('name')"></fa-icon>
           </th>
-          <th width="10%" class="text-center">
-            Status
+          <th (click)="availableSensorsTable.toggleSort('state')" width="15%" class="sorting-header text-center">
+            Status 
+            <fa-icon class="ml-2" *ngIf="availableSensorsTable.isSortedBy('state')" [icon]="availableSensorsTable.getSortIcon('state')"></fa-icon>
           </th>
           <th width="33%" class="text-center">
             Actions
