@@ -7,6 +7,8 @@ import * as request from "request";
 
 import express = require("express");
 import { CONFIG } from "../config";
+import { MeasurementQueueItem, QueueItemOrigin } from "../models/QueueItem.model";
+import { SerialRequestType } from "../models/SerialCommunication.model";
 
 export class ActionsController {
   
@@ -100,8 +102,9 @@ export class ActionsController {
 
     var sensor = await manager.findOne(Sensor,sensorId);
 
-    var measurementRequest = {
-      type: "webserver",
+    var measurementRequest : Partial<MeasurementQueueItem> = {
+      origin: QueueItemOrigin.Webserver,
+      type: SerialRequestType.Measurement,
       sensorId: sensorId,
       sensorType: sensor.type,
       dataPin: sensor.dataPin,

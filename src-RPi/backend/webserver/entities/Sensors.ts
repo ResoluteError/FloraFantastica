@@ -13,10 +13,10 @@ export class Sensor {
   name: string;
 
   @Column({type: "int", nullable: true})
-  dataPin: string;
+  dataPin: number;
 
   @Column({type: "int", nullable: true})
-  powerPin: string;
+  powerPin: number;
 
   // 10 - air humidity; 11 - air temp; 
   // 20 - soil moisture; 21 - soil temp; 
