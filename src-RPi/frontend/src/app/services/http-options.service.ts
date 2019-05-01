@@ -32,7 +32,7 @@ export class HttpOptionsService {
   }
 
   get apiUrl(): string {
-    return isDevMode() ? "http://localhost:8080/api" : window.location.origin;
+    return isDevMode() ? "http://localhost:8080/api" : window.location.origin+"/api";
   }
 
 
