@@ -13,12 +13,6 @@
           <th width="*">
             Sensor
           </th>
-          <th width="15%" class="text-center d-none d-md-table-cell">
-            Data Pin
-          </th>
-          <th width="15%" class="text-center d-none d-md-table-cell">
-            Power Pin
-          </th>
           <th width="10%" class="text-center">
             Status
           </th>
@@ -37,12 +31,6 @@
           </td>
           <td>
               {{sensor.name}}
-          </td>
-          <td class="text-center d-none d-md-table-cell">
-            {{sensor.dataPin || "?"}}
-          </td>
-          <td class="text-center d-none d-md-table-cell">
-            {{sensor.powerPin || "?"}}
           </td>
           <td class="text-center">
             <div [ngbPopover]="sensor.stateLabel" triggers="mouseenter:mouseleave">
@@ -67,6 +55,11 @@
             </div>
           </td>
         </tr>
+        <tr *ngIf="activeSensors && activeSensors.length === 0">
+          <td colspan="4" class="text-center">
+            <i> No Sensors are linked to this plant.</i>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -84,12 +77,6 @@
           </th>
           <th width="*">
             Sensor
-          </th>
-          <th width="15%" class="text-center d-none d-md-table-cell">
-            Data Pin
-          </th>
-          <th width="15%" class="text-center d-none d-md-table-cell">
-            Power Pin
           </th>
           <th width="10%" class="text-center">
             Status
@@ -109,14 +96,8 @@
           </td>
           <td>{{sensor.name}}</td>
           <td class="text-center">
-            {{sensor.dataPin || "?"}}
-          </td>
-          <td class="text-center">
-            {{sensor.powerPin || "?"}}
-          </td>
-          <td class="text-center">
-            <div [ngbPopover]="sensorTypeTooltip(sensor)" triggers="mouseenter:mouseleave">
-              {{sensor.type}}
+            <div [ngbPopover]="sensor.stateLabel" triggers="mouseenter:mouseleave">
+              <fa-icon [icon]="stateToIcon(sensor.state)"></fa-icon>
             </div>
           </td>
           <td class="text-center">
@@ -126,6 +107,11 @@
             <div class="d-inline-block ml-4" ngbPopover="Delete Sensor" triggers="mouseenter:mouseleave" (click)="deleteSensor(sensor)">
               <fa-icon class="red action-icon" [icon]="['fas','trash-alt']"></fa-icon>
             </div>
+          </td>
+        </tr>
+        <tr *ngIf="availableSensors && availableSensors.length === 0">
+          <td colspan="4" class="text-center">
+            <i>No Sensors are free to be linked.</i>
           </td>
         </tr>
       </tbody>
