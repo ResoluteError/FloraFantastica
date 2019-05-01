@@ -70,6 +70,10 @@ typeorm_1.createConnection().then(function (connection) { return __awaiter(_this
                 });
                 app.use(bodyParser.json());
                 app.use(bodyParser.urlencoded({ extended: true }));
+                app.use(function (req, res, next) {
+                    console.log("Got Request: ", req.url);
+                    next();
+                });
                 app.use("/api/measurements/", MeasurementsRouter_1.router);
                 app.use("/api/sensors/", SensorsRouter_1.router);
                 app.use("/api/plants/", PlantsRouter_1.router);
