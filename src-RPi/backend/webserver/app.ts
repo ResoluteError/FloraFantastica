@@ -21,7 +21,7 @@ console.log("===================")
 createConnection().then(async connection => {
 
   // Uses environment variables by default, ormconfig.json is fallback
-  await connection.synchronize(true);
+  await connection.synchronize(false);
 
   const app : express.Application = express();
   
