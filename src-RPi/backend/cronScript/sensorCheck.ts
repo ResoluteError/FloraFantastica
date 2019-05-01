@@ -103,6 +103,37 @@ import { Observable } from "rxjs";
     });
   }
 
+  function saveMeasurement(sensor, measurement){
+    return new Observable( observer => {
+      const options = {  
+        url: `http://localhost:${CONFIG.WEBSERVER_PORT}/api/measurements/`,
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Accept-Charset': 'utf-8'
+        },
+        json: {
+          sensorId : sensor.id,
+          measuredAt : Date.now(),
+          data : measurement.data,
+        }
+      }
+
+      request( options, (err, httpResponse, body) => {
+        if(err){
+          console.log("Encountered Error while saving: ", err);
+          observer.error(err);
+          observer.complete();
+        } else {
+          console.log("Saved measurement: ", measurement);
+          observer.next(measurement);
+          observer.complete();
+        }
+      });
+    });
+
+  }
+
   function requestSensorMeasurement( sensor ){
 
     return new Observable( observer => {
@@ -114,7 +145,8 @@ import { Observable } from "rxjs";
             'Accept-Charset': 'utf-8'
         },
         json: {
-          type: "cron",
+          origin: "cron",
+          type: 0,
           sensorId: sensor.id,
           sensorType: sensor.type,
           dataPin: sensor.dataPin,
@@ -143,7 +175,11 @@ import { Observable } from "rxjs";
 
         if(sensor.state === 2){
 
-          var request = await requestSensorMeasurement(sensor).toPromise();
+          var measurement = await requestSensorMeasurement(sensor).toPromise();
+
+          await saveMeasurement(sensor, measurement ).toPromise();
+
+          console.log("Saved a measurement.");
 
         } 
 
