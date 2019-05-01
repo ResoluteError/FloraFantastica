@@ -125,8 +125,8 @@ export class ActionsController {
 
     request(sensorReqOptions, async (err, measureRes, body) =>  {
 
-      if(err || measureRes.statusCode >= 400){
-        res.status(measureRes.statusCode).send(err || "{}");
+      if(err || (measureRes && measureRes.statusCode >= 400) || typeof measureRes === "undefined"){
+        res.status( (measureRes && measureRes.statusCode) || 400).send(err || "{}");
         return;
       }
 
@@ -156,6 +156,8 @@ export class ActionsController {
 
         res.status(202).send(newMeasurement);
 
+      } else {
+        console.log("Action not found: ", action);
       }
 
     });
