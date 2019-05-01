@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
-var Plants_1 = require("../entity/Plants");
+var Plants_1 = require("../entities/Plants");
 var fs = require("fs");
 var config_1 = require("../config");
 var PlantsController = (function () {

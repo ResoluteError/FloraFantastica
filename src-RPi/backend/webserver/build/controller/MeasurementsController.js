@@ -36,8 +36,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
-var Measurement_1 = require("../entity/Measurement");
-var Sensors_1 = require("../entity/Sensors");
+var Measurement_1 = require("../entities/Measurement");
+var Sensors_1 = require("../entities/Sensors");
 var MeasurementController = (function () {
     function MeasurementController() {
     }
@@ -169,6 +169,7 @@ var MeasurementController = (function () {
                 switch (_a.label) {
                     case 0:
                         manager = typeorm_1.getManager();
+                        console.log("Got Measurement POST Request: ", typeof req.body, req.body);
                         newMeasurement = manager.create(Measurement_1.Measurement, req.body);
                         return [4, manager.findOne(Sensors_1.Sensor, newMeasurement.sensorId)];
                     case 1:

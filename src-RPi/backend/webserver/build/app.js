@@ -46,17 +46,19 @@ var ActionsRouter_1 = require("./routes/ActionsRouter");
 var typeorm_1 = require("typeorm");
 var bodyParser = require("body-parser");
 var config_1 = require("./config");
+console.log("======= ENVIRONMENT DEBUG ======");
 console.log("Path to uploads: " + config_1.CONFIG.UPLOADS_DIR);
 console.log("Serving frontend from: " + config_1.CONFIG.FRONTEND_DIR);
 console.log("TYPE_ORM Constants ");
 console.log("TYPEORM_CONNECTION: " + process.env.TYPEORM_CONNECTION);
 console.log("TYPEORM_DATABASE: " + process.env.TYPEORM_DATABASE);
 console.log("TYPEORM_ENTITIES: " + process.env.TYPEORM_ENTITIES);
+console.log("===================");
 typeorm_1.createConnection().then(function (connection) { return __awaiter(_this, void 0, void 0, function () {
     var app;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4, connection.synchronize()];
+            case 0: return [4, connection.synchronize(false)];
             case 1:
                 _a.sent();
                 app = express();

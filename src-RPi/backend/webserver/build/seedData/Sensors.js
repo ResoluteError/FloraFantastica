@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Sensors_1 = require("../entity/Sensors");
+var Sensors_1 = require("../entities/Sensors");
 var SensorSeedData = (function () {
     function SensorSeedData() {
     }

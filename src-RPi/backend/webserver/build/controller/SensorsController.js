@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
-var Sensors_1 = require("../entity/Sensors");
+var Sensors_1 = require("../entities/Sensors");
 var SensorController = (function () {
     function SensorController() {
     }
@@ -77,6 +77,27 @@ var SensorController = (function () {
             });
         });
     };
+    SensorController.get_by_data_pin = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var pin, manager, sensor;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        pin = req.params.dataPin;
+                        manager = typeorm_1.getManager();
+                        return [4, manager.findOne(Sensors_1.Sensor, {
+                                where: {
+                                    pin: pin
+                                }
+                            })];
+                    case 1:
+                        sensor = _a.sent();
+                        res.send(sensor);
+                        return [2];
+                }
+            });
+        });
+    };
     SensorController.get_available_sensors = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var manager, sensors;
@@ -94,6 +115,27 @@ var SensorController = (function () {
                     case 1:
                         sensors = _a.sent();
                         res.send(sensors);
+                        return [2];
+                }
+            });
+        });
+    };
+    SensorController.get_by_type = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var type, manager, data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        type = req.params.sensorType;
+                        manager = typeorm_1.getManager();
+                        return [4, manager.find(Sensors_1.Sensor, {
+                                where: {
+                                    type: type
+                                }
+                            })];
+                    case 1:
+                        data = _a.sent();
+                        res.send(data);
                         return [2];
                 }
             });

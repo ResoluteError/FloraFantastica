@@ -36,10 +36,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
-var Plants_1 = require("../entity/Plants");
+var Plants_1 = require("../entities/Plants");
 var Plants_2 = require("../seedData/Plants");
-var Measurement_1 = require("../entity/Measurement");
-var Sensors_1 = require("../entity/Sensors");
+var Measurement_1 = require("../entities/Measurement");
+var Sensors_1 = require("../entities/Sensors");
 var Sensors_2 = require("../seedData/Sensors");
 var Measurements_1 = require("../seedData/Measurements");
 var SeedDataController = (function () {

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Plants_1 = require("../entity/Plants");
+var Plants_1 = require("../entities/Plants");
 var PlantSeedData = (function () {
     function PlantSeedData() {
     }

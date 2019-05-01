@@ -36,9 +36,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
-var Measurement_1 = require("../entity/Measurement");
-var Plants_1 = require("../entity/Plants");
-var Sensors_1 = require("../entity/Sensors");
+var Measurement_1 = require("../entities/Measurement");
+var Plants_1 = require("../entities/Plants");
+var Sensors_1 = require("../entities/Sensors");
+var request = require("request");
+var config_1 = require("../config");
+var QueueItem_model_1 = require("../models/QueueItem.model");
+var SerialCommunication_model_1 = require("../models/SerialCommunication.model");
 var ActionsController = (function () {
     function ActionsController() {
     }
@@ -59,7 +63,6 @@ var ActionsController = (function () {
                     case 1:
                         timesAndTypes = _c.sent();
                         dataDict = {};
-                        console.log("times and type: ", timesAndTypes);
                         _i = 0, timesAndTypes_1 = timesAndTypes;
                         _c.label = 2;
                     case 2:
@@ -79,7 +82,6 @@ var ActionsController = (function () {
                         _i++;
                         return [3, 2];
                     case 5:
-                        console.log("times and type: ", dataDict);
                         dataStr = JSON.stringify(dataDict);
                         manager = typeorm_1.getManager();
                         return [4, manager.update(Plants_1.Plant, plantId, { currentData: dataStr })];
@@ -88,7 +90,6 @@ var ActionsController = (function () {
                         return [4, manager.findOne(Plants_1.Plant, plantId)];
                     case 7:
                         result = _c.sent();
-                        console.log("plant: ", result);
                         res.send(result);
                         return [2];
                 }
@@ -115,7 +116,8 @@ var ActionsController = (function () {
                         return [4, manager.insert(Sensors_1.Sensor, {
                                 currentPlantId: plantId,
                                 name: "Health Entries",
-                                pin: null,
+                                dataPin: null,
+                                powerPin: null,
                                 type: 90,
                                 state: 0
                             })];
@@ -139,6 +141,82 @@ var ActionsController = (function () {
                     case 6:
                         postedEntity = _a.sent();
                         res.send(postedEntity);
+                        return [2];
+                }
+            });
+        });
+    };
+    ActionsController.checkSensor = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var manager, sensorId, action, sensor, measurementRequest, sensorReqOptions;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        manager = typeorm_1.getManager();
+                        sensorId = req.params.sensorId;
+                        action = req.params.sensorAction;
+                        return [4, manager.findOne(Sensors_1.Sensor, sensorId)];
+                    case 1:
+                        sensor = _a.sent();
+                        measurementRequest = {
+                            origin: QueueItem_model_1.QueueItemOrigin.Webserver,
+                            type: SerialCommunication_model_1.SerialRequestType.Measurement,
+                            sensorId: sensorId,
+                            sensorType: sensor.type,
+                            dataPin: sensor.dataPin,
+                            powerPin: sensor.powerPin
+                        };
+                        sensorReqOptions = {
+                            url: "http://localhost:" + config_1.CONFIG.QUEUE_MANAGER_PORT + "/queue",
+                            method: 'POST',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Accept-Charset': 'utf-8'
+                            },
+                            json: measurementRequest
+                        };
+                        console.log("Checking Sensor Status of sensor: ", sensor.name);
+                        request(sensorReqOptions, function (err, measureRes, body) { return __awaiter(_this, void 0, void 0, function () {
+                            var updatedSensor, newMeasurement, measurement;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        if (err || (measureRes && measureRes.statusCode >= 400) || typeof measureRes === "undefined") {
+                                            res.status((measureRes && measureRes.statusCode) || 400).send(err || "{}");
+                                            return [2];
+                                        }
+                                        if (!(action === "check")) return [3, 2];
+                                        sensor.state = 2;
+                                        return [4, manager.save(sensor)];
+                                    case 1:
+                                        updatedSensor = _a.sent();
+                                        console.log("Updated sensor status: ", sensor);
+                                        res.send(sensor);
+                                        return [3, 5];
+                                    case 2:
+                                        if (!(action === "measure")) return [3, 4];
+                                        newMeasurement = {
+                                            sensorId: sensor.id,
+                                            sensorType: sensor.type,
+                                            data: body.data,
+                                            plantId: sensor.currentPlantId,
+                                            measuredAt: new Date().toISOString(),
+                                            id: null
+                                        };
+                                        return [4, manager.insert(Measurement_1.Measurement, newMeasurement)];
+                                    case 3:
+                                        measurement = _a.sent();
+                                        console.log("Created measurement: ", newMeasurement);
+                                        res.status(202).send(newMeasurement);
+                                        return [3, 5];
+                                    case 4:
+                                        console.log("Action not found: ", action);
+                                        _a.label = 5;
+                                    case 5: return [2];
+                                }
+                            });
+                        }); });
                         return [2];
                 }
             });

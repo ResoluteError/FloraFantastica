@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Measurement_1 = require("../entity/Measurement");
+var Measurement_1 = require("../entities/Measurement");
 var MeasurementSeedData = (function () {
     function MeasurementSeedData() {
     }
