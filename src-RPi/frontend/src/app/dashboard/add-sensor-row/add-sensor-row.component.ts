@@ -30,7 +30,8 @@ export class AddSensorRowComponent implements OnInit {
       name : null,
       currentPlantId: null,
       type: null,
-      pin: null
+      powerPin: null,
+      dataPin: null
     }
   }
 
