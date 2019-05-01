@@ -14,6 +14,7 @@
 #define ON_LED_PIN 30
 #define WATERING_LED_PIN 28
 #define BUSY_LED_PIN 34
+#define GREEN_LED_PIN 34
 
 #define JSON_BUFFER_SIZE 128
 
@@ -23,6 +24,8 @@ volatile bool watering = false;
 volatile bool watered = false;
 volatile unsigned long buttonReleasedTimer;
 volatile unsigned long buttonPressedTimer;
+
+bool blockInterruptPin = false;
 
 void confirmRequest(char* queueId){
   
@@ -221,23 +224,48 @@ void executeAction( StaticJsonDocument<capacity> request){
             if(actionType == 0){
               digitalWrite(WATERING_LED_PIN, LOW);
             }
+            if(actionPin == WATERING_VALVE_PIN){
+              blockInterruptPin = true;
+              delay(20);
+            }
             digitalWrite(actionPin, LOW);
+            if(actionPin == WATERING_VALVE_PIN){
+              delay(20);
+              blockInterruptPin = false;
+            }
             break;
     case 1: 
             if(actionType == 0){
               digitalWrite(WATERING_LED_PIN, HIGH);
             }
+            if(actionPin == WATERING_VALVE_PIN){
+              blockInterruptPin = true;
+              delay(20);
+            }
             digitalWrite(actionPin, HIGH);
+            if(actionPin == WATERING_VALVE_PIN){
+              delay(20);
+              blockInterruptPin = false;
+            }
             break;
     case 2: 
             if(actionType == 0){
-              digitalWrite(WATERING_LED_PIN, LOW);
+              digitalWrite(WATERING_LED_PIN, HIGH);
+            }
+            if(actionPin == WATERING_VALVE_PIN){
+              blockInterruptPin = true;
+              delay(20);
             }
             digitalWrite(actionPin, HIGH);
             delay(duration);
             digitalWrite(actionPin, LOW);
             if(actionType == 0){
-              digitalWrite(WATERING_LED_PIN, HIGH);
+              delay(100);
+              digitalWrite(WATERING_LED_PIN, LOW);
+            }
+            if(actionPin == WATERING_VALVE_PIN){
+              blockInterruptPin = false;
+              delay(20);
             }
             break;
             
@@ -249,6 +277,12 @@ void executeAction( StaticJsonDocument<capacity> request){
 }
 
 void ISR_btnAction(){
+
+  if(blockInterruptPin){
+    return;  
+  }
+
+  blockInterruptPin = true;
 
   if(digitalRead(WATERING_BTN_PIN)){
 
@@ -322,8 +356,8 @@ void setup() {
   pinMode(BUSY_LED_PIN, OUTPUT);
   digitalWrite(BUSY_LED_PIN, LOW);
   
-  pinMode(AUTOPILOT_LED_PIN, OUTPUT);
-  digitalWrite(AUTOPILOT_LED_PIN, LOW);
+  pinMode(GREEN_LED_PIN, OUTPUT);
+  digitalWrite(GREEN_LED_PIN, LOW);
   
   pinMode(WATERING_VALVE_PIN, OUTPUT);
   digitalWrite(WATERING_VALVE_PIN, LOW);
@@ -332,6 +366,8 @@ void setup() {
 
 void loop() {
 
+  blockInterruptPin = false;
+  
   if(watered){
     watered = false;
     int difference = (buttonReleasedTimer - buttonPressedTimer);
