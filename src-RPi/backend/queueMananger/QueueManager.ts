@@ -411,7 +411,7 @@ export class QueueManager {
 
           case QueueItemStatus.Completed:
             console.log("[QueueManager] STATUS - Removing completed Item from Que");
-            if(firstQueueItem.type = SerialRequestType.Measurement){
+            if(firstQueueItem.type == SerialRequestType.Measurement){
               var removedItem = <MeasurementQueueItem> this.queue.splice(0, 1)[0];
               removedItem.res.status(200).send({data:removedItem.value});
               this.queueListener.next(this.queue);

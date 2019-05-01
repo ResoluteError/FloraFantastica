@@ -14,7 +14,7 @@ export const CONFIG = {
   
   QUEUE_MANAGER_PORT : process.env.QUEUE_MANAGER_PORT || 8081,
 
-  ARDUINO_PORT : process.env.ARDUINO_PORT || '/dev/tty.usbmodem14201',
+  ARDUINO_PORT : process.env.ARDUINO_PORT || '/dev/tty.usbmodem14101',
 
   ARDUINO_BAUD_RATE : +process.env.ARDUINO_BAUD_RATE || 500000
 
