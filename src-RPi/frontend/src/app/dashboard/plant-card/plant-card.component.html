@@ -65,7 +65,7 @@
     </table>
   </div>
   <div class="card-footer pt-1 pb-1">
-    <button type="button" class="btn btn-link" *ngIf="currentView == 'data'" (click)="updateView('sensors')">Sensors</button>
+    <!-- <button type="button" class="btn btn-link" *ngIf="currentView == 'data'" (click)="updateView('sensors')">Sensors</button> -->
     <button type="button" class="btn btn-link" *ngIf="currentView == 'sensors'" (click)="updateView('data')">Data</button>
       <button type="button" class="btn btn-link" [routerLink]="'/plant-details/' + plant.id">Details</button>
     <button type="button" class="btn btn-link" (click)="updateCurrentPlantData()">Refresh</button>
