@@ -28,11 +28,11 @@ export class HttpOptionsService {
   }
 
   get url(): string {
-    return isDevMode() ? "http://localhost:8080" : "http://[2a02:908:4c18:a040:fa24:52c6:14f4:b676]:8080";
+    return isDevMode() ? "http://localhost:8080" : "http://[2a02:908:4c16:23c0:e086:a928:cad6:8f1f]:8080";
   }
 
   get apiUrl(): string {
-    return isDevMode() ? "http://localhost:8080/api" : "http://[2a02:908:4c18:a040:fa24:52c6:14f4:b676]:8080/api";
+    return isDevMode() ? "http://localhost:8080/api" : "http://[2a02:908:4c16:23c0:e086:a928:cad6:8f1f]:8080/api";
   }
 
 
