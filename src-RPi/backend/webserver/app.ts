@@ -37,10 +37,10 @@ createConnection().then(async connection => {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({extended: true}));
 
-  app.use( (req, res, next) => {
-    console.log("Got Request: ", req.url);
-    next();
-  });
+  // app.use( (req, res, next) => {
+  //   console.log("Got Request: ", req.url);
+  //   next();
+  // });
 
   app.use("/api/measurements/",sensorMeasurementsRouter);
   app.use("/api/sensors/",sensorsRouter);
