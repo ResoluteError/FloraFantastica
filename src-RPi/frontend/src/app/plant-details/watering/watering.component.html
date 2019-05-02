@@ -1,6 +1,76 @@
-<button class="btn btn-outline-primary" (click)="water()">
-  Water me!
-</button>
-<div>
-  Status: <span [innerHTML]="state"></span>
+<div class="card mb-3">
+  <div class="card-header">
+    <b>Custom Watering</b>
+  </div>
+  <div class="card-body">
+    <div class="container-fluid">
+      <div class="row">
+
+        <div class="col-5">
+
+          <div class="text-center">
+            <p><b>Manual Watering</b></p>
+            <p>
+              Enter the duration below and 
+              hit 'start' for an ad-hoc watering
+              session.
+            </p>
+          </div>
+
+          <div class="watering-status pending" *ngIf="isQueued">
+            <fa-icon [icon]="['fas','hourglass-half']"></fa-icon>
+            <div class="info">
+              Pending...
+            </div>
+          </div>
+
+          <div class="text-center" *ngIf="isCompleted">
+            <div class="watering-status success">
+              <fa-icon [icon]="['fas','check']"></fa-icon>
+              <div class="info">
+                Completed
+              </div>
+            </div>
+
+            <button class="btn btn-primary mt-3" (click)="reset()">
+              Repeat
+            </button>
+
+          </div>
+
+          <div class="text-center" *ngIf="isError">
+
+            <div class="watering-status canceled">
+              <fa-icon [icon]="['fas','times']"></fa-icon>
+              <div class="info">
+                Failed
+              </div>
+            </div>
+
+            <button class="btn btn-primary mt-3" (click)="reset()">
+              Retry
+            </button>
+
+          </div>
+
+
+          <div class="watering-status ready" *ngIf="isUnsubmitted">
+            <input type="text" class="watering-timer" name="waterDuration" [ngModel]="inputDuration">s
+            <div class="info" (click)="startWatering()" tabindex="0">
+              Start
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-7">
+          <div class="text-center">
+            <p><b>Watering Rule</b></p>
+            <p>Setup a watering rule so that<br>you don't have to water <br>manually at all.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
 </div>

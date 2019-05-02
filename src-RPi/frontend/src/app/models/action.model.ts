@@ -20,6 +20,7 @@ export class Action {
 
 export enum ActionState {
 
+  unsubmitted = -2,
   error = -1,
   queued = 0,
   completed = 1

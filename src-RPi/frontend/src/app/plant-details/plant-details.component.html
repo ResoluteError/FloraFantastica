@@ -84,6 +84,7 @@
 
     </div>
     <div class="col-12 col-lg-8">
+      <app-watering [plant]="plant"></app-watering>
       <app-sensor-manager *ngIf="plant" (change)="updateSensors($event)" (measurement)="handleNewMeasurement($event)" [plant]="plant" [sensors]="sensors"></app-sensor-manager>
     </div>
   </div>

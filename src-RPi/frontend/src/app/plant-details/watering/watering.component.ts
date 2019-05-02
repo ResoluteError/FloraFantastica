@@ -1,7 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActionService } from 'src/app/services/action.service';
 import { Plant } from 'src/app/models/plant.model';
-import { Action } from 'src/app/models/action.model';
+import { Action, ActionState } from 'src/app/models/action.model';
+import { AlertService } from 'src/app/services/alert.service';
 
 @Component({
   selector: 'app-watering',
@@ -12,42 +13,68 @@ export class WateringComponent implements OnInit {
 
   @Input() plant : Plant;
 
-  state : number = -3;
+  inputDuration : string = "30";
+
+  actionState : ActionState = ActionState.unsubmitted;
 
   constructor(
-    private actionService : ActionService
+    private actionService : ActionService,
+    private alertService : AlertService
   ) { }
 
   ngOnInit() {
   }
 
-  water(){
+  startWatering(){
+
+    this.actionState = ActionState.queued;
 
     this.actionService.manualWatering(38, 5000, this.plant.id).subscribe( result => {
-      
-      this.state = result.state;
+      this.actionState = result.state;
 
-      if(this.state === 0){
+      if(this.actionState === ActionState.queued){
 
         this.actionService.pingActionState(result.id).subscribe( result => {
-          this.state = result.state;
+
+          this.actionState = result.state;
+
         }, err => {
+
           if(err.state){
-            this.state = err.state;
-          } else {
-            this.state = -2;
+
+            this.actionState = err.state || -1;
+
           }
-        }, () => {
-          console.log("PING completed");  
-        })
+        });
 
-      }
+    }
 
-    }, err => {
-      console.log("Test Err: ", err);
-    });
+  }, err => {
+
+    this.alertService.warning("Action API Error!", "Failed submitting action request, please try again in a moment.");
+
+  });
 
   }
 
+  reset(){
+    this.actionState = ActionState.unsubmitted;
+  }
+
+  get isUnsubmitted(): boolean{
+    return this.actionState === ActionState.unsubmitted;
+  }
+
+  get isQueued(): boolean{
+    return this.actionState === ActionState.queued;
+  }
+
+  get isError(): boolean{
+    return this.actionState === ActionState.error;
+  }
+
+  get isCompleted(): boolean{
+    return this.actionState === ActionState.completed;
+  }
 
 }

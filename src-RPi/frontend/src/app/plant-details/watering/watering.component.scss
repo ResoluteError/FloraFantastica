@@ -1,0 +1,103 @@
+.watering-status {
+
+  width: 150px;
+  height: 150px;
+  border-radius: 75px;
+  background-color: red;
+  text-align: center;
+  justify-content: center;
+  padding-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+
+  fa-icon {
+
+    font-size: 45px;
+    color: white;
+
+  }
+
+  .info {
+
+    color: white;
+    font-weight: 500;
+
+  }
+
+  &.pending {
+
+    background-color: rgb(54, 54, 54);
+
+    .info, fa-icon {
+
+      color: white;
+    }
+
+  }
+
+  &.success {
+
+    background-color: rgb(189, 248, 177);
+
+    .info, fa-icon {
+
+      color: rgb(29, 175, 0);
+      
+    }
+
+  }
+
+  &.canceled {
+
+    background-color: rgb(248, 177, 177);
+
+    .info, fa-icon {
+
+      color: rgb(175, 0, 0);
+    }
+
+  }
+
+  &.ready {
+
+    padding-top: 40px;
+    background-color: rgb(45, 119, 255);
+    color: white;
+    font-weight: 500;
+
+    .info {
+
+      text-decoration: underline;
+      cursor: pointer;
+      outline: none !important;
+
+      &:hover {
+        font-weight: 800;
+      }
+
+    }
+
+  }
+
+}
+
+.watering-timer {
+
+  background: none;
+  border: none;
+  border-bottom: 2px solid white;
+  width: 50px;
+  outline: none;
+  color: white;
+  text-align: center;
+  margin-bottom: 10px;
+
+  &:focus,
+  &:active,
+  &:hover,
+  &:click {
+    outline: none;
+    border: none;
+  }
+
+}
