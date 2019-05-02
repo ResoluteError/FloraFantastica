@@ -391,7 +391,7 @@ var ActionsController = (function () {
                                             sensorId: sensor.id,
                                             sensorType: 40,
                                             plantId: plantId,
-                                            measuredAt: Date.now().toLocaleString(),
+                                            measuredAt: new Date().toISOString(),
                                             data: +duration
                                         });
                                         console.log("Saving Watering Measurement after Watering Action");

@@ -18,7 +18,7 @@
 
 #define JSON_BUFFER_SIZE 128
 
-const size_t capacity = JSON_OBJECT_SIZE(4) + 100;
+const size_t capacity = JSON_OBJECT_SIZE(6) + 110;
 
 volatile bool watering = false;
 volatile bool watered = false;

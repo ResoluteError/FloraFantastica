@@ -112,7 +112,7 @@ var rxjs_1 = require("rxjs");
                     },
                     json: {
                         sensorId: sensor.id,
-                        measuredAt: Date.now(),
+                        measuredAt: Date.now().toLocaleString(),
                         data: measurement.data,
                     }
                 };

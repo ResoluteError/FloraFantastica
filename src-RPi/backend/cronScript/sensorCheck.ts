@@ -114,7 +114,7 @@ import { Observable } from "rxjs";
         },
         json: {
           sensorId : sensor.id,
-          measuredAt : Date.now(),
+          measuredAt : new Date().toISOString(),
           plantId: sensor.currentPlantId,
           data : measurement.data,
         }
