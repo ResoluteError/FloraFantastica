@@ -47,7 +47,7 @@ export class QueueManager {
     this.app.post("/queue", (req: express.Request, res: express.Response) => {
 
       var newQueue : QueueItem = {
-        id: uuid(),
+        id: req.body.id || uuid(),
         origin: req.body.origin || QueueItemOrigin.Webserver,
         res: res,
         type: req.body.type
