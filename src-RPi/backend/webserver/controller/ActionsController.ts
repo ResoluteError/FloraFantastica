@@ -75,6 +75,22 @@ export class ActionsController {
   
   }
 
+  static async patch( req : Request, res: Response){
+  
+    var manager = getManager();
+
+    var actionId = req.params.actionId;
+
+    var editAction = manager.create(Action, req.body);
+
+    var patchActionRes = await manager.update(Action, actionId, editAction);
+
+    var patchedAction = await manager.findOne(Action, actionId);
+
+    res.send(patchedAction);
+  
+  }
+
 
   /// ---------- CUSTOM ACTIONS API --------------------- ///
 

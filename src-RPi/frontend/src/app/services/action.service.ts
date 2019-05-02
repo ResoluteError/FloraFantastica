@@ -17,6 +17,76 @@ export class ActionService {
     private httpOptions : HttpOptionsService
   ) { }
 
+
+  getActions(): Observable<Action[]>{
+
+    var url = this.httpOptions.apiUrl;
+    var options = this.httpOptions.options;
+
+    return new Observable( observer => {
+      this.http.get<Action[]>(`${url}/actions`, options).subscribe( result => {
+        observer.next(result);
+        observer.complete();
+      }, err => {
+        observer.error(err);
+        observer.complete();
+      })
+    });
+
+  }
+
+  getActionById(actionId : string): Observable<Action>{
+
+    var url = this.httpOptions.apiUrl;
+    var options = this.httpOptions.options;
+
+    return new Observable( observer => {
+      this.http.get<Action>(`${url}/actions/${actionId}`, options).subscribe( result => {
+        observer.next(result);
+        observer.complete();
+      }, err => {
+        observer.error(err);
+        observer.complete();
+      })
+    });
+
+  }
+
+  getActionsByPlantId(plantId : string): Observable<Action[]>{
+
+    var url = this.httpOptions.apiUrl;
+    var options = this.httpOptions.options;
+
+    return new Observable( observer => {
+      this.http.get<Action[]>(`${url}/actions/plant/${plantId}`, options).subscribe( result => {
+        observer.next(result);
+        observer.complete();
+      }, err => {
+        observer.error(err);
+        observer.complete();
+      })
+    });
+
+  }
+
+
+  getActionsByPlantIdAndState(plantId : string, state: number): Observable<Action[]>{
+
+    var url = this.httpOptions.apiUrl;
+    var options = this.httpOptions.options;
+
+    return new Observable( observer => {
+      this.http.get<Action[]>(`${url}/actions/state/${state}/plant/${plantId}`, options).subscribe( result => {
+        observer.next(result);
+        observer.complete();
+      }, err => {
+        observer.error(err);
+        observer.complete();
+      })
+    });
+
+  }
+
   getSensorMeasurement(sensorId: string): Observable<Measurement>{
 
     var url = this.httpOptions.apiUrl;
@@ -31,6 +101,24 @@ export class ActionService {
         observer.complete();
       })
     });
+  }
+
+
+  patchAction(actionId : string, action : Partial<Action>): Observable<Action>{
+
+    var url = this.httpOptions.apiUrl;
+    var options = this.httpOptions.options;
+
+    return new Observable( observer => {
+      this.http.patch<Action>(`${url}/actions/${actionId}`, action, options).subscribe( result => {
+        observer.next(result);
+        observer.complete();
+      }, err => {
+        observer.error(err);
+        observer.complete();
+      })
+    });
+
   }
 
   checkSensorState( sensorId: string): Observable<Sensor>{

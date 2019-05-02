@@ -7,6 +7,8 @@ router.get("/", ActionsController.getAll);
 
 router.get("/:actionId", ActionsController.getById);
 
+router.patch("/:actionId", ActionsController.patch);
+
 router.get("/state/:state", ActionsController.getByState);
 
 router.get("/plant/:plantId", ActionsController.getByPlantId);
