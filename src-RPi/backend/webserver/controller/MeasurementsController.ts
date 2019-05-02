@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { getManager } from "typeorm";
 import { Measurement } from "../entities/Measurement";
 import { Sensor } from "../entities/Sensors";
+import { Plant } from "../entities/Plants";
 
 
 export class MeasurementController {
@@ -100,22 +101,58 @@ export class MeasurementController {
 
     var manager = getManager();
 
-    console.log("Got Measurement POST Request: ", typeof req.body, req.body);
+    var newMeasurement = manager.create(Measurement, {
+      sensorId : req.body.sensorId,
+      measuredAt : req.body.measuredAt,
+      data: req.body.data
+    });
 
-    var newMeasurement = manager.create(Measurement, req.body);
+    var plantId = req.body.plantId;
 
-    var sensor = await manager.findOne( Sensor, newMeasurement.sensorId);
+    res.send(await MeasurementController.createNewMeasurement(newMeasurement, plantId));
 
-    newMeasurement.sensorType = sensor.type;
-    newMeasurement.plantId = sensor.currentPlantId;
-    newMeasurement.measuredAt = newMeasurement.measuredAt || (new Date()).toISOString();
+  }
 
-    var result = await manager.insert(Measurement, newMeasurement);
+  static createNewMeasurement( newMeasurement : Partial<Measurement>, plantId: string, sensor? : Sensor) : Promise<Measurement>{
 
-    var postedEntity = await manager.findOne(Measurement, result.identifiers[0].id);
+    return new Promise( async (resolve, reject) => {
 
-    res.send(postedEntity);
+      var manager = getManager();
 
+      var plant : Plant;
+
+      if(!sensor){
+
+        var requests = await Promise.all([manager.findOne( Sensor, newMeasurement.sensorId), manager.findOne(Plant, plantId)]);
+  
+        sensor = requests[0];
+        plant = requests[1];
+
+      } else {
+
+        plant = await manager.findOne(Plant, plantId);
+
+      }
+  
+      newMeasurement.sensorType = sensor.type;
+      newMeasurement.plantId = sensor.currentPlantId;
+      newMeasurement.measuredAt = newMeasurement.measuredAt || (new Date()).toISOString();
+  
+
+
+      var currentData = JSON.parse(plant.currentData);
+  
+      var result = await manager.insert(Measurement, newMeasurement);
+  
+      var postedEntity = await manager.findOne(Measurement, result.identifiers[0].id);
+  
+      currentData[sensor.type] = postedEntity;
+  
+      resolve(postedEntity);
+
+      await manager.update(Plant, plant.id, {currentData : JSON.stringify(currentData)});
+      
+    });
   }
 
   static async delete(req : Request, res : Response){

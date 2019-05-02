@@ -9,48 +9,9 @@ import express = require("express");
 import { CONFIG } from "../config";
 import { MeasurementQueueItem, QueueItemOrigin } from "../models/QueueItem.model";
 import { SerialRequestType } from "../models/SerialCommunication.model";
+import { MeasurementController } from "./MeasurementsController";
 
 export class ActionsController {
-  
-  static async updatePlantCurrentData(req : Request, res: Response){
-  
-    var plantId = req.params.plantId;
-
-    var repository = getRepository(Measurement);
-
-    // Get the latest entry per sensorType of a specific plant
-    var timesAndTypes = await repository.createQueryBuilder("measurement")
-      .select("MAX (measuredAt)", "measuredAt")
-      .addSelect("sensorType")
-      .where("plantId = :plantId", {plantId : plantId})
-      .groupBy("sensorType")
-      .execute();
-
-    var dataDict = {};
-    
-    for (var timeAndType of timesAndTypes){
-
-      // Get the entire measurement of the latest entry of a sensorType
-      dataDict[timeAndType.sensorType] = await repository.createQueryBuilder("measurement")
-      .where("plantId = :plantId", {plantId : plantId})
-      .andWhere("measuredAt = :measuredAt", {measuredAt : timeAndType.measuredAt})
-      .andWhere("sensorType = :sensorType", {sensorType : timeAndType.sensorType})
-      .getOne()
-
-    }
-
-    var dataStr = JSON.stringify(dataDict);
-
-    var manager = getManager();
-
-    await manager.update(Plant, plantId, {currentData : dataStr});
-
-    var result = await manager.findOne(Plant, plantId);
-
-    res.send(result);
-
-  }
-
 
   static async postHealthEntry(req : Request, res: Response){
     var manager = getManager();
@@ -76,21 +37,22 @@ export class ActionsController {
         state: 0
       });
       sensorId = result.identifiers[0].id;
+      sensor = await manager.findOne(Sensor, sensorId);
     } else {
       sensorId = sensor.id;
     }
 
-    var newMeasurement = await manager.insert(Measurement, {
+    var newMeasurement : Partial<Measurement> = {
       sensorId : sensorId,
-      sensorType : 90,
+      sensorType: 90,
       plantId : plantId,
       measuredAt: (new Date()).toISOString(),
       data: req.body.data
-    });
+    }
 
-    var postedEntity = await manager.findOne(Measurement, newMeasurement.identifiers[0].id);
+    var postedHealthEntry = await MeasurementController.createNewMeasurement(newMeasurement, sensor.currentPlantId, sensor);
 
-    res.send(postedEntity);
+    res.send(postedHealthEntry);
   }
 
   static async checkSensor(req : express.Request, res: express.Response){
@@ -121,8 +83,6 @@ export class ActionsController {
       json: measurementRequest
     };
 
-    console.log("Checking Sensor Status of sensor: ", sensor.name);
-
     request(sensorReqOptions, async (err, measureRes, body) =>  {
 
       if(err || (measureRes && measureRes.statusCode >= 400) || typeof measureRes === "undefined"){
@@ -135,7 +95,6 @@ export class ActionsController {
         sensor.state = 2;
 
         var updatedSensor = await manager.save(sensor);
-        console.log("Updated sensor status: ", sensor);
 
         res.send(sensor);
 
@@ -151,8 +110,6 @@ export class ActionsController {
         }
 
         var measurement = await manager.insert(Measurement, newMeasurement);
-
-        console.log("Created measurement: ", newMeasurement);
 
         res.status(202).send(newMeasurement);
 
