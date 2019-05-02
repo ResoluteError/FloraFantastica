@@ -262,8 +262,8 @@ export class ActionsController {
 
   static async wateringAction( req, res){
 
-    var duration = req.params.duration;
-    var actionPin = req.params.actionPin;
+    var duration = +req.params.duration;
+    var actionPin = +req.params.actionPin;
     var plantId = req.params.plantId;
 
     const manager = getManager();

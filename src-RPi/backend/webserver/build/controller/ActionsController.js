@@ -351,8 +351,8 @@ var ActionsController = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        duration = req.params.duration;
-                        actionPin = req.params.actionPin;
+                        duration = +req.params.duration;
+                        actionPin = +req.params.actionPin;
                         plantId = req.params.plantId;
                         manager = typeorm_1.getManager();
                         action = manager.create(Actions_1.Action, {
