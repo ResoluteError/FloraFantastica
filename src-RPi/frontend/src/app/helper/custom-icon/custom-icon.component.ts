@@ -10,8 +10,17 @@ export class CustomIconComponent implements OnInit {
   constructor() { }
 
   @Input() iconName : string;
+  isFaIcon : boolean;
+  faPrefix : string;
+  faIcon : string;
 
   ngOnInit() {
+    if(this.iconName.indexOf("fa") === 0){
+      this.isFaIcon = true;
+      var split = this.iconName.split("-");
+      this.faPrefix = split.splice(0,1)[0];
+      this.faIcon = split.join("-");
+    }
   }
 
 }
