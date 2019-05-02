@@ -119,8 +119,33 @@ export class ChartController {
 
   }
 
+  calibrateTempAxis(){
+
+    var min;
+    var max;
+
+    for(var yAxis of this.chartOptions.scales.yAxes){
+      if(yAxis["label"] === Sensor.typeToLabel(10) ||
+      yAxis["label"] === Sensor.typeToLabel(21)){
+        min = yAxis.ticks.min > min ? min : yAxis.ticks.min;
+        max = yAxis.ticks.max < max ? max : yAxis.ticks.max;
+      }
+    }
+
+    for(var yAxis of this.chartOptions.scales.yAxes){
+      if(yAxis["label"] === Sensor.typeToLabel(10) ||
+      yAxis["label"] === Sensor.typeToLabel(21)){
+        yAxis.ticks.min = min;
+        yAxis.ticks.max = max;
+      }
+    }
+
+  }
+
   draw(type : string): Chart{
     
+    this.calibrateTempAxis();
+
     var chartData = {
       type : type,
       data : {
