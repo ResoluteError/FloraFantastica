@@ -106,7 +106,7 @@ export class ChartController {
       dataset.fill = false;
       dataset.yAxisID = yAxis.id;
       dataset.pointStyle = sensor.type === 90 ? "star" : "circle";
-      dataset.showLine = sensor.type !== 40;
+      dataset.showLine = sensor.type < 40;
       dataset.lineTension = sensor.type === 90 ? 1 : 0;
   
       this.datasets.push(dataset);

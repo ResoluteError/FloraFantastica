@@ -42,16 +42,16 @@
             </div>
           </td>
           <td class="text-center">
-            <div *ngIf="sensor.state === 0" class="d-inline-block" ngbPopover="Check Sensor Status" triggers="mouseenter:mouseleave" (click)="checkSensor(sensor)">
+            <div *ngIf="(sensor.state === 0) && (sensor.type !== 40)" class="d-inline-block" ngbPopover="Check Sensor Status" triggers="mouseenter:mouseleave" (click)="checkSensor(sensor)">
               <fa-icon class="green action-icon" [icon]="['fas','sync-alt']"></fa-icon>
             </div>
-            <div *ngIf="sensor.state === 1" class="d-inline-block" ngbPopover="Resume Sensor Measuring" triggers="mouseenter:mouseleave" (click)="updateSensorState(sensor, true)">
+            <div *ngIf="(sensor.state === 1) && (sensor.type !== 40)" class="d-inline-block" ngbPopover="Resume Sensor Measuring" triggers="mouseenter:mouseleave" (click)="updateSensorState(sensor, true)">
               <fa-icon class="green action-icon" [icon]="['fas','play']"></fa-icon>
             </div>
-            <div *ngIf="sensor.state === 2" class="d-inline-block" ngbPopover="Pause Sensor Measuring" triggers="mouseenter:mouseleave" (click)="updateSensorState(sensor, false)">
+            <div *ngIf="(sensor.state === 2) && (sensor.type !== 40)" class="d-inline-block" ngbPopover="Pause Sensor Measuring" triggers="mouseenter:mouseleave" (click)="updateSensorState(sensor, false)">
               <fa-icon class="yellow action-icon" [icon]="['fas','pause']"></fa-icon>
             </div>
-            <div class="d-inline-block ml-4" ngbPopover="Realtime Measurement" triggers="mouseenter:mouseleave" (click)="getSensorMeasurement(sensor)" *ngIf="sensor.state !== 0">
+            <div class="d-inline-block ml-4" ngbPopover="Realtime Measurement" triggers="mouseenter:mouseleave" (click)="getSensorMeasurement(sensor)" *ngIf="(sensor.state !== 0) && (sensor.type !== 40)">
               <fa-icon class="purple action-icon" [icon]="['fas','flask']"></fa-icon>
             </div>
             <div class="d-inline-block ml-4" ngbPopover="Unlink Sensor" triggers="mouseenter:mouseleave" (click)="unlinkSensor(sensor)">
@@ -59,7 +59,7 @@
             </div>
           </td>
         </tr>
-        <tr *ngIf="activeSensors && activeSensors.length === 0">
+        <tr *ngIf="(activeSensors) && (activeSensors.length === 0)">
           <td colspan="4" class="text-center">
             <i> No sensors are linked to this plant.</i>
           </td>
