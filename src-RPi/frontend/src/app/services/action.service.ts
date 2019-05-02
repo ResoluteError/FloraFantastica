@@ -211,7 +211,7 @@ export class ActionService {
 
           observer.next({state: result.state});
 
-          if(result.state !== 1){
+          if(result.state !== 0){
             observer.complete();
             clearInterval(pingInterval);
           }
