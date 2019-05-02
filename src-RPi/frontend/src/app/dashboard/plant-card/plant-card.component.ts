@@ -18,8 +18,6 @@ export class PlantCardComponent implements OnInit {
   @Input() sensors: DisplaySensor[];
   @Output() delete = new EventEmitter<string>();
 
-
-  currentView = "data";
   plantData : PlantDataObj;
 
   constructor(
@@ -33,25 +31,6 @@ export class PlantCardComponent implements OnInit {
   ngOnInit() {
     this.plantData = new PlantDataObj(this.plant.currentData);
     this.sensors = this.sensors.filter( sensor => sensor.currentPlantId === this.plant.id);
-  }
-
-  updateCurrentPlantData(){
-    this.actionService.updatePlantCurrentData(this.plant.id).subscribe( updatedPlant => {
-
-      this.plantData = new PlantDataObj(updatedPlant.currentData);
-      this.alertService.success("Success!",`The data of \"${this.plant.name}\" was updated.`)
-
-    }, err => {
-       
-      this.alertService.warning("Update Failed.", "Please try again in a few minutes.", 4500);
-
-    })
-  }
-
-  updateView(view : string){
-
-    this.currentView = view;
-
   }
 
   sensorStateTooltip(sensor : Sensor){

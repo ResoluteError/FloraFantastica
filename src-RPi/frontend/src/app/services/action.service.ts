@@ -16,22 +16,6 @@ export class ActionService {
     private httpOptions : HttpOptionsService
   ) { }
 
-  updatePlantCurrentData(plantId : string): Observable<Plant>{
-
-    var url = this.httpOptions.apiUrl;
-    var options = this.httpOptions.options;
-
-    return new Observable( observer => {
-      this.http.post<Plant>(url + "/actions/plant/" + plantId + "/update-current-data", null, options).subscribe( updatedPlant => {
-        observer.next(updatedPlant);
-        observer.complete();
-      }, err => {
-        observer.error(err);
-        observer.complete();
-      })
-    });
-  }
-
   getSensorMeasurement(sensorId: string): Observable<Measurement>{
 
     var url = this.httpOptions.apiUrl;
