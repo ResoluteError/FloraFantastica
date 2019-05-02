@@ -37,7 +37,7 @@ export class SensorController {
 
     var sensor = await manager.findOne(Sensor, {
       where : {
-        pin : pin
+        dataPin : pin
       }
     });
 

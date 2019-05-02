@@ -17,7 +17,8 @@ export class Sensor {
       20 : "Soil Moisture",
       21 : "Soil Temperature",
       30 : "Light Intensity",
-      40 : "Watering Activity"
+      40 : "Watering Activity",
+      90 : "Health Status"
     }
     return labels[sensorType] || "Unknown";
   }

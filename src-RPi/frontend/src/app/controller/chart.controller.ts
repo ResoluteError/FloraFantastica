@@ -16,8 +16,6 @@ export class ChartController {
   private chartOptions : ChartOptions;
   private datasets : ChartDataSets[];
 
-  lineColors : string[];
-  cLineColorIndex : number;
   lineColorsByType : {[index: string]: string};
 
   constructor(eleRef : ElementRef){
@@ -107,13 +105,14 @@ export class ChartController {
       dataset.backgroundColor = "transparent";
       dataset.fill = false;
       dataset.yAxisID = yAxis.id;
-      dataset.pointStyle = "circle";
+      dataset.pointStyle = sensor.type === 90 ? "star" : "circle";
+      dataset.showLine = sensor.type !== 40;
+      dataset.lineTension = sensor.type === 90 ? 1 : 0;
   
       this.datasets.push(dataset);
       this.sensors.push(sensor);
-      this.chartOptions.scales.yAxes.push(yAxis)
-  
-      this.cLineColorIndex++;
+      this.chartOptions.scales.yAxes.push(yAxis);
+
     } catch {
       // empty dataset
     }
@@ -206,8 +205,8 @@ export class ChartController {
 
       case 90: {
         ticks = {
-          min: -20,
-          max: 80
+          min: -1,
+          max: 11
         }
       }
 

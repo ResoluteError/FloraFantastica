@@ -87,7 +87,7 @@ var SensorController = (function () {
                         manager = typeorm_1.getManager();
                         return [4, manager.findOne(Sensors_1.Sensor, {
                                 where: {
-                                    pin: pin
+                                    dataPin: pin
                                 }
                             })];
                     case 1:
