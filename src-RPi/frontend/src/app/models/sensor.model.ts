@@ -42,8 +42,8 @@ export class Sensor {
       11 : ["air","humidity"],
       20 : ["soil","humidity"],
       21 : ["soil","temperature"],
-      30 : ["light"],
-      40 : ["temperature"],
+      30 : ["fas-sun"],
+      40 : ["fas-power-off","fas-cloud-showers-heavy"]
     }
     return icons[sensorType];
   }

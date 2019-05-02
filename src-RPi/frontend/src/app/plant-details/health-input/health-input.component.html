@@ -16,6 +16,9 @@
       <button *ngIf="!posting" class="btn btn-outline-primary" (click)="postHealth()">Add Entry</button>
       <button *ngIf="posting" class="btn btn-outline-primary disabled" disabled>Saving...</button>
     </div>
+    <div>
+      <app-watering [plant]="plant"></app-watering>
+    </div>
   </div>
 </div>
 <div class="card h-100" *ngIf="entryAdded">
