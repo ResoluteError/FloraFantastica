@@ -18,6 +18,7 @@ export class ChartController {
 
   lineColors : string[];
   cLineColorIndex : number;
+  lineColorsByType : {[index: string]: string};
 
   constructor(eleRef : ElementRef){
 
@@ -25,16 +26,15 @@ export class ChartController {
     this.context = this.canvas.getContext("2d");
     this.sensors = [];
 
-    this.lineColors = [
-      "rgba(20,40,150,1)",
-      "rgba(220,150,10,1)",
-      "rgba(170,10,220,1)",
-      "rgba(10,180,80,1)",
-      "rgba(40, 90, 60, 1)",
-      "rgba(90,40,40,1)"
-    ];
-
-    this.cLineColorIndex = 0;
+    this.lineColorsByType = {
+      10 : "rgba(255, 120, 120, 1)",
+      11 : "rgba(0, 200, 255, 1)",
+      20 : "rgba(220, 0, 250, 1)",
+      21 : "rgba(180, 75, 0, 1)",
+      30 : "rgba(255, 225, 0, 1)",
+      40 : "rgba(0,25,160,1)",
+      90 : "rgba(10,180,80,1)"
+    }
 
     this.chartOptions = {
       legend: {
@@ -50,9 +50,9 @@ export class ChartController {
           label : (tooltipItem, data) => {
             var setIndex = tooltipItem.datasetIndex;
             var sensorType = this.sensors[setIndex].type;
-            var date = (new Date(tooltipItem.xLabel)).toLocaleString();
+            var date = (new Date(tooltipItem.xLabel)).toLocaleTimeString();
             var units = Sensor.typeToUnit(sensorType);
-            return `${date}: ${tooltipItem.yLabel + units}`;
+            return `[${date}] ${Sensor.typeToLabel(sensorType)}: ${tooltipItem.yLabel + units}`;
 
           }
           
@@ -87,20 +87,23 @@ export class ChartController {
 
     try {
       var max = (<ChartPoint>dataset.data[0]).y;
+      var min = (<ChartPoint>dataset.data[0]).y;
   
       for(var point of dataset.data){
   
         point = <ChartPoint>point;
         max = point.y > max ? point.y : max;
+        min = point.y < min ? point.y : min;
   
       }
   
       max = <number>max;
+      min = <number>min;
   
-      var yAxis = this.setupYAxis(sensor.type, max);
+      var yAxis = this.setupYAxis(sensor.type, min, max);
   
       dataset.label = sensor.name;
-      dataset.borderColor = this.lineColors[this.cLineColorIndex];
+      dataset.borderColor = this.lineColorsByType[sensor.type];
       dataset.backgroundColor = "transparent";
       dataset.fill = false;
       dataset.yAxisID = yAxis.id;
@@ -134,10 +137,11 @@ export class ChartController {
 
   public setupXAxis( timeScope: number): void{
 
+    var now = Date.now();
     var msInHour = 1000 * 60 * 60;    
     var msInDay = msInHour * 24;    
-    var endOfToday = Date.now() + ( msInDay - (Date.now() % msInDay))
-
+    var endOfToday = now + ( msInDay - (now % msInDay))
+    var endOfHour = Math.ceil(Date.now() / msInHour) * msInHour;
     var stepSize : number;
 
     this.chartOptions.scales.xAxes[0].ticks.min = endOfToday - timeScope * msInDay;
@@ -145,6 +149,8 @@ export class ChartController {
 
     if(timeScope <= 1){
       stepSize = msInHour * 2;
+      this.chartOptions.scales.xAxes[0].ticks.min = endOfHour - msInDay;
+      this.chartOptions.scales.xAxes[0].ticks.max = endOfHour;
     } else if(timeScope <= 7){
       stepSize = msInDay;
     } else {
@@ -191,46 +197,34 @@ export class ChartController {
   }
 
   
-  private setupYAxis(sensorType: number, max : number) : ChartYAxe {
+  private setupYAxis(sensorType: number, min: number, max : number) : ChartYAxe {
     var id = uuid();
 
-    var ticksByType = {
-      10: {
-        min: -20,
-        max: 80
-      },
-      11: {
-        min: 0,
-        max: 100
-      },
-      20: {
-        min: 0,
-        // evtl. 40000?
-        max: max * 1.2 - (max * 1.2 % 10000)
-      }, 
-      21: {
-        min: -20,
-        max: 80
-      },
-      30: {
-        min: 0,
-        max: max * 1.2 - (max * 1.2 % 10)
-        // evtl. 1080?
-      },
-      40: {
-        min: 0,
-        max: max * 1.2 - (max * 1.2 % 100)
-      },
-      90: {
-        min: 0,
-        max: 10
+    var ticks;
+
+    switch(sensorType){
+
+      case 90: {
+        ticks = {
+          min: -20,
+          max: 80
+        }
       }
+
+      default : {
+        ticks = {
+          min: min - (max - min) * .1,
+          max: max + (max - min) * .1
+        };
+      } 
+
     }
+
     var yAxis = {
       id : id,
       label : Sensor.typeToLabel(sensorType),
       type : "linear",
-      ticks : ticksByType[sensorType],
+      ticks : ticks,
       display : false
     }
     return yAxis;

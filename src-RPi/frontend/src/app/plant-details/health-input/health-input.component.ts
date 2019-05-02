@@ -61,7 +61,6 @@ export class HealthInputComponent implements OnInit {
       this.entryAdded = true;
       this.postedHealth.emit(result);
       this.health = result.data;
-      this.actionService.updatePlantCurrentData(this.plant.id).subscribe();
     }, err => {
       this.alertService.warning("Action API Error.",`Failed to create a health entry for '${this.plant.name}', please try again in a moment.`);
       this.posting = false;
