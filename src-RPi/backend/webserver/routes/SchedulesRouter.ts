@@ -15,4 +15,6 @@ router.patch("/:scheduleId", SchedulesController.patch);
 
 router.delete("/:scheduleId", SchedulesController.delete);
 
+router.get("/plant/:plantId", SchedulesController.getByPlantId);
+
 export {router};

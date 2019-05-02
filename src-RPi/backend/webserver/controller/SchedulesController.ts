@@ -38,6 +38,18 @@ export class SchedulesController {
   
   }
 
+  static async getByPlantId( req : Request, res: Response){
+  
+    var manager = getManager();
+
+    var plantId = req.params.plantId;
+
+    var data = await manager.findOne(Schedule, {where: {plantId : plantId}});
+
+    res.send(data);
+  
+  }
+
   static async post( req : Request, res: Response){
 
     var manager = getManager();
