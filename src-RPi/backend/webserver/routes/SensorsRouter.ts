@@ -3,17 +3,17 @@ import { SensorController } from "../controller/SensorsController"
 
 const router : express.Router = express.Router();
 
-router.get('/', SensorController.get_all);
+router.get('/', SensorController.getAll);
 
-router.get('/available', SensorController.get_available_sensors);
+router.get('/available', SensorController.getAvailableSensors);
 
-router.get('/pin/:dataPin', SensorController.get_by_data_pin);
+router.get('/pin/:dataPin', SensorController.getByDataPin);
 
-router.get('/type/:sensorType', SensorController.get_by_type);
+router.get('/type/:sensorType', SensorController.getByType);
 
 router.post('/', SensorController.post);
 
-router.get('/:sensorId', SensorController.get_by_id);
+router.get('/:sensorId', SensorController.getById);
 
 router.patch('/:sensorId', SensorController.patch);
 

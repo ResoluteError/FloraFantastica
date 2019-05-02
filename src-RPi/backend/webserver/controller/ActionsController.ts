@@ -1,17 +1,83 @@
 import { Request, Response } from "express";
-import { getManager, EntityManager, getRepository } from "typeorm";
+import { getManager } from "typeorm";
 import { Measurement } from "../entities/Measurement";
-import { Plant } from "../entities/Plants";
 import { Sensor } from "../entities/Sensors";
 import * as request from "request";
 
 import express = require("express");
 import { CONFIG } from "../config";
-import { MeasurementQueueItem, QueueItemOrigin } from "../models/QueueItem.model";
-import { SerialRequestType } from "../models/SerialCommunication.model";
+import { MeasurementQueueItem, QueueItemOrigin, ActionQueueItem } from "../models/QueueItem.model";
+import { SerialRequestType, SerialActionActivationType, SerialActionType } from "../models/SerialCommunication.model";
 import { MeasurementController } from "./MeasurementsController";
+import { Action } from "../entities/Actions";
 
 export class ActionsController {
+
+
+  /// ---------- STANDARD ACTIONS API --------------------- ///
+
+  static async getAll( req : Request, res: Response){
+  
+    var manager = getManager();
+
+    var data = await manager.find(Action);
+
+    res.send(data);
+  
+  }
+
+  static async getById( req : Request, res: Response){
+  
+    var manager = getManager();
+
+    var id = req.params.actionId;
+
+    var data = await manager.findOne(Action, id);
+
+    res.send(data);
+  
+  }
+
+  static async getByState( req : Request, res: Response){
+  
+    var manager = getManager();
+
+    var state = req.params.state;
+
+    var data = await manager.find(Action, {where : {state : state}});
+
+    res.send(data);
+  
+  }
+
+  static async getByPlantId( req : Request, res: Response){
+  
+    var manager = getManager();
+
+    var plantId = req.params.plantId;
+
+    var data = await manager.find(Action, {where : {plantId : plantId}});
+
+    res.send(data);
+  
+  }
+
+  static async getByStateAndPlantId( req : Request, res: Response){
+  
+    var manager = getManager();
+
+    var plantId = req.params.plantId;
+    var state = req.params.state;
+
+    var data = await manager.find(Action, {where : {plantId : plantId, state : state}});
+
+    res.send(data);
+  
+  }
+
+
+  /// ---------- CUSTOM ACTIONS API --------------------- ///
+
 
   static async postHealthEntry(req : Request, res: Response){
     var manager = getManager();
@@ -118,6 +184,83 @@ export class ActionsController {
       }
 
     });
+
+  }
+
+  static async postAction( actionRequest : Partial<ActionQueueItem>){
+
+    const actionReqOptions = {  
+      url: `http://localhost:${CONFIG.QUEUE_MANAGER_PORT}/queue`,
+      method: 'POST',
+      headers: {
+          'Accept': 'application/json',
+          'Accept-Charset': 'utf-8'
+      },
+      json: actionRequest
+    };
+
+    const manager = getManager();
+
+    request( actionReqOptions, async (err, httpResponse, body) => {
+
+      if(err){
+        console.log("postAction Error - ", err);
+        await manager.update( Action, actionRequest.id, {
+          state : -1
+        });
+        console.log("Action updated with error");
+        return;
+      }
+
+      await manager.update( Action, actionRequest.id, {
+        state : 1
+      });
+      console.log("Action updated with success");
+      console.log("Completed action request");
+
+    });
+
+
+  }
+
+  static async wateringAction( req, res){
+
+    var duration = req.params.duration;
+    var actionPin = req.params.actionPin;
+    var plantId = req.params.plantId;
+
+    const manager = getManager();
+
+    var action = manager.create( Action, {
+      actionType: 0,
+      actionPin: actionPin,
+      activationType: 2,
+      duration: duration,
+      plantId : plantId
+    });
+
+    var savedActionRes = await manager.insert(Action, action);
+
+    var actionId = savedActionRes.identifiers[0].id;
+
+    var resultAction = await manager.findOne(Action, actionId);
+
+    console.log("savedActionRes: ", savedActionRes);
+    console.log("Saved Action Id: ", actionId);
+
+    var wateringRequest : Partial<ActionQueueItem> = {
+      id: actionId,
+      origin: QueueItemOrigin.Webserver,
+      type: SerialRequestType.Action,
+      actionType: SerialActionType.Watering,
+      activationType : SerialActionActivationType.Duration,
+      actionPin: actionPin,
+      duration: duration
+    }
+
+    ActionsController.postAction(wateringRequest);
+
+    res.status(202).send(resultAction);
 
   }
 

@@ -7,7 +7,7 @@ import { CONFIG } from "../config";
 
 export class PlantsController {
 
-  static async get_all(req : Request, res: Response){
+  static async getAll(req : Request, res: Response){
   
     var manager = getManager();
 
@@ -17,7 +17,7 @@ export class PlantsController {
 
   }
 
-  static async get_by_id(req : Request, res: Response){
+  static async getById(req : Request, res: Response){
     
     var id = req.params.plantId;
 

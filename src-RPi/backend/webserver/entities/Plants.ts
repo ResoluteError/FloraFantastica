@@ -9,7 +9,7 @@ export class Plant {
   @Column("text")
   name : string;
 
-  @Column("blob")
+  @Column("text")
   icon : string;
 
   @Column("int")

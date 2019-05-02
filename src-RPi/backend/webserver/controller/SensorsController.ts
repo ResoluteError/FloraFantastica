@@ -4,7 +4,7 @@ import { Sensor } from "../entities/Sensors";
 
 export class SensorController {
 
-  static async get_all(req : Request, res: Response){
+  static async getAll(req : Request, res: Response){
 
     var manager = getManager();
 
@@ -15,7 +15,7 @@ export class SensorController {
   }
 
   
-  static async get_by_plant_id(req : Request, res: Response){
+  static async getByPlantId(req : Request, res: Response){
 
     var id = req.params.plantId;
     var manager = getManager();
@@ -30,7 +30,7 @@ export class SensorController {
 
   }
   
-  static async get_by_data_pin(req : Request, res: Response){
+  static async getByDataPin(req : Request, res: Response){
 
     var pin = req.params.dataPin;
     var manager = getManager();
@@ -45,7 +45,7 @@ export class SensorController {
 
   }
 
-  static async get_available_sensors(req : Request, res: Response){
+  static async getAvailableSensors(req : Request, res: Response){
 
     var manager = getManager();
     
@@ -61,7 +61,7 @@ export class SensorController {
 
   }
 
-  static async get_by_type(req : Request, res: Response){
+  static async getByType(req : Request, res: Response){
     
     var type = req.params.sensorType;
 
@@ -76,7 +76,7 @@ export class SensorController {
     res.send(data);
 
   }
-  static async get_by_id(req : Request, res: Response){
+  static async getById(req : Request, res: Response){
     
     var id = req.params.sensorId;
 

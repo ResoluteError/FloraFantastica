@@ -5,6 +5,7 @@ import {router as sensorMeasurementsRouter} from "./routes/MeasurementsRouter";
 import {router as sensorsRouter} from "./routes/SensorsRouter";
 import {router as seedRouter} from "./routes/SeedRouter";
 import {router as actionsRouter} from "./routes/ActionsRouter";
+import {router as scheduleRouter} from "./routes/SchedulesRouter";
 import { createConnection } from "typeorm";
 import bodyParser = require('body-parser');
 import {CONFIG} from './config';
@@ -46,6 +47,7 @@ createConnection().then(async connection => {
   app.use("/api/sensors/",sensorsRouter);
   app.use("/api/plants/",plantsRouter);
   app.use("/api/actions/",actionsRouter);
+  app.use("/api/schedules/",scheduleRouter);
   app.use("/seed/",seedRouter);
   
   app.use("/uploads", express.static(CONFIG.UPLOADS_DIR));

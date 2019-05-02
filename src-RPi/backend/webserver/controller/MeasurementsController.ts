@@ -12,6 +12,8 @@ export class MeasurementController {
     
     var manager = getManager();
 
+    console.log("Getting all measurements")
+
     var data = await manager.find(Measurement);
 
     res.send(data)
