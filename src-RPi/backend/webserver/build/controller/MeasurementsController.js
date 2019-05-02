@@ -49,6 +49,7 @@ var MeasurementController = (function () {
                 switch (_a.label) {
                     case 0:
                         manager = typeorm_1.getManager();
+                        console.log("Getting all measurements");
                         return [4, manager.find(Measurement_1.Measurement)];
                     case 1:
                         data = _a.sent();

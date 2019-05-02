@@ -40,7 +40,7 @@ var Sensors_1 = require("../entities/Sensors");
 var SensorController = (function () {
     function SensorController() {
     }
-    SensorController.get_all = function (req, res) {
+    SensorController.getAll = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var manager, data;
             return __generator(this, function (_a) {
@@ -56,7 +56,7 @@ var SensorController = (function () {
             });
         });
     };
-    SensorController.get_by_plant_id = function (req, res) {
+    SensorController.getByPlantId = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var id, manager, sensors;
             return __generator(this, function (_a) {
@@ -77,7 +77,7 @@ var SensorController = (function () {
             });
         });
     };
-    SensorController.get_by_data_pin = function (req, res) {
+    SensorController.getByDataPin = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var pin, manager, sensor;
             return __generator(this, function (_a) {
@@ -98,7 +98,7 @@ var SensorController = (function () {
             });
         });
     };
-    SensorController.get_available_sensors = function (req, res) {
+    SensorController.getAvailableSensors = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var manager, sensors;
             return __generator(this, function (_a) {
@@ -120,7 +120,7 @@ var SensorController = (function () {
             });
         });
     };
-    SensorController.get_by_type = function (req, res) {
+    SensorController.getByType = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var type, manager, data;
             return __generator(this, function (_a) {
@@ -141,7 +141,7 @@ var SensorController = (function () {
             });
         });
     };
-    SensorController.get_by_id = function (req, res) {
+    SensorController.getById = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var id, manager, data;
             return __generator(this, function (_a) {

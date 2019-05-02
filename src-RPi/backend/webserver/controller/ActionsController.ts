@@ -62,6 +62,22 @@ export class ActionsController {
   
   }
 
+  static async getLatestByPlantId( req : Request, res: Response){
+  
+    var manager = getManager();
+
+    var plantId = req.params.plantId;
+
+    var data = await manager.query(`SELECT * FROM action WHERE plantId='${plantId}' ORDER BY createdAt DESC LIMIT 1`);
+
+    if(data && data.length === 1){
+      data = data[0];
+    }
+
+    res.send(data);
+  
+  }
+
   static async getByStateAndPlantId( req : Request, res: Response){
   
     var manager = getManager();

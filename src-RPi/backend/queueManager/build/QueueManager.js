@@ -76,7 +76,7 @@ var QueueManager = (function () {
         var _this = this;
         this.app.post("/queue", function (req, res) {
             var newQueue = {
-                id: uuid(),
+                id: req.body.id || uuid(),
                 origin: req.body.origin || QueueItem_model_1.QueueItemOrigin.Webserver,
                 res: res,
                 type: req.body.type

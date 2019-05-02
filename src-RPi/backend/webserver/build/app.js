@@ -43,6 +43,7 @@ var MeasurementsRouter_1 = require("./routes/MeasurementsRouter");
 var SensorsRouter_1 = require("./routes/SensorsRouter");
 var SeedRouter_1 = require("./routes/SeedRouter");
 var ActionsRouter_1 = require("./routes/ActionsRouter");
+var SchedulesRouter_1 = require("./routes/SchedulesRouter");
 var typeorm_1 = require("typeorm");
 var bodyParser = require("body-parser");
 var config_1 = require("./config");
@@ -74,6 +75,7 @@ typeorm_1.createConnection().then(function (connection) { return __awaiter(_this
                 app.use("/api/sensors/", SensorsRouter_1.router);
                 app.use("/api/plants/", PlantsRouter_1.router);
                 app.use("/api/actions/", ActionsRouter_1.router);
+                app.use("/api/schedules/", SchedulesRouter_1.router);
                 app.use("/seed/", SeedRouter_1.router);
                 app.use("/uploads", express.static(config_1.CONFIG.UPLOADS_DIR));
                 app.use(express.static(config_1.CONFIG.FRONTEND_DIR));

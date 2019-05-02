@@ -10,37 +10,45 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
-var Plant = (function () {
-    function Plant() {
+var Action = (function () {
+    function Action() {
     }
     __decorate([
         typeorm_1.PrimaryGeneratedColumn("uuid"),
         __metadata("design:type", String)
-    ], Plant.prototype, "id", void 0);
-    __decorate([
-        typeorm_1.Column("text"),
-        __metadata("design:type", String)
-    ], Plant.prototype, "name", void 0);
-    __decorate([
-        typeorm_1.Column("text"),
-        __metadata("design:type", String)
-    ], Plant.prototype, "icon", void 0);
+    ], Action.prototype, "id", void 0);
     __decorate([
         typeorm_1.Column("int"),
         __metadata("design:type", Number)
-    ], Plant.prototype, "state", void 0);
+    ], Action.prototype, "actionType", void 0);
+    __decorate([
+        typeorm_1.Column("int"),
+        __metadata("design:type", Number)
+    ], Action.prototype, "actionPin", void 0);
+    __decorate([
+        typeorm_1.Column("int"),
+        __metadata("design:type", Number)
+    ], Action.prototype, "activationType", void 0);
     __decorate([
         typeorm_1.Column("text"),
         __metadata("design:type", String)
-    ], Plant.prototype, "currentData", void 0);
+    ], Action.prototype, "plantId", void 0);
     __decorate([
-        typeorm_1.Column({ type: "text", nullable: true }),
+        typeorm_1.Column({ type: "double", nullable: true }),
+        __metadata("design:type", Number)
+    ], Action.prototype, "duration", void 0);
+    __decorate([
+        typeorm_1.Column({ type: "int", default: 0 }),
+        __metadata("design:type", Number)
+    ], Action.prototype, "state", void 0);
+    __decorate([
+        typeorm_1.CreateDateColumn(),
         __metadata("design:type", String)
-    ], Plant.prototype, "description", void 0);
-    Plant = __decorate([
+    ], Action.prototype, "createdAt", void 0);
+    Action = __decorate([
         typeorm_1.Entity()
-    ], Plant);
-    return Plant;
+    ], Action);
+    return Action;
 }());
-exports.Plant = Plant;
-//# sourceMappingURL=Plants.js.map
+exports.Action = Action;
+//# sourceMappingURL=Actions.js.map

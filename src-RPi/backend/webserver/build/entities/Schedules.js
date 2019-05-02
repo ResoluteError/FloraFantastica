@@ -10,37 +10,41 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
-var Plant = (function () {
-    function Plant() {
+var Schedule = (function () {
+    function Schedule() {
     }
     __decorate([
-        typeorm_1.PrimaryGeneratedColumn("uuid"),
+        typeorm_1.PrimaryGeneratedColumn('uuid'),
         __metadata("design:type", String)
-    ], Plant.prototype, "id", void 0);
+    ], Schedule.prototype, "id", void 0);
     __decorate([
-        typeorm_1.Column("text"),
+        typeorm_1.Column({ type: "text", unique: true }),
         __metadata("design:type", String)
-    ], Plant.prototype, "name", void 0);
+    ], Schedule.prototype, "plantId", void 0);
     __decorate([
-        typeorm_1.Column("text"),
+        typeorm_1.Column("boolean"),
+        __metadata("design:type", Boolean)
+    ], Schedule.prototype, "active", void 0);
+    __decorate([
+        typeorm_1.Column("blob"),
         __metadata("design:type", String)
-    ], Plant.prototype, "icon", void 0);
+    ], Schedule.prototype, "rule", void 0);
     __decorate([
-        typeorm_1.Column("int"),
-        __metadata("design:type", Number)
-    ], Plant.prototype, "state", void 0);
-    __decorate([
-        typeorm_1.Column("text"),
+        typeorm_1.Column("blob"),
         __metadata("design:type", String)
-    ], Plant.prototype, "currentData", void 0);
+    ], Schedule.prototype, "action", void 0);
     __decorate([
-        typeorm_1.Column({ type: "text", nullable: true }),
+        typeorm_1.CreateDateColumn(),
         __metadata("design:type", String)
-    ], Plant.prototype, "description", void 0);
-    Plant = __decorate([
+    ], Schedule.prototype, "createdAt", void 0);
+    __decorate([
+        typeorm_1.UpdateDateColumn(),
+        __metadata("design:type", String)
+    ], Schedule.prototype, "updatedAt", void 0);
+    Schedule = __decorate([
         typeorm_1.Entity()
-    ], Plant);
-    return Plant;
+    ], Schedule);
+    return Schedule;
 }());
-exports.Plant = Plant;
-//# sourceMappingURL=Plants.js.map
+exports.Schedule = Schedule;
+//# sourceMappingURL=Schedules.js.map

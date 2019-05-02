@@ -4,12 +4,12 @@ var express = require("express");
 var SensorsController_1 = require("../controller/SensorsController");
 var router = express.Router();
 exports.router = router;
-router.get('/', SensorsController_1.SensorController.get_all);
-router.get('/available', SensorsController_1.SensorController.get_available_sensors);
-router.get('/pin/:dataPin', SensorsController_1.SensorController.get_by_data_pin);
-router.get('/type/:sensorType', SensorsController_1.SensorController.get_by_type);
+router.get('/', SensorsController_1.SensorController.getAll);
+router.get('/available', SensorsController_1.SensorController.getAvailableSensors);
+router.get('/pin/:dataPin', SensorsController_1.SensorController.getByDataPin);
+router.get('/type/:sensorType', SensorsController_1.SensorController.getByType);
 router.post('/', SensorsController_1.SensorController.post);
-router.get('/:sensorId', SensorsController_1.SensorController.get_by_id);
+router.get('/:sensorId', SensorsController_1.SensorController.getById);
 router.patch('/:sensorId', SensorsController_1.SensorController.patch);
 router.delete('/:sensorId', SensorsController_1.SensorController.delete);
 //# sourceMappingURL=SensorsRouter.js.map

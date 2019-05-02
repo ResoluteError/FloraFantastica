@@ -13,6 +13,8 @@ router.get("/state/:state", ActionsController.getByState);
 
 router.get("/plant/:plantId", ActionsController.getByPlantId);
 
+router.get("/plant/:plantId/latest", ActionsController.getLatestByPlantId);
+
 router.get("/state/:state/plant/:plantId", ActionsController.getByStateAndPlantId);
 
 router.post("/plant/:plantId/post-health-entry", ActionsController.postHealthEntry);

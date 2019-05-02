@@ -7,10 +7,10 @@ var multer = require("multer");
 var upload = multer();
 var router = express.Router();
 exports.router = router;
-router.get('/', PlantsController_1.PlantsController.get_all);
+router.get('/', PlantsController_1.PlantsController.getAll);
 router.post('/', upload.single("plantImageUpload"), PlantsController_1.PlantsController.post);
-router.get('/:plantId', PlantsController_1.PlantsController.get_by_id);
+router.get('/:plantId', PlantsController_1.PlantsController.getById);
 router.patch('/:plantId', upload.single("plantImageUpload"), PlantsController_1.PlantsController.patch);
 router.delete('/:plantId', PlantsController_1.PlantsController.delete);
-router.get('/:plantId/sensors', SensorsController_1.SensorController.get_by_plant_id);
+router.get('/:plantId/sensors', SensorsController_1.SensorController.getByPlantId);
 //# sourceMappingURL=PlantsRouter.js.map

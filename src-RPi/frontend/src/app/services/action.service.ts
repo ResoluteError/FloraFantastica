@@ -69,6 +69,23 @@ export class ActionService {
 
   }
 
+  getLatestActionByPlantId(plantId : string): Observable<Action>{
+
+    var url = this.httpOptions.apiUrl;
+    var options = this.httpOptions.options;
+
+    return new Observable( observer => {
+      this.http.get<Action>(`${url}/actions/plant/${plantId}/latest`, options).subscribe( result => {
+        observer.next(result);
+        observer.complete();
+      }, err => {
+        observer.error(err);
+        observer.complete();
+      })
+    });
+
+  }
+
 
   getActionsByPlantIdAndState(plantId : string, state: number): Observable<Action[]>{
 

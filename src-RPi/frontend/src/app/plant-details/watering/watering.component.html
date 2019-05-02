@@ -17,10 +17,20 @@
             </p>
           </div>
 
-          <div class="watering-status pending" *ngIf="isQueued">
-            <fa-icon [icon]="['fas','hourglass-half']"></fa-icon>
-            <div class="info">
-              Pending...
+          <div class="text-center" *ngIf="isQueued">
+            <div class="watering-status pending" *ngIf="isQueued">
+              <fa-icon [icon]="['fas','hourglass-half']"></fa-icon>
+              <div class="info">
+                Pending...
+              </div>
+            </div>
+            <div class="mt-2" *ngIf="possibleTimeout">
+              <p class="text-center timeout">
+                This action may have timed out. Do you wish to cancel the action?
+              </p>
+              <button class="btn btn-warning" (click)="cancel()">
+                Cancel
+              </button>
             </div>
           </div>
 

@@ -36,20 +36,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
-var Plants_1 = require("../entities/Plants");
-var fs = require("fs");
-var config_1 = require("../config");
-var PlantsController = (function () {
-    function PlantsController() {
+var Schedules_1 = require("../entities/Schedules");
+var SchedulesController = (function () {
+    function SchedulesController() {
     }
-    PlantsController.getAll = function (req, res) {
+    SchedulesController.getAll = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var manager, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         manager = typeorm_1.getManager();
-                        return [4, manager.find(Plants_1.Plant)];
+                        console.log("Getting all schedules");
+                        return [4, manager.find(Schedules_1.Schedule)];
                     case 1:
                         data = _a.sent();
                         res.send(data);
@@ -58,15 +57,15 @@ var PlantsController = (function () {
             });
         });
     };
-    PlantsController.getById = function (req, res) {
+    SchedulesController.getById = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, manager, data;
+            var manager, id, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        id = req.params.plantId;
                         manager = typeorm_1.getManager();
-                        return [4, manager.findOne(Plants_1.Plant, id)];
+                        id = req.params.scheduleId;
+                        return [4, manager.findOne(Schedules_1.Schedule, id)];
                     case 1:
                         data = _a.sent();
                         res.send(data);
@@ -75,81 +74,73 @@ var PlantsController = (function () {
             });
         });
     };
-    PlantsController.post = function (req, res) {
+    SchedulesController.getActive = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var plantData, folder, savePath, manager, plant, result, createdId, createdEntity;
+            var manager, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        plantData = req.body;
-                        try {
-                            folder = Date.now();
-                            plantData.icon = "/uploads/" + folder + "/" + req.file.originalname;
-                            savePath = config_1.CONFIG.UPLOADS_DIR + "/" + folder + "/";
-                            fs.mkdirSync(savePath, { recursive: true });
-                            fs.writeFileSync(savePath + req.file.originalname, req.file.buffer);
-                        }
-                        catch (err) {
-                        }
-                        plantData.state = plantData.state || 0;
-                        plantData.currentData = plantData.currentData || "{}";
                         manager = typeorm_1.getManager();
-                        plant = manager.create(Plants_1.Plant, plantData);
-                        return [4, manager.insert(Plants_1.Plant, plant)];
+                        return [4, manager.find(Schedules_1.Schedule, { where: { active: true } })];
                     case 1:
-                        result = _a.sent();
-                        createdId = result.identifiers[0].id;
-                        return [4, manager.findOne(Plants_1.Plant, createdId)];
-                    case 2:
-                        createdEntity = _a.sent();
-                        res.send(createdEntity);
+                        data = _a.sent();
+                        res.send(data);
                         return [2];
                 }
             });
         });
     };
-    PlantsController.delete = function (req, res) {
+    SchedulesController.getByPlantId = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, manager, deletingEntity, result;
+            var manager, plantId, data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        id = req.params.plantId;
                         manager = typeorm_1.getManager();
-                        return [4, manager.findOne(Plants_1.Plant, id)];
+                        plantId = req.params.plantId;
+                        return [4, manager.findOne(Schedules_1.Schedule, { where: { plantId: plantId } })];
                     case 1:
-                        deletingEntity = _a.sent();
-                        return [4, manager.delete(Plants_1.Plant, id)];
-                    case 2:
-                        result = _a.sent();
-                        res.send(deletingEntity);
+                        data = _a.sent();
+                        res.send(data);
                         return [2];
                 }
             });
         });
     };
-    PlantsController.patch = function (req, res) {
+    SchedulesController.post = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, manager, plantData, folder, savePath, result, updatedEntity;
+            var manager, schedule, creationResponse, createdId, createdSchedule;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        id = req.params.plantId;
                         manager = typeorm_1.getManager();
-                        plantData = manager.create(Plants_1.Plant, req.body);
-                        try {
-                            folder = Date.now();
-                            plantData.icon = "/uploads/" + folder + "/" + req.file.originalname;
-                            savePath = config_1.CONFIG.UPLOADS_DIR + "/" + folder + "/";
-                            fs.mkdirSync(savePath, { recursive: true });
-                            fs.writeFileSync(savePath + req.file.originalname, req.file.buffer);
-                        }
-                        catch (err) {
-                        }
-                        return [4, manager.update(Plants_1.Plant, id, plantData)];
+                        schedule = manager.create(Schedules_1.Schedule, req.body);
+                        return [4, manager.insert(Schedules_1.Schedule, schedule)];
+                    case 1:
+                        creationResponse = _a.sent();
+                        createdId = creationResponse.identifiers[0].id;
+                        return [4, manager.findOne(Schedules_1.Schedule, createdId)];
+                    case 2:
+                        createdSchedule = _a.sent();
+                        res.send(createdSchedule);
+                        return [2];
+                }
+            });
+        });
+    };
+    SchedulesController.patch = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var manager, id, schedule, result, updatedEntity;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        manager = typeorm_1.getManager();
+                        id = req.params.scheduleId;
+                        schedule = manager.create(Schedules_1.Schedule, req.body);
+                        return [4, manager.update(Schedules_1.Schedule, id, schedule)];
                     case 1:
                         result = _a.sent();
-                        return [4, manager.findOne(Plants_1.Plant, id)];
+                        return [4, manager.findOne(Schedules_1.Schedule, id)];
                     case 2:
                         updatedEntity = _a.sent();
                         res.send(updatedEntity);
@@ -158,7 +149,27 @@ var PlantsController = (function () {
             });
         });
     };
-    return PlantsController;
+    SchedulesController.delete = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var id, manager, deletingEntity, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        id = req.params.scheduleId;
+                        manager = typeorm_1.getManager();
+                        return [4, manager.findOne(Schedules_1.Schedule, id)];
+                    case 1:
+                        deletingEntity = _a.sent();
+                        return [4, manager.delete(Schedules_1.Schedule, id)];
+                    case 2:
+                        result = _a.sent();
+                        res.send(deletingEntity);
+                        return [2];
+                }
+            });
+        });
+    };
+    return SchedulesController;
 }());
-exports.PlantsController = PlantsController;
-//# sourceMappingURL=PlantsController.js.map
+exports.SchedulesController = SchedulesController;
+//# sourceMappingURL=SchedulesController.js.map

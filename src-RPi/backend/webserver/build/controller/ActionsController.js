@@ -43,9 +43,136 @@ var config_1 = require("../config");
 var QueueItem_model_1 = require("../models/QueueItem.model");
 var SerialCommunication_model_1 = require("../models/SerialCommunication.model");
 var MeasurementsController_1 = require("./MeasurementsController");
+var Actions_1 = require("../entities/Actions");
 var ActionsController = (function () {
     function ActionsController() {
     }
+    ActionsController.getAll = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var manager, data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        manager = typeorm_1.getManager();
+                        return [4, manager.find(Actions_1.Action)];
+                    case 1:
+                        data = _a.sent();
+                        res.send(data);
+                        return [2];
+                }
+            });
+        });
+    };
+    ActionsController.getById = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var manager, id, data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        manager = typeorm_1.getManager();
+                        id = req.params.actionId;
+                        return [4, manager.findOne(Actions_1.Action, id)];
+                    case 1:
+                        data = _a.sent();
+                        res.send(data);
+                        return [2];
+                }
+            });
+        });
+    };
+    ActionsController.getByState = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var manager, state, data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        manager = typeorm_1.getManager();
+                        state = req.params.state;
+                        return [4, manager.find(Actions_1.Action, { where: { state: state } })];
+                    case 1:
+                        data = _a.sent();
+                        res.send(data);
+                        return [2];
+                }
+            });
+        });
+    };
+    ActionsController.getByPlantId = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var manager, plantId, data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        manager = typeorm_1.getManager();
+                        plantId = req.params.plantId;
+                        return [4, manager.find(Actions_1.Action, { where: { plantId: plantId } })];
+                    case 1:
+                        data = _a.sent();
+                        res.send(data);
+                        return [2];
+                }
+            });
+        });
+    };
+    ActionsController.getLatestByPlantId = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var manager, plantId, data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        manager = typeorm_1.getManager();
+                        plantId = req.params.plantId;
+                        return [4, manager.query("SELECT * FROM action WHERE plantId='" + plantId + "' ORDER BY createdAt DESC LIMIT 1")];
+                    case 1:
+                        data = _a.sent();
+                        if (data && data.length === 1) {
+                            data = data[0];
+                        }
+                        res.send(data);
+                        return [2];
+                }
+            });
+        });
+    };
+    ActionsController.getByStateAndPlantId = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var manager, plantId, state, data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        manager = typeorm_1.getManager();
+                        plantId = req.params.plantId;
+                        state = req.params.state;
+                        return [4, manager.find(Actions_1.Action, { where: { plantId: plantId, state: state } })];
+                    case 1:
+                        data = _a.sent();
+                        res.send(data);
+                        return [2];
+                }
+            });
+        });
+    };
+    ActionsController.patch = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var manager, actionId, editAction, patchActionRes, patchedAction;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        manager = typeorm_1.getManager();
+                        actionId = req.params.actionId;
+                        editAction = manager.create(Actions_1.Action, req.body);
+                        return [4, manager.update(Actions_1.Action, actionId, editAction)];
+                    case 1:
+                        patchActionRes = _a.sent();
+                        return [4, manager.findOne(Actions_1.Action, actionId)];
+                    case 2:
+                        patchedAction = _a.sent();
+                        res.send(patchedAction);
+                        return [2];
+                }
+            });
+        });
+    };
     ActionsController.postHealthEntry = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
             var manager, plantId, sensorId, sensor, result, newMeasurement, postedHealthEntry;
@@ -166,6 +293,117 @@ var ActionsController = (function () {
                                 }
                             });
                         }); });
+                        return [2];
+                }
+            });
+        });
+    };
+    ActionsController.postAction = function (actionRequest, callback) {
+        return __awaiter(this, void 0, void 0, function () {
+            var actionReqOptions, manager;
+            var _this = this;
+            return __generator(this, function (_a) {
+                actionReqOptions = {
+                    url: "http://localhost:" + config_1.CONFIG.QUEUE_MANAGER_PORT + "/queue",
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Accept-Charset': 'utf-8'
+                    },
+                    json: actionRequest
+                };
+                manager = typeorm_1.getManager();
+                request(actionReqOptions, function (err, httpResponse, body) { return __awaiter(_this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                if (!err) return [3, 2];
+                                console.log("postAction Error - ", err);
+                                return [4, manager.update(Actions_1.Action, actionRequest.id, {
+                                        state: -1
+                                    })];
+                            case 1:
+                                _a.sent();
+                                console.log("Action updated with error");
+                                return [2];
+                            case 2: return [4, manager.update(Actions_1.Action, actionRequest.id, {
+                                    state: 1
+                                })];
+                            case 3:
+                                _a.sent();
+                                console.log("Action updated with success");
+                                console.log("Completed action request");
+                                if (callback) {
+                                    callback(actionRequest);
+                                }
+                                return [2];
+                        }
+                    });
+                }); });
+                return [2];
+            });
+        });
+    };
+    ActionsController.wateringAction = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            var duration, actionPin, plantId, manager, action, savedActionRes, actionId, resultAction, wateringRequest;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        duration = req.params.duration;
+                        actionPin = req.params.actionPin;
+                        plantId = req.params.plantId;
+                        manager = typeorm_1.getManager();
+                        action = manager.create(Actions_1.Action, {
+                            actionType: 0,
+                            actionPin: actionPin,
+                            activationType: 2,
+                            duration: duration,
+                            plantId: plantId
+                        });
+                        return [4, manager.insert(Actions_1.Action, action)];
+                    case 1:
+                        savedActionRes = _a.sent();
+                        actionId = savedActionRes.identifiers[0].id;
+                        return [4, manager.findOne(Actions_1.Action, actionId)];
+                    case 2:
+                        resultAction = _a.sent();
+                        wateringRequest = {
+                            id: actionId,
+                            origin: QueueItem_model_1.QueueItemOrigin.Webserver,
+                            type: SerialCommunication_model_1.SerialRequestType.Action,
+                            actionType: SerialCommunication_model_1.SerialActionType.Watering,
+                            activationType: SerialCommunication_model_1.SerialActionActivationType.Duration,
+                            actionPin: actionPin,
+                            duration: duration
+                        };
+                        ActionsController.postAction(wateringRequest, function (actionRequest) { return __awaiter(_this, void 0, void 0, function () {
+                            var manager, sensor, wateringMeasurement;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        manager = typeorm_1.getManager();
+                                        return [4, manager.findOne(Sensors_1.Sensor, { where: { currentPlantId: plantId, type: 40 } })];
+                                    case 1:
+                                        sensor = _a.sent();
+                                        wateringMeasurement = manager.create(Measurement_1.Measurement, {
+                                            sensorId: sensor.id,
+                                            sensorType: 40,
+                                            plantId: plantId,
+                                            measuredAt: Date.now().toLocaleString(),
+                                            data: +duration
+                                        });
+                                        console.log("Saving Watering Measurement after Watering Action");
+                                        console.log("wateringMeasurement - ", wateringMeasurement);
+                                        return [4, manager.insert(Measurement_1.Measurement, wateringMeasurement)];
+                                    case 2:
+                                        _a.sent();
+                                        return [2];
+                                }
+                            });
+                        }); });
+                        res.status(202).send(resultAction);
                         return [2];
                 }
             });

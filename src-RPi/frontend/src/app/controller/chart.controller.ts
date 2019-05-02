@@ -233,6 +233,7 @@ export class ChartController {
           min: -1,
           max: 11
         }
+        break;
       }
 
       default : {
