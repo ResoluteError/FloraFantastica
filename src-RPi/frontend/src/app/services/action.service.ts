@@ -5,6 +5,7 @@ import { HttpOptionsService } from './http-options.service';
 import { Plant } from '../models/plant.model';
 import { Measurement } from '../models/measurement.model';
 import { Sensor } from '../models/sensor.model';
+import { Action, ActionState } from '../models/action.model';
 
 @Injectable({
   providedIn: 'root'
@@ -64,5 +65,64 @@ export class ActionService {
 
     });
   }
+
+  manualWatering( actionPin : number, duration : number, plantId : string) : Observable<Action>{
+
+    var url = this.httpOptions.apiUrl;
+    var options = this.httpOptions.options;
+
+    return new Observable( observer => {
+      this.http.post<Action>(`${url}/actions/watering/pin/${actionPin}/duration/${duration}/plant/${plantId}`, {}, options).subscribe( result => {
+        
+        console.log("Watering Result: ", result);
+
+        observer.next(result);
+        observer.complete();
+
+      }, err => {
+
+        observer.error(err);
+        observer.complete();
+        console.log("Watering Error: ", err);
+
+      });
+    });
+  };
+
+  pingActionState( actionId : string): Observable<{state: ActionState}>{
+
+    var url = this.httpOptions.apiUrl;
+    var options = this.httpOptions.options;
+
+    return new Observable( observer => {
+
+      var pingInterval = setInterval( () => {
+
+        this.http.get<Action>(`${url}/actions/${actionId}`, options).subscribe( result => {
+
+          if(result.state === -1){
+            observer.error({state : result.state});
+          }
+
+          observer.next({state: result.state});
+
+          if(result.state !== 1){
+            observer.complete();
+            clearInterval(pingInterval);
+          }
+
+        }, err => {
+
+          observer.error(err);
+          observer.complete();
+
+        });
+
+      }, 4000);
+
+    });
+
+  }
+
 
 }
