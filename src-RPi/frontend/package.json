@@ -29,13 +29,14 @@
     "@types/uuid": "^3.4.4",
     "chart.js": "^2.8.0",
     "core-js": "^2.5.4",
+    "http2": "^3.3.7",
     "rxjs": "~6.4.0",
     "tslib": "^1.9.0",
     "uuid": "^3.3.2",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.13.0",
+    "@angular-devkit/build-angular": "^0.13.8",
     "@angular/cli": "~7.3.7",
     "@angular/compiler-cli": "^7.2.11",
     "@angular/language-service": "^7.2.11",

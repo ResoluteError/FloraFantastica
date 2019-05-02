@@ -33,6 +33,7 @@ import { AddSensorRowComponent } from './dashboard/add-sensor-row/add-sensor-row
 import { CustomIconComponent } from './helper/custom-icon/custom-icon.component';
 import { FilenamePipe } from './pipes/filename.pipe';
 import { WateringComponent } from './plant-details/watering/watering.component';
+import { ScheduleService } from './services/schedule.service';
 
 library.add(faQuestionCircle, faPause, faPlay, faPlayCircle, faPauseCircle, faTrashAlt, faUnlink, faFlask, faLink, faEdit, fasEdit, faSave, faTimesCircle, faLeaf, faCaretDown, faCaretUp, faSyncAlt, faTimes, faPowerOff, faCloudShowersHeavy, faSun);
 
@@ -71,7 +72,8 @@ library.add(faQuestionCircle, faPause, faPlay, faPlayCircle, faPauseCircle, faTr
     MeasurementService,
     ActionService,
     AlertService,
-    PromptService
+    PromptService,
+    ScheduleService
   ],
   bootstrap: [AppComponent]
 })
