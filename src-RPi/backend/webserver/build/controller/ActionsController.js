@@ -37,68 +37,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var typeorm_1 = require("typeorm");
 var Measurement_1 = require("../entities/Measurement");
-var Plants_1 = require("../entities/Plants");
 var Sensors_1 = require("../entities/Sensors");
 var request = require("request");
 var config_1 = require("../config");
 var QueueItem_model_1 = require("../models/QueueItem.model");
 var SerialCommunication_model_1 = require("../models/SerialCommunication.model");
+var MeasurementsController_1 = require("./MeasurementsController");
 var ActionsController = (function () {
     function ActionsController() {
     }
-    ActionsController.updatePlantCurrentData = function (req, res) {
-        return __awaiter(this, void 0, void 0, function () {
-            var plantId, repository, timesAndTypes, dataDict, _i, timesAndTypes_1, timeAndType, _a, _b, dataStr, manager, result;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0:
-                        plantId = req.params.plantId;
-                        repository = typeorm_1.getRepository(Measurement_1.Measurement);
-                        return [4, repository.createQueryBuilder("measurement")
-                                .select("MAX (measuredAt)", "measuredAt")
-                                .addSelect("sensorType")
-                                .where("plantId = :plantId", { plantId: plantId })
-                                .groupBy("sensorType")
-                                .execute()];
-                    case 1:
-                        timesAndTypes = _c.sent();
-                        dataDict = {};
-                        _i = 0, timesAndTypes_1 = timesAndTypes;
-                        _c.label = 2;
-                    case 2:
-                        if (!(_i < timesAndTypes_1.length)) return [3, 5];
-                        timeAndType = timesAndTypes_1[_i];
-                        _a = dataDict;
-                        _b = timeAndType.sensorType;
-                        return [4, repository.createQueryBuilder("measurement")
-                                .where("plantId = :plantId", { plantId: plantId })
-                                .andWhere("measuredAt = :measuredAt", { measuredAt: timeAndType.measuredAt })
-                                .andWhere("sensorType = :sensorType", { sensorType: timeAndType.sensorType })
-                                .getOne()];
-                    case 3:
-                        _a[_b] = _c.sent();
-                        _c.label = 4;
-                    case 4:
-                        _i++;
-                        return [3, 2];
-                    case 5:
-                        dataStr = JSON.stringify(dataDict);
-                        manager = typeorm_1.getManager();
-                        return [4, manager.update(Plants_1.Plant, plantId, { currentData: dataStr })];
-                    case 6:
-                        _c.sent();
-                        return [4, manager.findOne(Plants_1.Plant, plantId)];
-                    case 7:
-                        result = _c.sent();
-                        res.send(result);
-                        return [2];
-                }
-            });
-        });
-    };
     ActionsController.postHealthEntry = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var manager, plantId, sensorId, sensor, result, newMeasurement, postedEntity;
+            var manager, plantId, sensorId, sensor, result, newMeasurement, postedHealthEntry;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -112,7 +62,7 @@ var ActionsController = (function () {
                             })];
                     case 1:
                         sensor = _a.sent();
-                        if (!!sensor) return [3, 3];
+                        if (!!sensor) return [3, 4];
                         return [4, manager.insert(Sensors_1.Sensor, {
                                 currentPlantId: plantId,
                                 name: "Health Entries",
@@ -124,23 +74,25 @@ var ActionsController = (function () {
                     case 2:
                         result = _a.sent();
                         sensorId = result.identifiers[0].id;
-                        return [3, 4];
+                        return [4, manager.findOne(Sensors_1.Sensor, sensorId)];
                     case 3:
+                        sensor = _a.sent();
+                        return [3, 5];
+                    case 4:
                         sensorId = sensor.id;
-                        _a.label = 4;
-                    case 4: return [4, manager.insert(Measurement_1.Measurement, {
+                        _a.label = 5;
+                    case 5:
+                        newMeasurement = {
                             sensorId: sensorId,
                             sensorType: 90,
                             plantId: plantId,
                             measuredAt: (new Date()).toISOString(),
                             data: req.body.data
-                        })];
-                    case 5:
-                        newMeasurement = _a.sent();
-                        return [4, manager.findOne(Measurement_1.Measurement, newMeasurement.identifiers[0].id)];
+                        };
+                        return [4, MeasurementsController_1.MeasurementController.createNewMeasurement(newMeasurement, sensor.currentPlantId, sensor)];
                     case 6:
-                        postedEntity = _a.sent();
-                        res.send(postedEntity);
+                        postedHealthEntry = _a.sent();
+                        res.send(postedHealthEntry);
                         return [2];
                 }
             });
@@ -176,7 +128,6 @@ var ActionsController = (function () {
                             },
                             json: measurementRequest
                         };
-                        console.log("Checking Sensor Status of sensor: ", sensor.name);
                         request(sensorReqOptions, function (err, measureRes, body) { return __awaiter(_this, void 0, void 0, function () {
                             var updatedSensor, newMeasurement, measurement;
                             return __generator(this, function (_a) {
@@ -191,7 +142,6 @@ var ActionsController = (function () {
                                         return [4, manager.save(sensor)];
                                     case 1:
                                         updatedSensor = _a.sent();
-                                        console.log("Updated sensor status: ", sensor);
                                         res.send(sensor);
                                         return [3, 5];
                                     case 2:
@@ -207,7 +157,6 @@ var ActionsController = (function () {
                                         return [4, manager.insert(Measurement_1.Measurement, newMeasurement)];
                                     case 3:
                                         measurement = _a.sent();
-                                        console.log("Created measurement: ", newMeasurement);
                                         res.status(202).send(newMeasurement);
                                         return [3, 5];
                                     case 4:
