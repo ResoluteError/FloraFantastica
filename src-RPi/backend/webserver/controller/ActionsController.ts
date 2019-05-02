@@ -203,7 +203,7 @@ export class ActionsController {
 
   }
 
-  static async postAction( actionRequest : Partial<ActionQueueItem>){
+  static async postAction( actionRequest : Partial<ActionQueueItem>, callback : Function){
 
     const actionReqOptions = {  
       url: `http://localhost:${CONFIG.QUEUE_MANAGER_PORT}/queue`,
@@ -231,8 +231,13 @@ export class ActionsController {
       await manager.update( Action, actionRequest.id, {
         state : 1
       });
+
       console.log("Action updated with success");
       console.log("Completed action request");
+
+      if(callback){
+        callback( actionRequest );
+      }
 
     });
 
@@ -261,9 +266,6 @@ export class ActionsController {
 
     var resultAction = await manager.findOne(Action, actionId);
 
-    console.log("savedActionRes: ", savedActionRes);
-    console.log("Saved Action Id: ", actionId);
-
     var wateringRequest : Partial<ActionQueueItem> = {
       id: actionId,
       origin: QueueItemOrigin.Webserver,
@@ -274,7 +276,26 @@ export class ActionsController {
       duration: duration
     }
 
-    ActionsController.postAction(wateringRequest);
+    ActionsController.postAction(wateringRequest, async (actionRequest : Partial<ActionQueueItem>) => {
+
+      const manager = getManager();
+
+      const sensor = await manager.findOne(Sensor, {where: {currentPlantId: plantId, type: 40}});
+
+      const wateringMeasurement = manager.create( Measurement, {
+        sensorId: sensor.id,
+        sensorType: 40,
+        plantId: plantId,
+        measuredAt: Date.now().toLocaleString(),
+        data: +duration
+      });
+
+      console.log("Saving Watering Measurement after Watering Action");
+      console.log("wateringMeasurement - ", wateringMeasurement);
+
+      await manager.insert(Measurement, wateringMeasurement);
+
+    });
 
     res.status(202).send(resultAction);
 
