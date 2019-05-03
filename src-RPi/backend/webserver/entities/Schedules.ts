@@ -12,11 +12,20 @@ export class Schedule {
   @Column("boolean")
   active: boolean;
 
-  @Column("blob")
-  rule: string;
+  @Column({type: "int", nullable: true})
+  minDurationSinceWatering?: number;
 
-  @Column("blob")
-  action: string;
+  @Column({type: "int", nullable: true})
+  minSoilDryness?: number;
+
+  @Column({type: "int", nullable: true})
+  maxLight?: number;
+
+  @Column("int")
+  valvePin: number;
+  
+  @Column("int")
+  duration: number;
 
   @CreateDateColumn()
   createdAt: string;

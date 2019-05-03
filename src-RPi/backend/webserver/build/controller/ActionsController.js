@@ -44,6 +44,7 @@ var QueueItem_model_1 = require("../models/QueueItem.model");
 var SerialCommunication_model_1 = require("../models/SerialCommunication.model");
 var MeasurementsController_1 = require("./MeasurementsController");
 var Actions_1 = require("../entities/Actions");
+var Plants_1 = require("../entities/Plants");
 var ActionsController = (function () {
     function ActionsController() {
     }
@@ -379,7 +380,7 @@ var ActionsController = (function () {
                             duration: duration
                         };
                         ActionsController.postAction(wateringRequest, function (actionRequest) { return __awaiter(_this, void 0, void 0, function () {
-                            var manager, sensor, wateringMeasurement;
+                            var manager, sensor, wateringMeasurement, plant, cData;
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
@@ -394,10 +395,20 @@ var ActionsController = (function () {
                                             measuredAt: new Date().toISOString(),
                                             data: +duration
                                         });
+                                        return [4, manager.findOne(Plants_1.Plant, plantId)];
+                                    case 2:
+                                        plant = _a.sent();
+                                        cData = JSON.parse(plant.currentData);
+                                        cData.lastWatering = wateringMeasurement.measuredAt;
+                                        return [4, manager.update(Plants_1.Plant, plantId, {
+                                                currentData: JSON.stringify(cData)
+                                            })];
+                                    case 3:
+                                        _a.sent();
                                         console.log("Saving Watering Measurement after Watering Action");
                                         console.log("wateringMeasurement - ", wateringMeasurement);
                                         return [4, manager.insert(Measurement_1.Measurement, wateringMeasurement)];
-                                    case 2:
+                                    case 4:
                                         _a.sent();
                                         return [2];
                                 }

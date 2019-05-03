@@ -10,6 +10,7 @@ import { MeasurementQueueItem, QueueItemOrigin, ActionQueueItem } from "../model
 import { SerialRequestType, SerialActionActivationType, SerialActionType } from "../models/SerialCommunication.model";
 import { MeasurementController } from "./MeasurementsController";
 import { Action } from "../entities/Actions";
+import { Plant } from "../entities/Plants";
 
 export class ActionsController {
 
@@ -304,6 +305,16 @@ export class ActionsController {
         plantId: plantId,
         measuredAt: new Date().toISOString(),
         data: +duration
+      });
+
+      const plant = await manager.findOne(Plant, plantId);
+
+      var cData = JSON.parse(plant.currentData);
+
+      cData.lastWatering = wateringMeasurement.measuredAt;
+
+      await manager.update(Plant, plantId, {
+        currentData: JSON.stringify(cData)
       });
 
       console.log("Saving Watering Measurement after Watering Action");

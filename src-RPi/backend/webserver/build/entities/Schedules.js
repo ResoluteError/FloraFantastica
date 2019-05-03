@@ -26,13 +26,25 @@ var Schedule = (function () {
         __metadata("design:type", Boolean)
     ], Schedule.prototype, "active", void 0);
     __decorate([
-        typeorm_1.Column("blob"),
-        __metadata("design:type", String)
-    ], Schedule.prototype, "rule", void 0);
+        typeorm_1.Column({ type: "int", nullable: true }),
+        __metadata("design:type", Number)
+    ], Schedule.prototype, "minDurationSinceWatering", void 0);
     __decorate([
-        typeorm_1.Column("blob"),
-        __metadata("design:type", String)
-    ], Schedule.prototype, "action", void 0);
+        typeorm_1.Column({ type: "int", nullable: true }),
+        __metadata("design:type", Number)
+    ], Schedule.prototype, "minSoilDryness", void 0);
+    __decorate([
+        typeorm_1.Column({ type: "int", nullable: true }),
+        __metadata("design:type", Number)
+    ], Schedule.prototype, "maxLight", void 0);
+    __decorate([
+        typeorm_1.Column("int"),
+        __metadata("design:type", Number)
+    ], Schedule.prototype, "valvePin", void 0);
+    __decorate([
+        typeorm_1.Column("int"),
+        __metadata("design:type", Number)
+    ], Schedule.prototype, "duration", void 0);
     __decorate([
         typeorm_1.CreateDateColumn(),
         __metadata("design:type", String)

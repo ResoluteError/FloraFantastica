@@ -3,6 +3,8 @@ import { ActionService } from 'src/app/services/action.service';
 import { Plant } from 'src/app/models/plant.model';
 import { Action, ActionState } from 'src/app/models/action.model';
 import { AlertService } from 'src/app/services/alert.service';
+import { ScheduleService } from 'src/app/services/schedule.service';
+import { Schedule } from 'src/app/models/schedule.model';
 
 @Component({
   selector: 'app-watering',
@@ -20,12 +22,21 @@ export class WateringComponent implements OnInit {
 
   submittedAction : Action = null;
 
+  wateringSchedule : Schedule = null;
+
   lastWatered : Date;
   possibleTimeout : boolean = false;
 
+  timeSelect : number = null;
+  drySelect: number = null;
+  lightSelect: number = null;
+  scheduleActive : string | boolean = false;
+  savingSchedule : boolean = false;
+
   constructor(
     private actionService : ActionService,
-    private alertService : AlertService
+    private alertService : AlertService,
+    private scheduleService: ScheduleService
   ) { }
 
   ngOnInit() {
@@ -40,7 +51,52 @@ export class WateringComponent implements OnInit {
 
       // Fail silently?
 
+    });
+
+    this.scheduleService.getScheduleByPlantId( this.plant.id).subscribe( result => {
+      if(!result){
+        this.scheduleService.postSchedule({
+          plantId: this.plant.id,
+          active: false,
+          valvePin: 38,
+          duration: 45000,
+          minDurationSinceWatering: 48
+        }).subscribe( result => {
+          this.wateringSchedule = result;
+        }, err => {
+
+        });
+      } else {
+
+        this.wateringSchedule = result;
+
+        this.scheduleActive = result.active;
+        this.lightSelect = result.maxLight;
+        this.timeSelect = result.minDurationSinceWatering;
+        this.drySelect = result.minSoilDryness;
+      }
+    }, err => {
+      console.log("error: ", err);
     })
+  }
+
+
+  updateSchedule(){
+    
+    this.wateringSchedule.active = this.scheduleActive == "true";
+    this.wateringSchedule.maxLight = +this.lightSelect;
+    this.wateringSchedule.minDurationSinceWatering = +this.timeSelect;
+    this.wateringSchedule.minSoilDryness = +this.drySelect;
+    this.savingSchedule = true;
+
+    this.scheduleService.patchSchedule( this.wateringSchedule.id, this.wateringSchedule).subscribe( result => {
+      this.alertService.success("Schedule updated!", "Your new rules are now in effect!");
+    }, err => {
+      this.alertService.warning("Schedule API Error!", "Failed saving the schedule, please try again in a moment.")
+    }, () => {
+      this.savingSchedule = false;
+    });
+
   }
 
   startWatering(){
@@ -123,7 +179,7 @@ export class WateringComponent implements OnInit {
     var msInHour = 1000 * 60 * 60;
 
     var created = new Date(this.submittedAction.createdAt).getTime();
-    var durationPlusBuffer = this.submittedAction.duration * 1.25 + 4000; 
+    var durationPlusBuffer = this.submittedAction.duration * 1.25 + 10000; 
 
     // A little awkward - eliminates the possibility of server/client time
     // zone issues by focusing only on the ms relative to the begin of the hour
@@ -133,5 +189,6 @@ export class WateringComponent implements OnInit {
 
     return diff > durationPlusBuffer;
   }
+
 
 }

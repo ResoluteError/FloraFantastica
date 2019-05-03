@@ -78,6 +78,97 @@
             <p><b>Watering Rule</b></p>
             <p>Setup a watering rule so that<br>you don't have to water <br>manually at all.</p>
           </div>
+          <div class="schedule-form">
+            <form class="form">
+              <div class="form-group">
+                <label for="scheduleActive">Schedule Setting:</label>
+                <select class="form-control" name="scheduleActive" [(ngModel)]="scheduleActive" id="scheduleActive">
+                  <option [value]="false">
+                    Inactive
+                  </option>
+                  <option [value]="true">
+                    Active
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="timeSelect">Minimum wait after watering:</label>
+                <select class="form-control" name="timeSelect" [(ngModel)]="timeSelect" id="timeSelect">
+                  <option [value]="null">
+                    Don't wait
+                  </option>
+                  <option [value]="6">
+                    Min. 6 hours
+                  </option>
+                  <option [value]="12">
+                    Min. 12 hours
+                  </option>
+                  <option [value]="24">
+                    Min. 24 hours
+                  </option>
+                  <option [value]="48">
+                    Min. 48 hours
+                  </option>
+                  <option [value]="72">
+                    Min. 72 hours
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="drySelect">Minimum dryness:</label>
+                <select class="form-control" name="drySelect" [(ngModel)]="drySelect" id="drySelect">
+                  <option value="null">
+                    Ignore dryness
+                  </option>
+                  <option value="75000">
+                    75.000 (wet)
+                  </option>
+                  <option value="100000">
+                    100.000 (normal)
+                  </option>
+                  <option value="125000">
+                    125.000 (slightly dry)
+                  </option>
+                  <option value="150000">
+                    150.000 (dry)
+                  </option>
+                  <option value="200000">
+                    200.000 (bone dry)
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="lightSelect">Maximum light:</label>
+                <select class="form-control" name="lightSelect" [(ngModel)]="lightSelect" id="lightSelect">
+                  <option value="null">
+                    Ignore light
+                  </option>
+                  <option value="1000">
+                    1.000 (direct sunlight)
+                  </option>
+                  <option value="900">
+                    900 (daylight)
+                  </option>
+                  <option value="500">
+                    500 (dusk)
+                  </option>
+                  <option value="200000">
+                    200 (night)
+                  </option>
+                </select>
+              </div>
+            </form>
+            <div class="text-center" *ngIf="!savingSchedule">
+              <button class="btn btn-primary" (click)="updateSchedule()">
+                Update Schedule
+              </button>
+            </div>
+            <div class="text-center" *ngIf="savingSchedule">
+              <button class="btn btn-primary disabled" disabled>
+                Saving Schedule...
+              </button>
+            </div>
+          </div>
         </div>
 
       </div>
