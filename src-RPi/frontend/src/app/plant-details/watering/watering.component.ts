@@ -115,19 +115,15 @@ export class WateringComponent implements OnInit {
 
         this.actionService.pingActionState(result.id).subscribe( result => {
 
-          if(this.wateringSchedule && this.wateringSchedule.id === result.id){
+          if(this.submittedAction && this.submittedAction.id === result.id){
             this.actionState = result.state;
             this.possibleTimeout = this.isPossibleTimeout();
           }
 
         }, err => {
 
-          if(err.state){
+          this.alertService.warning("Action API Error!", "Something went wrong, may be hardware related. Please check back later.");
 
-            if(this.wateringSchedule && this.wateringSchedule.id === result.id){
-              this.actionState = err.state || -1;
-            }
-          }
         });
 
     }
