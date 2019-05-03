@@ -307,20 +307,23 @@ export class ActionsController {
         data: +duration
       });
 
+      console.log("Saving Watering Measurement after Watering Action");
+      console.log("wateringMeasurement - ", wateringMeasurement);
+
+      var insertResponse = await manager.insert(Measurement, wateringMeasurement);
+
       const plant = await manager.findOne(Plant, plantId);
 
       var cData = JSON.parse(plant.currentData);
 
-      cData.lastWatering = wateringMeasurement.measuredAt;
+      wateringMeasurement.id = insertResponse.identifiers[0].id;
+
+      cData[40] = wateringMeasurement;
 
       await manager.update(Plant, plantId, {
         currentData: JSON.stringify(cData)
       });
 
-      console.log("Saving Watering Measurement after Watering Action");
-      console.log("wateringMeasurement - ", wateringMeasurement);
-
-      await manager.insert(Measurement, wateringMeasurement);
 
     });
 
