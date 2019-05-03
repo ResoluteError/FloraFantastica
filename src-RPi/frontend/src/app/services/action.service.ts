@@ -194,7 +194,7 @@ export class ActionService {
     });
   };
 
-  pingActionState( actionId : string): Observable<{state: ActionState}>{
+  pingActionState( actionId : string): Observable<Action>{
 
     var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
@@ -205,11 +205,7 @@ export class ActionService {
 
         this.http.get<Action>(`${url}/actions/${actionId}`, options).subscribe( result => {
 
-          if(result.state === -1){
-            observer.error({state : result.state});
-          }
-
-          observer.next({state: result.state});
+          observer.next(result);
 
           if(result.state !== 0){
             observer.complete();
@@ -220,6 +216,7 @@ export class ActionService {
 
           observer.error(err);
           observer.complete();
+          clearInterval(pingInterval);
 
         });
 

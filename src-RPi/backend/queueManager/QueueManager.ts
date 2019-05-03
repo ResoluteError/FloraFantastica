@@ -386,12 +386,10 @@ export class QueueManager {
   executionLoop(){
 
 
-    // Fallback to re-check the status every 10 minutes
-    // Technically there should be no szenario, where this is actually needed
-    // But you never know...
+    // Fallback to re-check the status every 30 seconds
     setInterval( () => {
       this.queueListener.next(this.queue);
-    }, 1000 * 60 * 60 * 10);
+    }, 1000 * 30);
 
 
     this.queueListener.subscribe( (changedQueue : QueueItem[]) => {
