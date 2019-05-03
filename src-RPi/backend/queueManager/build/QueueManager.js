@@ -322,9 +322,6 @@ var QueueManager = (function () {
     };
     QueueManager.prototype.executionLoop = function () {
         var _this = this;
-        setInterval(function () {
-            _this.queueListener.next(_this.queue);
-        }, 1000 * 30);
         this.queueListener.subscribe(function (changedQueue) {
             if (!_this.serialManager.getPortStatus) {
                 _this.retryAtPortError();

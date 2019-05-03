@@ -385,13 +385,6 @@ export class QueueManager {
 
   executionLoop(){
 
-
-    // Fallback to re-check the status every 30 seconds
-    setInterval( () => {
-      this.queueListener.next(this.queue);
-    }, 1000 * 30);
-
-
     this.queueListener.subscribe( (changedQueue : QueueItem[]) => {
 
       if(!this.serialManager.getPortStatus){
