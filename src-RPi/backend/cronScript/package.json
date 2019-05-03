@@ -4,7 +4,9 @@
   "description": "Script triggered via cron to regularly request sensor updates",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "schedules": "ts-node-dev --respawn --transpileOnly ./scheduleCheck.ts",
+    "sensors": "ts-node-dev --respawn --transpileOnly ./sensorCheck.ts"
   },
   "author": "douglasreiser",
   "license": "ISC",
@@ -12,6 +14,8 @@
     "@types/node": "^11.13.8",
     "@types/request": "^2.48.1",
     "request": "^2.88.0",
-    "rxjs": "^6.5.1"
+    "rxjs": "^6.5.1",
+    "ts-node-dev": "^1.0.0-pre.33",
+    "typescript": "^3.4.5"
   }
 }
