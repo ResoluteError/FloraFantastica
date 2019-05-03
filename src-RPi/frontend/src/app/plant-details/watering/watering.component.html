@@ -65,7 +65,7 @@
 
 
           <div class="watering-status ready" *ngIf="isUnsubmitted">
-            <input type="text" class="watering-timer" name="waterDuration" [ngModel]="inputDuration">s
+            <input type="text" class="watering-timer" name="waterDuration" [(ngModel)]="inputDuration">s
             <div class="info" (click)="startWatering()" tabindex="0">
               Start
             </div>
