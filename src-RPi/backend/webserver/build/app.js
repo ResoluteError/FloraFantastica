@@ -83,6 +83,7 @@ typeorm_1.createConnection().then(function (connection) { return __awaiter(_this
                 app.use("/api/schedules/", SchedulesRouter_1.router);
                 app.use("/seed/", SeedRouter_1.router);
                 app.use("/uploads", express.static(config_1.CONFIG.UPLOADS_DIR));
+                app.use("/.well-known", express.static(config_1.CONFIG.PUBLIC_DIR + ".well-known/"));
                 app.use(express.static(config_1.CONFIG.FRONTEND_DIR));
                 app.get('*', function (req, res) {
                     res.sendFile(config_1.CONFIG.FRONTEND_DIR + "/index.html");
