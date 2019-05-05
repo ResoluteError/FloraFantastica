@@ -72,7 +72,8 @@ import { Plant, PlantDataObj } from "./models/plant.model";
         method: 'GET',
         headers: {
             'Accept': 'application/json',
-            'Accept-Charset': 'utf-8'
+            'Accept-Charset': 'utf-8',
+            'Authorization' : CONFIG.AUTH
         }
       };
 
@@ -98,7 +99,8 @@ import { Plant, PlantDataObj } from "./models/plant.model";
       method: 'GET',
       headers: {
           'Accept': 'application/json',
-          'Accept-Charset': 'utf-8'
+          'Accept-Charset': 'utf-8',
+          'Authorization' : CONFIG.AUTH
       }
     };
 
@@ -127,7 +129,8 @@ import { Plant, PlantDataObj } from "./models/plant.model";
       method: 'POST',
       headers: {
           'Accept': 'application/json',
-          'Accept-Charset': 'utf-8'
+          'Accept-Charset': 'utf-8',
+          'Authorization' : CONFIG.AUTH
       }
     };
 

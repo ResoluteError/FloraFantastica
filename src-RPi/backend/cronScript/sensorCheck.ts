@@ -65,7 +65,8 @@ import { Observable } from "rxjs";
       method: 'GET',
       headers: {
           'Accept': 'application/json',
-          'Accept-Charset': 'utf-8'
+          'Accept-Charset': 'utf-8',
+          'Authorization' : CONFIG.AUTH
       }
     };
     return new Observable( observer => {
@@ -87,7 +88,8 @@ import { Observable } from "rxjs";
       method: 'GET',
       headers: {
           'Accept': 'application/json',
-          'Accept-Charset': 'utf-8'
+          'Accept-Charset': 'utf-8',
+          'Authorization' : CONFIG.AUTH
       }
     };
     return new Observable( observer => {
@@ -110,7 +112,8 @@ import { Observable } from "rxjs";
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'Accept-Charset': 'utf-8'
+            'Accept-Charset': 'utf-8',
+            'Authorization' : CONFIG.AUTH
         },
         json: {
           sensorId : sensor.id,
@@ -143,7 +146,8 @@ import { Observable } from "rxjs";
         method: 'POST',
         headers: {
             'Accept': 'application/json',
-            'Accept-Charset': 'utf-8'
+            'Accept-Charset': 'utf-8',
+            'Authorization' : CONFIG.AUTH
         },
         json: {
           origin: "cron",

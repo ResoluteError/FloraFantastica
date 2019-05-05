@@ -47,7 +47,8 @@ var plant_model_1 = require("./models/plant.model");
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
-                    'Accept-Charset': 'utf-8'
+                    'Accept-Charset': 'utf-8',
+                    'Authorization': config_1.CONFIG.AUTH
                 }
             };
             request(options, function (err, res, body) {
@@ -66,7 +67,8 @@ var plant_model_1 = require("./models/plant.model");
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
-                'Accept-Charset': 'utf-8'
+                'Accept-Charset': 'utf-8',
+                'Authorization': config_1.CONFIG.AUTH
             }
         };
         return new Promise(function (resolve, reject) {
@@ -85,7 +87,8 @@ var plant_model_1 = require("./models/plant.model");
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
-                'Accept-Charset': 'utf-8'
+                'Accept-Charset': 'utf-8',
+                'Authorization': config_1.CONFIG.AUTH
             }
         };
         return new Promise(function (resolve, reject) {

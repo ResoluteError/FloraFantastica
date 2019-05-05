@@ -65,7 +65,8 @@ var rxjs_1 = require("rxjs");
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
-                    'Accept-Charset': 'utf-8'
+                    'Accept-Charset': 'utf-8',
+                    'Authorization': config_1.CONFIG.AUTH
                 }
             };
             return new rxjs_1.Observable(function (observer) {
@@ -86,7 +87,8 @@ var rxjs_1 = require("rxjs");
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
-                    'Accept-Charset': 'utf-8'
+                    'Accept-Charset': 'utf-8',
+                    'Authorization': config_1.CONFIG.AUTH
                 }
             };
             return new rxjs_1.Observable(function (observer) {
@@ -108,7 +110,8 @@ var rxjs_1 = require("rxjs");
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
-                        'Accept-Charset': 'utf-8'
+                        'Accept-Charset': 'utf-8',
+                        'Authorization': config_1.CONFIG.AUTH
                     },
                     json: {
                         sensorId: sensor.id,
@@ -138,7 +141,8 @@ var rxjs_1 = require("rxjs");
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
-                        'Accept-Charset': 'utf-8'
+                        'Accept-Charset': 'utf-8',
+                        'Authorization': config_1.CONFIG.AUTH
                     },
                     json: {
                         origin: "cron",
