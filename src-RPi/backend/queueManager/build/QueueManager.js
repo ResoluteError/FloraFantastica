@@ -55,6 +55,7 @@ var QueueItem_model_1 = require("./models/QueueItem.model");
 var bodyParser = require("body-parser");
 var uuid = require("uuid/v1");
 var request = require("request");
+var Authorizer_1 = require("./auth/Authorizer");
 var QueueManager = (function () {
     function QueueManager() {
         this.portErrCounter = 0;
@@ -71,6 +72,7 @@ var QueueManager = (function () {
         this.app = express();
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: true }));
+        this.app.use(Authorizer_1.Authorizer.IsSimpleAuthorized);
     };
     QueueManager.prototype.listenForHttp = function () {
         var _this = this;
@@ -235,7 +237,7 @@ var QueueManager = (function () {
                                         sensorId: sensor.id,
                                         data: serialResponse.data
                                     };
-                                    request.post("http://localhost:" + config_1.CONFIG.WEBSERVER_PORT + "/api/measurements", { json: postMeasurement }, function (err, httpResponse, body) {
+                                    request.post("http://localhost:" + config_1.CONFIG.WEBSERVER_PORT + "/api/measurements", { json: postMeasurement, headers: { "Authorization": config_1.CONFIG.AUTH } }, function (err, httpResponse, body) {
                                         if (err) {
                                             console.log("[QueueManager] ERROR - Failed posting arduino initiated measurement!");
                                             console.log("[QueueManager] ", err);

@@ -1,12 +1,13 @@
 import { SerialManager } from "./SerialManager";
 import { CONFIG } from "./config";
 import express = require("express");
-import { Subject } from "rxjs";
+import { Subject, config } from "rxjs";
 import { SerialResponse, SerialMeasurementResponse, SerialResponseType, SerialRequestType, SerialErrorResponse, SerialActionResponse } from "./models/SerialCommunication.model";
 import { QueueItem, SensorTypes, ActionQueueItem, MeasurementQueueItem, QueueItemOrigin, QueueItemStatus } from "./models/QueueItem.model";
 import * as bodyParser from "body-parser";
 import * as uuid from "uuid/v1";
 import * as request from "request";
+import { Authorizer } from "./auth/Authorizer";
 
 export class QueueManager {
 
@@ -39,6 +40,8 @@ export class QueueManager {
     this.app = express();
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({extended : true}));
+    this.app.use(Authorizer.IsSimpleAuthorized);
+
 
   }
 
@@ -269,7 +272,7 @@ export class QueueManager {
             data: serialResponse.data
           };
 
-          request.post(`http://localhost:${CONFIG.WEBSERVER_PORT}/api/measurements`,{json : postMeasurement}, (err, httpResponse, body) => {
+          request.post(`http://localhost:${CONFIG.WEBSERVER_PORT}/api/measurements`,{json : postMeasurement, headers : {"Authorization" : CONFIG.AUTH}}, (err, httpResponse, body) => {
 
             if(err){
               console.log("[QueueManager] ERROR - Failed posting arduino initiated measurement!");
