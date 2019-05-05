@@ -54,9 +54,9 @@ createConnection().then(async connection => {
   app.use("/seed/",seedRouter);
   
   app.use("/uploads", express.static(CONFIG.UPLOADS_DIR));
+  app.use("/.well-known", express.static(CONFIG.PUBLIC_DIR + ".well-known/", { dotfiles: 'allow' } ));
 
   app.use(express.static(CONFIG.FRONTEND_DIR));
-  app.use(express.static(CONFIG.PUBLIC_DIR, { dotfiles: 'allow' } ));
 
   app.get('*', (req, res) => {
     res.sendFile(CONFIG.FRONTEND_DIR + "/index.html");

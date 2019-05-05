@@ -7,7 +7,7 @@ export const CONFIG = {
   PUBLIC_DIR :process.env.PUBLIC_DIR || "/Users/douglasreiser/Desktop/FloraFantastica/src-RPi/public/",
 
   // Path to folder where the built frontend is served from 
-  FRONTEND_DIR : process.env.FRONTEND_DIR || __dirname + "/../frontend/dist",
+  FRONTEND_DIR : process.env.FRONTEND_DIR || "/Users/douglasreiser/Desktop/FloraFantastica/src-RPi/frontend/dist",
 
   // On which Port the webserver should listen 
   WEBSERVER_PORT : process.env.WEBSERVER_PORT || 8080,
