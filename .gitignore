@@ -5,3 +5,4 @@ src-RPi/public/*.db
 node_modules/
 testing/
 .well-known
+keys
