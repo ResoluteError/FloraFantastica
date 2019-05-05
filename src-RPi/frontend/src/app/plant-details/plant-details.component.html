@@ -1,7 +1,9 @@
 <div class="container" *ngIf="plant">
   <div class="row">
-    <div class="col-12">
-      <h1 class="text-center mt-4 mb-3">Detail View</h1>
+    <div class="col-12 text-center">
+      <button class=" btn btn-link back-link mt-4" routerLink="/">&lt; Go Back</button>
+      <h1 class="mb-3">Detail View
+      </h1>
     </div>
   </div>
   <div class="d-none d-md-block mt-3 mb-5">
@@ -129,11 +131,6 @@
       <app-watering [plant]="plant"></app-watering>
       <app-sensor-manager *ngIf="plant" (change)="updateSensors($event)" (measurement)="handleNewMeasurement($event)"
         [plant]="plant" [sensors]="sensors"></app-sensor-manager>
-    </div>
-  </div>
-  <div class="row mt-5">
-    <div class="col-12">
-      <button class="btn btn-primary" [routerLink]="'/'">Go Back</button>
     </div>
   </div>
 </div>

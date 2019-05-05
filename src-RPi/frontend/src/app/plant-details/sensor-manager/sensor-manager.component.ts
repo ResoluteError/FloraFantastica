@@ -71,7 +71,13 @@ export class SensorManagerComponent implements OnInit, OnChanges {
         this.availableSensors = this.availableSensors.filter( sensor => sensor.id !== deleteSensor.id);
         this.availableSensorsTable.updateData(this.availableSensors);
       }, err => {
-        this.alertService.warning("Sensor API Error.", `Failed to delete the sensor '${deleteSensor.name}', please try again in a moment.`, 5000);
+
+        if(err.status == 403){
+          this.alertService.accessDenied();
+        } else {
+          this.alertService.warning("Sensor API Error.", `Failed to delete the sensor '${deleteSensor.name}', please try again in a moment.`, 5000);
+        }
+
       })
     });
   }
@@ -93,7 +99,12 @@ export class SensorManagerComponent implements OnInit, OnChanges {
       this.availableSensorsTable.updateData(this.availableSensors);
       this.activeSensorsTable.updateData(this.activeSensors);
     }, err => {
-      this.alertService.warning("Sensor API Error.", `Failed to unlink the sensor '${unlinkSensor.name}', please try again in a moment.`, 5000);
+
+      if(err.status == 403){
+        this.alertService.accessDenied();
+      } else {
+        this.alertService.warning("Sensor API Error.", `Failed to unlink the sensor '${unlinkSensor.name}', please try again in a moment.`, 5000);
+      }
     })
   }
 
@@ -111,7 +122,12 @@ export class SensorManagerComponent implements OnInit, OnChanges {
       this.availableSensorsTable.updateData(this.availableSensors);
       this.activeSensorsTable.updateData(this.activeSensors);
     }, err => {
-      this.alertService.warning("Sensor API Error.", `Failed to link the sensor '${unlinkSensor.name}', please try again in a moment.`, 5000);
+
+      if(err.status == 403){
+        this.alertService.accessDenied();
+      } else {
+        this.alertService.warning("Sensor API Error.", `Failed to link the sensor '${unlinkSensor.name}', please try again in a moment.`, 5000);
+      }
     })
   }
 
@@ -125,7 +141,12 @@ export class SensorManagerComponent implements OnInit, OnChanges {
       updatedSensor.stateLabel = Sensor.stateToString(result.state);
       this.activeSensorsTable.updateData(this.activeSensors);
     }, err => {
-      this.alertService.warning("Sensor API Error.", `Failed to change the state of '${resumeSensor.name}', please try again in a moment.`, 5000);
+
+      if(err.status == 403){
+        this.alertService.accessDenied();
+      } else {
+        this.alertService.warning("Sensor API Error.", `Failed to change the state of '${resumeSensor.name}', please try again in a moment.`, 5000);
+      }
     })
   }
 
@@ -139,7 +160,11 @@ export class SensorManagerComponent implements OnInit, OnChanges {
         this.activeSensorsTable.updateData(this.activeSensors);
       }
     }, err => {
-      this.alertService.warning("Action API Error.",`Failed to check the sensor status for '${sensor.name}'`, 4000);
+      if(err.status == 403){
+        this.alertService.accessDenied();
+      } else {
+        this.alertService.warning("Action API Error.",`Failed to check the sensor status for '${sensor.name}'`, 4000);
+      }
     })
   }
 
@@ -153,7 +178,12 @@ export class SensorManagerComponent implements OnInit, OnChanges {
         this.activeSensorsTable.updateData(this.activeSensors);
       }
     }, err => {
-      this.alertService.warning("Action API Error.",`Failed to get a measurement for '${sensor.name}'`, 4000);
+
+      if(err.status == 403){
+        this.alertService.accessDenied();
+      } else {
+        this.alertService.warning("Action API Error.",`Failed to get a measurement for '${sensor.name}'`, 4000);
+      }
     })
   }
 

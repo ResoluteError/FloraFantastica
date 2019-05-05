@@ -42,4 +42,15 @@ export class AlertService {
     });
   }
 
+
+  accessDenied(){
+    this.alertSubject.next({
+      title: "Access Denied!",
+      text: "You must be logged in to use this functionality",
+      duration: null,
+      type: "danger"
+    });
+  }
+
+
 }

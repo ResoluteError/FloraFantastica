@@ -10,12 +10,24 @@ export class HttpOptionsService {
   constructor() { }
 
   get options(): HttpOptions {
-    return {
-      headers: new HttpHeaders(
-        {
-          'Content-Type': 'application/json'
-        })
+    var result;
+    if(localStorage.getItem("auth")){
+      result = {
+        headers: new HttpHeaders(
+          {
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem("auth")
+          })
+      }
+    } else {
+      result = {
+        headers: new HttpHeaders(
+          {
+            'Content-Type': 'application/json'
+          })
+      }
     }
+    return result;
   }
 
   get formOptions(): HttpOptions {

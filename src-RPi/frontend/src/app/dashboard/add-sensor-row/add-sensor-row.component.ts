@@ -42,7 +42,12 @@ export class AddSensorRowComponent implements OnInit {
       this.resetFormData();
       this.alertService.success("Success.",`Created the sensor '${result.name}'.`);
     }, err => {
-      this.alertService.warning("Sensor API Error.", `Failed creating the sensor '${this.sensor.name}', please try again in a few minutes.`);
+
+      if(err.status == 403){
+        this.alertService.accessDenied();
+      } else {
+        this.alertService.warning("Sensor API Error.", `Failed creating the sensor '${this.sensor.name}', please try again in a few minutes.`);
+      }
     })
   }
 

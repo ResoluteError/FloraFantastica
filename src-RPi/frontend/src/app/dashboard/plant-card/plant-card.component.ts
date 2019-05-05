@@ -64,6 +64,7 @@ export class PlantCardComponent implements OnInit {
           }).subscribe( result => {
             console.log("Unlinked Sensor: " + result.id);
           }, err => {
+            
             console.log("Failed unlinking sensor: " + sensor.id);
             failed.push(sensor.name);
           }, () => {
@@ -79,7 +80,12 @@ export class PlantCardComponent implements OnInit {
           });
         });
       }, err => {
-        this.alertService.warning('Plant API Error.',`Could not delete '${this.plant.name}', please try again in a moment.`)
+
+        if(err.status == 403){
+          this.alertService.accessDenied();
+        } else {
+          this.alertService.warning('Plant API Error.',`Could not delete '${this.plant.name}', please try again in a moment.`)
+        }
       });
 
     });

@@ -62,7 +62,12 @@ export class HealthInputComponent implements OnInit {
       this.postedHealth.emit(result);
       this.health = result.data;
     }, err => {
-      this.alertService.warning("Action API Error.",`Failed to create a health entry for '${this.plant.name}', please try again in a moment.`);
+
+      if(err.status == 403){
+        this.alertService.accessDenied();
+      } else {
+        this.alertService.warning("Action API Error.",`Failed to create a health entry for '${this.plant.name}', please try again in a moment.`);
+      }
       this.posting = false;
     })
   }

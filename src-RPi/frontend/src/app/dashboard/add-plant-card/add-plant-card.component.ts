@@ -53,7 +53,11 @@ export class AddPlantCardComponent implements OnInit {
       this.toggleEdit(false);
       this.creating = false;
     }, err => {
-      this.alertService.warning("Plant API Error.",`Failed creating plant '${this.input.name}', please try again in a minute.`)
+      if(err.status == 403){
+        this.alertService.accessDenied();
+      } else {
+        this.alertService.warning("Plant API Error.",`Failed creating plant '${this.input.name}', please try again in a minute.`)
+      }
     })
   }
 

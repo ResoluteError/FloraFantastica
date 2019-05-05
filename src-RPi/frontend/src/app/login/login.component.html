@@ -1,0 +1,43 @@
+<div class="container mt-5">
+
+  <div class="row">
+    
+      <div class="col-12 col-md-6 offset-md-3" *ngIf="!loggedIn">
+    
+        <h1>Login</h1>
+        <p>
+          A login is required to request measurements,
+          create, edit and delete plants, as well as sensors. Currently, only
+          a single master password is supported - this will eventually 
+          be changed to a standard user management.
+        </p>
+        <hr>
+        <form class="form">
+          <div class="form-row">
+            <label for="pass">Master Password:</label>
+            <input type="password" name="pass" id="pass" [(ngModel)]="pass" class="form-control">
+          </div>
+        </form>
+        <div class="text-center">
+          <button class="btn btn-outline-primary mt-4 mr-5" routerLink="/">Back</button>
+          <button class="btn btn-primary mt-4" *ngIf="!loggingIn" (click)="login()">Login</button>
+          <button class="btn btn-primary mt-4 disabled" *ngIf="loggingIn" disabled>Logging in...</button>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 offset-md-3" *ngIf="loggedIn">
+    
+        <h1>Logged In</h1>
+        <p>
+          You are logged in and have full access to the entire functionality of this site. You may now continue or log out. 
+        </p>
+        <div class="text-center">
+
+          <button class="btn btn-outline-primary mt-4 mr-5" *ngIf="!loggingOut" routerLink="/">Continue</button>
+          <button class="btn btn-outline-warning mt-4" *ngIf="!loggingOut" (click)="logout()">Logout</button>
+          <button class="btn btn-outline-warning mt-4 disabled" *ngIf="loggingOut" disabled>Logging out...</button>
+          
+        </div>
+      </div>
+  </div>
+
+</div>

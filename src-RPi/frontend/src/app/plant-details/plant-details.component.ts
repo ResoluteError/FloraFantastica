@@ -177,7 +177,13 @@ export class PlantDetailsComponent implements OnInit {
         this.plant.description = result.description;
         this.editMode = false;
       }, err => {
-        this.alertService.warning("Plant API Error.", "Failed saving plant details, please try again in a moment.");
+
+        if(err.status == 403){
+          this.alertService.accessDenied();
+        } else {
+          this.alertService.warning("Plant API Error.", "Failed saving plant details, please try again in a moment.");
+        }
+      
       }, () => {
         this.saving = false;
       });

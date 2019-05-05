@@ -29,8 +29,12 @@ export class DashboardComponent implements OnInit {
   view : string;
   sensorTable : Table = new Table([]);
 
+  loggedIn : boolean;
+
 
   ngOnInit() {
+
+    this.loggedIn = localStorage.getItem("auth") != null;
 
     this.view = this.route.snapshot.data.view;
 
@@ -62,7 +66,11 @@ export class DashboardComponent implements OnInit {
 
     }, err => {
 
-      this.alertService.warning("Sensor API Error.","Failed fetching sensor data. Please try again in a moment.", 4000)
+      if(err.status == 403){
+        this.alertService.accessDenied();
+      } else {
+        this.alertService.warning("Sensor API Error.","Failed fetching sensor data. Please try again in a moment.", 4000)
+      }
 
     });
 

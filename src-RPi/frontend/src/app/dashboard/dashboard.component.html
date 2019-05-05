@@ -8,6 +8,14 @@
           <button type="button" (click)="changeTab('/')" class="btn btn-secondary {{activeClass('plants')}}">Manage Plants</button>
           <button type="button" (click)="changeTab('/sensors')" class="btn btn-secondary {{activeClass('sensors')}}">Manage Sensors</button>
         </div>
+        <span class="login-link">
+          <button class="btn-sm btn btn-outline-dark" routerLink="/login" *ngIf="!loggedIn">
+            Login
+          </button>
+          <button class="btn-sm btn btn-outline-dark" routerLink="/login" *ngIf="loggedIn">
+            Logout
+          </button>
+        </span>
       </div>
     </div>
   </div>

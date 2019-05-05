@@ -64,7 +64,10 @@ export class WateringComponent implements OnInit {
         }).subscribe( result => {
           this.wateringSchedule = result;
         }, err => {
-
+          if(err.status == 403){
+            this.alertService.accessDenied();
+          } else {
+          }
         });
       } else {
 
@@ -92,7 +95,11 @@ export class WateringComponent implements OnInit {
     this.scheduleService.patchSchedule( this.wateringSchedule.id, this.wateringSchedule).subscribe( result => {
       this.alertService.success("Schedule updated!", "Your new rules are now in effect!");
     }, err => {
-      this.alertService.warning("Schedule API Error!", "Failed saving the schedule, please try again in a moment.")
+      if(err.status == 403){
+        this.alertService.accessDenied();
+      } else {
+        this.alertService.warning("Schedule API Error!", "Failed saving the schedule, please try again in a moment.")
+      }
     }, () => {
       this.savingSchedule = false;
     });
@@ -121,16 +128,24 @@ export class WateringComponent implements OnInit {
           }
 
         }, err => {
-
-          this.alertService.warning("Action API Error!", "Something went wrong, may be hardware related. Please check back later.");
+          
+          if(err.status == 403){
+            this.alertService.accessDenied();
+          } else {
+            this.alertService.warning("Action API Error!", "Something went wrong, may be hardware related. Please check back later.");
+          }
+          
 
         });
 
     }
 
   }, err => {
-
-    this.alertService.warning("Action API Error!", "Failed submitting action request, please try again in a moment.");
+    if (err.status == 403){
+      this.alertService.accessDenied();
+    } else {
+      this.alertService.warning("Action API Error!", "Failed submitting action request, please try again in a moment.");
+    }
 
   });
 
@@ -151,7 +166,11 @@ export class WateringComponent implements OnInit {
       this.submittedAction = null;
 
     }, err => {
-      this.alertService.warning("Action API Error!", "Failed to cancel the action, please try again in a moment.")
+      if (err.status == 403){
+        this.alertService.accessDenied();
+      } else {
+        this.alertService.warning("Action API Error!", "Failed to cancel the action, please try again in a moment.")
+      }
       
     })
 

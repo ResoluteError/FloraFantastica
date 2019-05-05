@@ -47,7 +47,11 @@ export class SensorRowComponent implements OnInit {
       this.alertService.success("Success.","Sensor was updated.");
       this.editMode = false;
     }, err => {
-      this.alertService.warning("Sensor API Error.","Could not update the sensor, please try again in a moment.");
+      if(err.status == 403){
+        this.alertService.accessDenied();
+      } else {
+        this.alertService.warning("Sensor API Error.","Could not update the sensor, please try again in a moment.");
+      }
     })
   }
 
@@ -57,7 +61,11 @@ export class SensorRowComponent implements OnInit {
         this.delete.emit(result.id);
         this.alertService.success("Success.",`Deleted the sensor '${result.name}'`);
       }, err => {
-        this.alertService.warning("Sensor API Error.",`Failed to delete the sensor '${this.sensor.name}', please try again in a moment.`)
+        if(err.status == 403){
+          this.alertService.accessDenied();
+        } else {
+          this.alertService.warning("Sensor API Error.",`Failed to delete the sensor '${this.sensor.name}', please try again in a moment.`)
+        }
       })
     });
   }

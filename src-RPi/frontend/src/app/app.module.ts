@@ -34,6 +34,8 @@ import { CustomIconComponent } from './helper/custom-icon/custom-icon.component'
 import { FilenamePipe } from './pipes/filename.pipe';
 import { WateringComponent } from './plant-details/watering/watering.component';
 import { ScheduleService } from './services/schedule.service';
+import { LoginComponent } from './login/login.component';
+import { AuthService } from './services/auth.service';
 
 library.add(faQuestionCircle, faPause, faPlay, faPlayCircle, faPauseCircle, faTrashAlt, faUnlink, faFlask, faLink, faEdit, fasEdit, faSave, faTimesCircle, faLeaf, faCaretDown, faCaretUp, faSyncAlt, faTimes, faPowerOff, faCloudShowersHeavy, faSun, faHourglassHalf, faCheck);
 
@@ -54,7 +56,8 @@ library.add(faQuestionCircle, faPause, faPlay, faPlayCircle, faPauseCircle, faTr
     AddSensorRowComponent,
     CustomIconComponent,
     FilenamePipe,
-    WateringComponent
+    WateringComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -73,7 +76,8 @@ library.add(faQuestionCircle, faPause, faPlay, faPlayCircle, faPauseCircle, faTr
     ActionService,
     AlertService,
     PromptService,
-    ScheduleService
+    ScheduleService,
+    AuthService
   ],
   bootstrap: [AppComponent]
 })
