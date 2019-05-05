@@ -1,43 +1,80 @@
-
 <div class="container" *ngIf="plant">
   <div class="row">
     <div class="col-12">
-      <h1 class="text-center mt-4 mb-4">Detail View</h1>
+      <h1 class="text-center mt-4 mb-3">Detail View</h1>
     </div>
   </div>
-  <div class="row">
-    <div class="col-12 text-center">
-      <div class="btn-group btn-group-sm" role="group" aria-label="Timeframe">
-        <button type="button" class="btn btn-secondary {{activeClass(1)}}" (click)="updateChartScope(1)">1 Day</button>
-        <button type="button" class="btn btn-secondary {{activeClass(7)}}" (click)="updateChartScope(3)">3 Days</button>
-        <button type="button" class="btn btn-secondary {{activeClass(30)}}" (click)="updateChartScope(7)">7 Days</button>
-        <button type="button" class="btn btn-secondary {{activeClass(30)}}" (click)="updateChartScope(30)">30 Days</button>
+  <div class="d-none d-md-block mt-3 mb-5">
+    <div class="row">
+      <div class="col-12 text-center">
+        <div class="btn-group btn-group-sm" role="group" aria-label="Timeframe">
+          <button type="button" class="btn btn-secondary {{activeClass(1)}}" (click)="updateChartScope(1)">1
+            Day</button>
+          <button type="button" class="btn btn-secondary {{activeClass(3)}}" (click)="updateChartScope(3)">3
+            Days</button>
+          <button type="button" class="btn btn-secondary {{activeClass(7)}}" (click)="updateChartScope(7)">7
+            Days</button>
+          <button type="button" class="btn btn-secondary {{activeClass(30)}}" (click)="updateChartScope(30)">30
+            Days</button>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="row mt-3">
+    <div class="row mt-3">
 
-    <div class="col-12 canvas-container">
+      <div class="col-12 canvas-container">
         <canvas #baseChart>
         </canvas>
         <canvas #chartUI class="chartUI">
         </canvas>
+      </div>
     </div>
   </div>
-  <div class="row mt-5">
+  <div class="row">
     <div class="col-12 col-lg-4">
       <div class="row mb-3 mb-lg-0">
         <div class="col-12 col-md-6 col-lg-12" *ngIf="!editMode">
-          
-          <div class="card mb-3 h-100">
+
+          <div class="card mb-3">
             <div class="card-header">
               <b>{{plant.name}}</b>
-              <fa-icon [icon]="['fas','edit']" class="blue float-right action-icon" (click)="toggleEdit(true)"></fa-icon>
+              <fa-icon [icon]="['fas','edit']" class="blue float-right action-icon" (click)="toggleEdit(true)">
+              </fa-icon>
             </div>
             <div class="card-body">
               <img class="plant-icon mb-2" src="{{plant.icon}}">
               <b>Description</b><br>
               <p class="plant-description">{{plant.description || "No Description"}}</p>
+
+              <div class="d-md-none">
+                <p><b>Plant Data</b></p>
+                <div class="row" *ngIf="plantDataIter.length > 3">
+                  <div class="col-6">
+                    <ng-container *ngFor="let plantDataItem of plantDataIter; let i = index">
+                      <p *ngIf="i <= (plantDataIter.length / 2)">{{plantDataItem[0]}}<br>
+                        <span class="small"><b>{{plantDataItem[1]}}</b></span></p>
+                    </ng-container>
+                  </div>
+                  <div class="col-6">
+                    <ng-container *ngFor="let plantDataItem of plantDataIter; let i = index">
+                      <p *ngIf="i > (plantDataIter.length / 2)">{{plantDataItem[0]}}<br>
+                        <span class="small"><b>{{plantDataItem[1]}}</b></span></p>
+                    </ng-container>
+                  </div>
+                  <div class="row" *ngIf="plantDataIter.length <= 3">
+                    <div class="col-12">
+                      <ng-container *ngFor="let plantDataItem of plantDataIter;">
+                        <p>{{plantDataItem[0]}}<br>
+                          <span class="small"><b>{{plantDataItem[1]}}</b></span></p>
+                      </ng-container>
+                    </div>
+                  </div>
+                  <div class="row" *ngIf="plantDataIter.length === 0">
+                    <div class="col-12">
+                      <p>No data for this plant.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -46,25 +83,30 @@
             <div class="card mb-3 h-100">
               <div class="card-header">
                 <b>Edit Plant</b>
-                <fa-icon [icon]="['fas','times']" class="float-right action-icon orange" (click)="quitEdit(false)"></fa-icon>
+                <fa-icon [icon]="['fas','times']" class="float-right action-icon orange" (click)="quitEdit(false)">
+                </fa-icon>
               </div>
               <div class="card-body">
                 <div class="form-group">
                   <label for="plantNameEdit">Plant Name</label>
-                  <input type="text" id="plantNameEdit" name="name" [(value)]="editPlant.name" placeholder="Plant Name" class="form-control">
+                  <input type="text" id="plantNameEdit" name="name" [(value)]="editPlant.name" placeholder="Plant Name"
+                    class="form-control">
                 </div>
                 <div class="form-group">
                   <label for="plantIconEdit">Plant Icon</label>
                   <div class="input-group">
                     <div class="custom-file">
-                      <input type="file" class="custom-file-input" id="plantIconEdit" name="plantImageUpload" aria-describedby="inputGroupFileAddon01" (change)="updateIconStr($event)">
-                      <label class="custom-file-label" for="plantImageUpload">{{ editPlant.icon | filename: "Choose file"}}</label>
+                      <input type="file" class="custom-file-input" id="plantIconEdit" name="plantImageUpload"
+                        aria-describedby="inputGroupFileAddon01" (change)="updateIconStr($event)">
+                      <label class="custom-file-label"
+                        for="plantImageUpload">{{ editPlant.icon | filename: "Choose file"}}</label>
                     </div>
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="plantDescriptionEdit">Plant Description</label>
-                  <textarea name="description" [(value)]="editPlant.description" class="form-control" rows="6" id="plantDescriptionEdit"></textarea>
+                  <textarea name="description" [(value)]="editPlant.description" class="form-control" rows="6"
+                    id="plantDescriptionEdit"></textarea>
                   <div class="text-center" *ngIf="!saving">
                     <button type="button" class="btn btn-primary mt-2" (click)="quitEdit(true)">Save</button>
                   </div>
@@ -76,16 +118,17 @@
             </div>
           </form>
         </div>
-        <div class="col-12 col-md-6 col-lg-12 mt-3 mt-md-0 mt-lg-3">
+        <div class="col-12 col-md-6 col-lg-12">
           <app-health-input [plant]="plant" (postedHealth)="newHealthEntry($event)"></app-health-input>
         </div>
-  
+
       </div>
 
     </div>
     <div class="col-12 col-lg-8">
       <app-watering [plant]="plant"></app-watering>
-      <app-sensor-manager *ngIf="plant" (change)="updateSensors($event)" (measurement)="handleNewMeasurement($event)" [plant]="plant" [sensors]="sensors"></app-sensor-manager>
+      <app-sensor-manager *ngIf="plant" (change)="updateSensors($event)" (measurement)="handleNewMeasurement($event)"
+        [plant]="plant" [sensors]="sensors"></app-sensor-manager>
     </div>
   </div>
   <div class="row mt-5">

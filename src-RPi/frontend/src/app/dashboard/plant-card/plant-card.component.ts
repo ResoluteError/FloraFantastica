@@ -1,8 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Plant, PlantDataObj } from 'src/app/models/plant.model';
+import { Plant, PlantDataObj, PlantDataToIterable } from 'src/app/models/plant.model';
 import { SensorService } from 'src/app/services/sensor.service';
 import { Sensor, DisplaySensor } from 'src/app/models/sensor.model';
-import { ActionService } from 'src/app/services/action.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { PromptService } from 'src/app/services/prompt.service';
 import { PlantService } from 'src/app/services/plant.service';
@@ -19,17 +18,19 @@ export class PlantCardComponent implements OnInit {
   @Output() delete = new EventEmitter<string>();
 
   plantData : PlantDataObj;
+  plantDataIter : string[][];
 
   constructor(
     private sensorService : SensorService,
     private plantService : PlantService,
-    private actionService : ActionService,
     private alertService : AlertService,
     private promptService: PromptService
   ) { }
 
   ngOnInit() {
     this.plantData = new PlantDataObj(this.plant.currentData);
+    this.plantDataIter = PlantDataToIterable(this.plant.currentData);
+    console.log(this.plantDataIter);
     this.sensors = this.sensors.filter( sensor => sensor.currentPlantId === this.plant.id);
   }
 

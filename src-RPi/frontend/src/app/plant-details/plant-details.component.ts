@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { PlantService } from '../services/plant.service';
 import { MeasurementService } from '../services/measurement.service';
 import { SensorService } from '../services/sensor.service';
-import { Plant } from '../models/plant.model';
+import { Plant, PlantDataToIterable } from '../models/plant.model';
 import { Sensor } from '../models/sensor.model';
 import { Measurement } from '../models/measurement.model';
 import { ActivatedRoute } from '@angular/router';
@@ -40,12 +40,15 @@ export class PlantDetailsComponent implements OnInit {
   saving: boolean = false;
   editPlant: Plant;
 
+  plantDataIter : string[][];
+
   ngOnInit() {
 
     var plantId = this.route.snapshot.params.plantId;
 
     this.plantService.getPlantById(plantId).subscribe( plant => {
       this.plant = plant;
+      this.plantDataIter = PlantDataToIterable(plant.currentData);
     }, err => {
       this.alertService.warning("Plant API Error.","Failed getting plant data for the plant "+ plantId);
     });

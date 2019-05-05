@@ -7,7 +7,7 @@
     <table class="table">
       <thead>
         <tr>
-          <th (click)="activeSensorsTable.toggleSort('type')" width="17%" class="sorting-header text-center">
+          <th (click)="activeSensorsTable.toggleSort('type')" width="17%" class="sorting-header text-center d-none d-md-table-cell">
             Type 
             <fa-icon class="ml-2" *ngIf="activeSensorsTable.isSortedBy('type')" [icon]="activeSensorsTable.getSortIcon('type')"></fa-icon>
           </th>
@@ -27,7 +27,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let sensor of activeSensors">
-          <td class="text-center">
+          <td class="text-center d-none d-md-table-cell">
             <div [ngbPopover]="sensor.typeLabel" triggers="mouseenter:mouseleave"
             >
               <app-custom-icon *ngFor="let icon of sensor.typeIcons" [iconName]="icon"></app-custom-icon>
@@ -76,7 +76,7 @@
     <table class="table">
       <thead>
         <tr>
-          <th (click)="availableSensorsTable.toggleSort('type')" width="17%" class="sorting-header text-center">
+          <th (click)="availableSensorsTable.toggleSort('type')" width="17%" class="sorting-header text-center d-none d-md-table-cell">
             Type 
             <fa-icon class="ml-2" *ngIf="availableSensorsTable.isSortedBy('type')" [icon]="availableSensorsTable.getSortIcon('type')"></fa-icon>
           </th>
@@ -96,7 +96,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let sensor of availableSensors">
-          <td class="text-center">
+          <td class="text-center d-none d-md-table-cell">
             <div [ngbPopover]="sensor.typeLabel" triggers="mouseenter:mouseleave"
             >
               <app-custom-icon *ngFor="let icon of sensor.typeIcons" [iconName]="icon"></app-custom-icon>

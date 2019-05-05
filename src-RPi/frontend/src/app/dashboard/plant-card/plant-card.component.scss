@@ -20,6 +20,24 @@ span.sensor-state{
 
 }
 
-.plant-icon{
-  max-width: 90%;
+.plant-icon {
+
+  height: 13em;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  width: 100%;
+  position: relative;
+
+  &:before{
+    content: '';
+    position: absolute;
+    top:0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-image: linear-gradient(to top, white 0%, transparent 15%);
+    opacity: 1;
+  }
+
 }

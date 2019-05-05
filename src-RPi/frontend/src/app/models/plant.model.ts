@@ -1,3 +1,5 @@
+import { Sensor } from './sensor.model';
+
 export class Plant {
 
   id : string;
@@ -19,9 +21,10 @@ export class PlantDataObj {
   lastWatering: string;
   lastHealth: number;
 
-  constructor( dataStr : string ){
+  constructor( dataStr : string){
 
     var latestSensorMeasurement = JSON.parse(dataStr);
+
     this.airTemperature = latestSensorMeasurement[10] && latestSensorMeasurement[10].data || null;
     this.airHumidity = latestSensorMeasurement[11] && latestSensorMeasurement[11].data || null;
     this.soilMoisture = latestSensorMeasurement[20] && latestSensorMeasurement[20].data || null;
@@ -31,5 +34,32 @@ export class PlantDataObj {
     this.lastHealth = latestSensorMeasurement[90] && latestSensorMeasurement[90].data || null;
 
   }
+
+}
+
+export function PlantDataToIterable( dataStr : string): string[][]{
+    
+  var result = [];
+  const dataObj = JSON.parse(dataStr);
+
+  const sensorTypes = [10, 11, 20, 21, 30, 40, 90];
+  const lables = {
+    10 : "Air Temperature",
+    11 : "Air Humidity",
+    20 : "Soil Dryness",
+    21 : "Soil Temperature",
+    30 : "Light Intensity",
+    40 : "Last Watered",
+    90 : "Last Health Entry"
+  }
+
+  for(var sensorType of sensorTypes){
+    result.push([
+      dataObj[sensorType].data + Sensor.typeToUnit(sensorType),
+      lables[sensorType]
+    ])
+  }
+
+  return result;
 
 }

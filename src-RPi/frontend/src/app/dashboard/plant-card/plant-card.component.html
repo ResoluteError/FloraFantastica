@@ -5,28 +5,33 @@
     </a>
   </div>
   <!-- <img class="card-img-top" [src]="plant.icon" alt=""> -->
-  <div class="card-body">
-    <div class="row h-100">
-      <div class="col-6 align-self-center text-center">
-        <img [src]="plant.icon" class="plant-icon">
+  <div class="card-body p-0">
+    <div class="plant-icon" [routerLink]="'/plant-details/'+plant.id" [ngStyle]="{ 'background-image': 'url(' + plant.icon + ')'}">
+    </div>
+    <div class="row m-3" *ngIf="plantDataIter.length > 3">
+      <div class="col-6 h-100">
+        <ng-container *ngFor="let plantDataItem of plantDataIter; let i = index">
+            <p *ngIf="i <= (plantDataIter.length / 2)">{{plantDataItem[0]}}<br>
+            <span class="small"><b>{{plantDataItem[1]}}</b></span></p> 
+        </ng-container>
       </div>
       <div class="col-6 h-100">
-          <p *ngIf="plantData.airTemperature">{{plantData.airTemperature}}°<br>
-          <span class="small"><b>Air Temperature</b></span></p> 
-          <p *ngIf="plantData.airHumidity">{{plantData.airHumidity}}%<br>
-          <span class="small"><b>Air Humidity</b></span></p> 
-          <p *ngIf="plantData.soilTemperature">{{plantData.soilTemperature}}°<br>
-          <span class="small"><b>Soil Temperature</b></span></p> 
-          <p *ngIf="plantData.soilMoisture">{{plantData.soilMoisture}}<br>
-          <span class="small"><b>Soil Moisture</b></span></p> 
-          <p *ngIf="plantData.lightIntensity">{{plantData.lightIntensity}}<br>
-          <span class="small"><b>Light Intensity</b></span></p> 
-          <p *ngIf="plantData.lastWatering">{{plantData.lastWatering}}<br>
-          <span class="small"><b>Last Watered</b></span></p>
-          <p *ngIf="plantData.lastHealth">{{plantData.lastHealth}}<br>
-          <span class="small"><b>Last Health Status</b></span></p>
-          <p *ngIf="noPlantData" class="mt-5">No current data for this plant
-          </p> 
+        <ng-container *ngFor="let plantDataItem of plantDataIter; let i = index">
+            <p *ngIf="i > (plantDataIter.length / 2)">{{plantDataItem[0]}}<br>
+            <span class="small"><b>{{plantDataItem[1]}}</b></span></p> 
+        </ng-container>
+      </div>
+    <div class="row h-100 m-3" *ngIf="plantDataIter.length <= 3">
+      <div class="col-12 h-100">
+        <ng-container *ngFor="let plantDataItem of plantDataIter;">
+          <p>{{plantDataItem[0]}}<br>
+          <span class="small"><b>{{plantDataItem[1]}}</b></span></p> 
+        </ng-container>
+      </div>
+    </div>
+    <div class="row h-100 m-3" *ngIf="plantDataIter.length === 0">
+      <div class="col-12 h-100">
+        <p>No data for this plant.</p>
       </div>
     </div>
   </div>
