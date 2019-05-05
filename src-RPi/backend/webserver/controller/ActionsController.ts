@@ -177,7 +177,8 @@ export class ActionsController {
       method: 'POST',
       headers: {
           'Accept': 'application/json',
-          'Accept-Charset': 'utf-8'
+          'Accept-Charset': 'utf-8',
+          'Authorization' : CONFIG.AUTH
       },
       json: measurementRequest
     };
@@ -227,7 +228,8 @@ export class ActionsController {
       method: 'POST',
       headers: {
           'Accept': 'application/json',
-          'Accept-Charset': 'utf-8'
+          'Accept-Charset': 'utf-8',
+          'Authorization' : CONFIG.AUTH
       },
       json: actionRequest
     };

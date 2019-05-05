@@ -50,6 +50,7 @@ var config_1 = require("./config");
 var http = require("http");
 var https = require("https");
 var fs = require("fs");
+var authorizer_1 = require("./auth/authorizer");
 console.log("======= ENVIRONMENT DEBUG ======");
 console.log("PROD_MODE: " + config_1.CONFIG.PROD_MODE);
 console.log("Path to uploads: " + config_1.CONFIG.UPLOADS_DIR);
@@ -71,7 +72,7 @@ typeorm_1.createConnection().then(function (connection) { return __awaiter(_this
                 app.use(function (req, res, next) {
                     res.header("Access-Control-Allow-Origin", "http://localhost:4200");
                     res.header("Access-Control-Allow-Methods", "GET, PUT, PATCH, POST, DELETE");
-                    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+                    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
                     next();
                 });
                 app.use(bodyParser.json());
@@ -81,6 +82,7 @@ typeorm_1.createConnection().then(function (connection) { return __awaiter(_this
                 app.use("/api/plants/", PlantsRouter_1.router);
                 app.use("/api/actions/", ActionsRouter_1.router);
                 app.use("/api/schedules/", SchedulesRouter_1.router);
+                app.post("/api/login", authorizer_1.Authorizer.SimpleLogin);
                 app.use("/seed/", SeedRouter_1.router);
                 app.use("/uploads", express.static(config_1.CONFIG.UPLOADS_DIR));
                 app.use("/.well-known", express.static(config_1.CONFIG.PUBLIC_DIR + "/.well-known/"));

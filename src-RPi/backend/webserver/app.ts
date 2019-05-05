@@ -12,6 +12,7 @@ import {CONFIG} from './config';
 import * as http from 'http';
 import  * as https from 'https';
 import  * as fs from 'fs';
+import { Authorizer } from "./auth/authorizer";
 
 console.log("======= ENVIRONMENT DEBUG ======");
 console.log(`PROD_MODE: ${CONFIG.PROD_MODE}`);
@@ -35,7 +36,7 @@ createConnection().then(async connection => {
 
     res.header("Access-Control-Allow-Origin", "http://localhost:4200");
     res.header("Access-Control-Allow-Methods", "GET, PUT, PATCH, POST, DELETE");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     next();
 
   });
@@ -43,17 +44,15 @@ createConnection().then(async connection => {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({extended: true}));
 
-  // app.use( (req, res, next) => {
-  //   console.log("Got Request: ", req.url);
-  //   next();
-  // });
-
 
   app.use("/api/measurements/",sensorMeasurementsRouter);
   app.use("/api/sensors/",sensorsRouter);
   app.use("/api/plants/",plantsRouter);
   app.use("/api/actions/",actionsRouter);
   app.use("/api/schedules/",scheduleRouter);
+
+  app.post("/api/login", Authorizer.SimpleLogin);
+
   app.use("/seed/",seedRouter);
   
   app.use("/uploads", express.static(CONFIG.UPLOADS_DIR));

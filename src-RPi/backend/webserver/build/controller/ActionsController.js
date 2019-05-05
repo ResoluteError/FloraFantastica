@@ -252,7 +252,8 @@ var ActionsController = (function () {
                             method: 'POST',
                             headers: {
                                 'Accept': 'application/json',
-                                'Accept-Charset': 'utf-8'
+                                'Accept-Charset': 'utf-8',
+                                'Authorization': config_1.CONFIG.AUTH
                             },
                             json: measurementRequest
                         };
@@ -309,7 +310,8 @@ var ActionsController = (function () {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
-                        'Accept-Charset': 'utf-8'
+                        'Accept-Charset': 'utf-8',
+                        'Authorization': config_1.CONFIG.AUTH
                     },
                     json: actionRequest
                 };
