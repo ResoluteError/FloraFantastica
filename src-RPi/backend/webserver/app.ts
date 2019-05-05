@@ -45,8 +45,11 @@ createConnection().then(async connection => {
   //   next();
   // });
 
-
-  app.use(express.static(__dirname, { dotfiles: 'allow' } ));
+  app.use((req, res, next) => {
+    console.log("Reuest: ", req);
+    next();
+  });
+  app.use(express.static(CONFIG.PUBLIC_DIR, { dotfiles: 'allow' } ));
 
   app.use("/api/measurements/",sensorMeasurementsRouter);
   app.use("/api/sensors/",sensorsRouter);
