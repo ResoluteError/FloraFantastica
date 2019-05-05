@@ -71,6 +71,7 @@ typeorm_1.createConnection().then(function (connection) { return __awaiter(_this
                 });
                 app.use(bodyParser.json());
                 app.use(bodyParser.urlencoded({ extended: true }));
+                app.use(express.static(__dirname, { dotfiles: 'allow' }));
                 app.use("/api/measurements/", MeasurementsRouter_1.router);
                 app.use("/api/sensors/", SensorsRouter_1.router);
                 app.use("/api/plants/", PlantsRouter_1.router);
@@ -83,7 +84,10 @@ typeorm_1.createConnection().then(function (connection) { return __awaiter(_this
                     res.sendFile(config_1.CONFIG.FRONTEND_DIR + "/index.html");
                 });
                 app.listen(config_1.CONFIG.WEBSERVER_PORT, function () {
-                    console.log("Started FloraFantastica Server, listening on Port: " + config_1.CONFIG.WEBSERVER_PORT);
+                    console.log("Started FloraFantastica HTTP Server, listening on Port: " + config_1.CONFIG.WEBSERVER_PORT);
+                });
+                app.listen(config_1.CONFIG.WEBSERVER_HTTPS_PORT, function () {
+                    console.log("Started FloraFantastica HTTPS Server, listening on Port: " + config_1.CONFIG.WEBSERVER_HTTPS_PORT);
                 });
                 return [2];
         }

@@ -9,6 +9,8 @@ import {router as scheduleRouter} from "./routes/SchedulesRouter";
 import { createConnection } from "typeorm";
 import bodyParser = require('body-parser');
 import {CONFIG} from './config';
+// import * as http from 'http';
+// import  * as https from 'https';
 
 console.log("======= ENVIRONMENT DEBUG ======");
 console.log(`Path to uploads: ${CONFIG.UPLOADS_DIR}`);
@@ -43,6 +45,9 @@ createConnection().then(async connection => {
   //   next();
   // });
 
+
+  app.use(express.static(__dirname, { dotfiles: 'allow' } ));
+
   app.use("/api/measurements/",sensorMeasurementsRouter);
   app.use("/api/sensors/",sensorsRouter);
   app.use("/api/plants/",plantsRouter);
@@ -58,9 +63,38 @@ createConnection().then(async connection => {
     res.sendFile(CONFIG.FRONTEND_DIR + "/index.html");
   })
   
+  // // Certificate
+  // const privateKey = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/privkey.pem', 'utf8');
+  // const certificate = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/cert.pem', 'utf8');
+  // const ca = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/chain.pem', 'utf8');
+
+  // const credentials = {
+  //   key: privateKey,
+  //   cert: certificate,
+  //   ca: ca
+  // };
+
+  // const httpServer = http.createServer(app);
+  // const httpsServer = https.createServer(credentials, app);
+
+  // httpServer.listen(80, () => {
+  //   console.log('HTTP Server running on port 80');
+  // });
+  
+  // httpsServer.listen(443, () => {
+  //   console.log('HTTPS Server running on port 443');
+  // });
+
+
   app.listen(CONFIG.WEBSERVER_PORT, () => {
 
-    console.log(`Started FloraFantastica Server, listening on Port: ${CONFIG.WEBSERVER_PORT}`);
+    console.log(`Started FloraFantastica HTTP Server, listening on Port: ${CONFIG.WEBSERVER_PORT}`);
+
+  });
+  
+  app.listen(CONFIG.WEBSERVER_HTTPS_PORT, () => {
+
+    console.log(`Started FloraFantastica HTTPS Server, listening on Port: ${CONFIG.WEBSERVER_HTTPS_PORT}`);
 
   });
 
