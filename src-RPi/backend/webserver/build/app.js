@@ -47,8 +47,13 @@ var SchedulesRouter_1 = require("./routes/SchedulesRouter");
 var typeorm_1 = require("typeorm");
 var bodyParser = require("body-parser");
 var config_1 = require("./config");
+var http = require("http");
+var https = require("https");
+var fs = require("fs");
 console.log("======= ENVIRONMENT DEBUG ======");
+console.log("PROD_MODE: " + config_1.CONFIG.PROD_MODE);
 console.log("Path to uploads: " + config_1.CONFIG.UPLOADS_DIR);
+console.log("Serving public from: " + config_1.CONFIG.PUBLIC_DIR);
 console.log("Serving frontend from: " + config_1.CONFIG.FRONTEND_DIR);
 console.log("TYPE_ORM Constants ");
 console.log("TYPEORM_CONNECTION: " + process.env.TYPEORM_CONNECTION);
@@ -56,7 +61,7 @@ console.log("TYPEORM_DATABASE: " + process.env.TYPEORM_DATABASE);
 console.log("TYPEORM_ENTITIES: " + process.env.TYPEORM_ENTITIES);
 console.log("===================");
 typeorm_1.createConnection().then(function (connection) { return __awaiter(_this, void 0, void 0, function () {
-    var app;
+    var app, privateKey, certificate, ca, credentials, httpServer, httpsServer;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4, connection.synchronize(false)];
@@ -78,17 +83,36 @@ typeorm_1.createConnection().then(function (connection) { return __awaiter(_this
                 app.use("/api/schedules/", SchedulesRouter_1.router);
                 app.use("/seed/", SeedRouter_1.router);
                 app.use("/uploads", express.static(config_1.CONFIG.UPLOADS_DIR));
-                app.use("/.well-known", express.static(config_1.CONFIG.PUBLIC_DIR + ".well-known/", { dotfiles: 'allow' }));
                 app.use(express.static(config_1.CONFIG.FRONTEND_DIR));
                 app.get('*', function (req, res) {
                     res.sendFile(config_1.CONFIG.FRONTEND_DIR + "/index.html");
                 });
-                app.listen(config_1.CONFIG.WEBSERVER_PORT, function () {
-                    console.log("Started FloraFantastica HTTP Server, listening on Port: " + config_1.CONFIG.WEBSERVER_PORT);
-                });
-                app.listen(config_1.CONFIG.WEBSERVER_HTTPS_PORT, function () {
-                    console.log("Started FloraFantastica HTTPS Server, listening on Port: " + config_1.CONFIG.WEBSERVER_HTTPS_PORT);
-                });
+                if (config_1.CONFIG.PROD_MODE) {
+                    privateKey = fs.readFileSync('/etc/letsencrypt/live/pi.douglas-reiser.de/privkey.pem', 'utf8');
+                    certificate = fs.readFileSync('/etc/letsencrypt/live/pi.douglas-reiser.de/cert.pem', 'utf8');
+                    ca = fs.readFileSync('/etc/letsencrypt/live/pi.douglas-reiser.de/chain.pem', 'utf8');
+                    credentials = {
+                        key: privateKey,
+                        cert: certificate,
+                        ca: ca
+                    };
+                    httpServer = http.createServer(app);
+                    httpsServer = https.createServer(credentials, app);
+                    httpServer.listen(config_1.CONFIG.WEBSERVER_PORT, function () {
+                        console.log('HTTP Server running on port 80');
+                    });
+                    httpsServer.listen(config_1.CONFIG.WEBSERVER_HTTPS_PORT, function () {
+                        console.log('HTTPS Server running on port 443');
+                    });
+                }
+                else {
+                    app.listen(config_1.CONFIG.WEBSERVER_PORT, function () {
+                        console.log("Started FloraFantastica HTTP Server, listening on Port: " + config_1.CONFIG.WEBSERVER_PORT);
+                    });
+                    app.listen(config_1.CONFIG.WEBSERVER_HTTPS_PORT, function () {
+                        console.log("Started FloraFantastica HTTPS Server, listening on Port: " + config_1.CONFIG.WEBSERVER_HTTPS_PORT);
+                    });
+                }
                 return [2];
         }
     });

@@ -9,11 +9,14 @@ import {router as scheduleRouter} from "./routes/SchedulesRouter";
 import { createConnection } from "typeorm";
 import bodyParser = require('body-parser');
 import {CONFIG} from './config';
-// import * as http from 'http';
-// import  * as https from 'https';
+import * as http from 'http';
+import  * as https from 'https';
+import  * as fs from 'fs';
 
 console.log("======= ENVIRONMENT DEBUG ======");
+console.log(`PROD_MODE: ${CONFIG.PROD_MODE}`);
 console.log(`Path to uploads: ${CONFIG.UPLOADS_DIR}`);
+console.log(`Serving public from: ${CONFIG.PUBLIC_DIR}`);
 console.log(`Serving frontend from: ${CONFIG.FRONTEND_DIR}`);
 console.log(`TYPE_ORM Constants `);
 console.log(`TYPEORM_CONNECTION: ${process.env.TYPEORM_CONNECTION}`);
@@ -54,7 +57,6 @@ createConnection().then(async connection => {
   app.use("/seed/",seedRouter);
   
   app.use("/uploads", express.static(CONFIG.UPLOADS_DIR));
-  app.use("/.well-known", express.static(CONFIG.PUBLIC_DIR + ".well-known/", { dotfiles: 'allow' } ));
 
   app.use(express.static(CONFIG.FRONTEND_DIR));
 
@@ -62,39 +64,47 @@ createConnection().then(async connection => {
     res.sendFile(CONFIG.FRONTEND_DIR + "/index.html");
   })
   
-  // // Certificate
-  // const privateKey = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/privkey.pem', 'utf8');
-  // const certificate = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/cert.pem', 'utf8');
-  // const ca = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/chain.pem', 'utf8');
 
-  // const credentials = {
-  //   key: privateKey,
-  //   cert: certificate,
-  //   ca: ca
-  // };
+  if(CONFIG.PROD_MODE){
 
-  // const httpServer = http.createServer(app);
-  // const httpsServer = https.createServer(credentials, app);
+    // Certificate
+    const privateKey = fs.readFileSync('/etc/letsencrypt/live/pi.douglas-reiser.de/privkey.pem', 'utf8');
+    const certificate = fs.readFileSync('/etc/letsencrypt/live/pi.douglas-reiser.de/cert.pem', 'utf8');
+    const ca = fs.readFileSync('/etc/letsencrypt/live/pi.douglas-reiser.de/chain.pem', 'utf8');
 
-  // httpServer.listen(80, () => {
-  //   console.log('HTTP Server running on port 80');
-  // });
+    const credentials = {
+      key: privateKey,
+      cert: certificate,
+      ca: ca
+    };
+
+    const httpServer = http.createServer(app);
+    const httpsServer = https.createServer(credentials, app);
+
+    httpServer.listen(CONFIG.WEBSERVER_PORT, () => {
+      console.log('HTTP Server running on port 80');
+    });
+    
+    httpsServer.listen(CONFIG.WEBSERVER_HTTPS_PORT, () => {
+      console.log('HTTPS Server running on port 443');
+    });
+
+  } else {
+
+    app.listen(CONFIG.WEBSERVER_PORT, () => {
+
+      console.log(`Started FloraFantastica HTTP Server, listening on Port: ${CONFIG.WEBSERVER_PORT}`);
   
-  // httpsServer.listen(443, () => {
-  //   console.log('HTTPS Server running on port 443');
-  // });
-
-
-  app.listen(CONFIG.WEBSERVER_PORT, () => {
-
-    console.log(`Started FloraFantastica HTTP Server, listening on Port: ${CONFIG.WEBSERVER_PORT}`);
-
-  });
+    });
+    
+    app.listen(CONFIG.WEBSERVER_HTTPS_PORT, () => {
   
-  app.listen(CONFIG.WEBSERVER_HTTPS_PORT, () => {
+      console.log(`Started FloraFantastica HTTPS Server, listening on Port: ${CONFIG.WEBSERVER_HTTPS_PORT}`);
+  
+    });
+  }
 
-    console.log(`Started FloraFantastica HTTPS Server, listening on Port: ${CONFIG.WEBSERVER_HTTPS_PORT}`);
 
-  });
+
 
 });
