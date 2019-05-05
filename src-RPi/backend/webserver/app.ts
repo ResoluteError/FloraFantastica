@@ -57,7 +57,7 @@ createConnection().then(async connection => {
   app.use("/seed/",seedRouter);
   
   app.use("/uploads", express.static(CONFIG.UPLOADS_DIR));
-  app.use("/.well-known", express.static(CONFIG.PUBLIC_DIR + ".well-known/"));
+  app.use("/.well-known", express.static(CONFIG.PUBLIC_DIR + "/.well-known/"));
 
   app.use(express.static(CONFIG.FRONTEND_DIR));
 
