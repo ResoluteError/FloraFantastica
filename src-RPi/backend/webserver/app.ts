@@ -45,11 +45,6 @@ createConnection().then(async connection => {
   //   next();
   // });
 
-  app.use((req, res, next) => {
-    console.log("Reuest: ", req);
-    next();
-  });
-  app.use(express.static(CONFIG.PUBLIC_DIR, { dotfiles: 'allow' } ));
 
   app.use("/api/measurements/",sensorMeasurementsRouter);
   app.use("/api/sensors/",sensorsRouter);
@@ -61,6 +56,7 @@ createConnection().then(async connection => {
   app.use("/uploads", express.static(CONFIG.UPLOADS_DIR));
 
   app.use(express.static(CONFIG.FRONTEND_DIR));
+  app.use(express.static(CONFIG.PUBLIC_DIR, { dotfiles: 'allow' } ));
 
   app.get('*', (req, res) => {
     res.sendFile(CONFIG.FRONTEND_DIR + "/index.html");

@@ -71,11 +71,6 @@ typeorm_1.createConnection().then(function (connection) { return __awaiter(_this
                 });
                 app.use(bodyParser.json());
                 app.use(bodyParser.urlencoded({ extended: true }));
-                app.use(function (req, res, next) {
-                    console.log("Reuest: ", req);
-                    next();
-                });
-                app.use(express.static(config_1.CONFIG.PUBLIC_DIR, { dotfiles: 'allow' }));
                 app.use("/api/measurements/", MeasurementsRouter_1.router);
                 app.use("/api/sensors/", SensorsRouter_1.router);
                 app.use("/api/plants/", PlantsRouter_1.router);
@@ -84,6 +79,7 @@ typeorm_1.createConnection().then(function (connection) { return __awaiter(_this
                 app.use("/seed/", SeedRouter_1.router);
                 app.use("/uploads", express.static(config_1.CONFIG.UPLOADS_DIR));
                 app.use(express.static(config_1.CONFIG.FRONTEND_DIR));
+                app.use(express.static(config_1.CONFIG.PUBLIC_DIR, { dotfiles: 'allow' }));
                 app.get('*', function (req, res) {
                     res.sendFile(config_1.CONFIG.FRONTEND_DIR + "/index.html");
                 });
