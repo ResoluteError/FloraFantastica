@@ -7,6 +7,6 @@ exports.CONFIG = {
     WEBSERVER_PORT: process.env.WEBSERVER_PORT || 8080,
     WEBSERVER_HTTPS_PORT: process.env.WEBSERVER_HTTPS_PORT || 8443,
     QUEUE_MANAGER_PORT: process.env.QUEUE_MANAGER_PORT || 8081,
-    PROD_MODE: process.env.PROD_MODE || false
+    PROD_MODE: process.env.PROD_MODE == "true" || false
 };
 //# sourceMappingURL=config.js.map

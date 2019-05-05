@@ -68,9 +68,9 @@ createConnection().then(async connection => {
   if(CONFIG.PROD_MODE){
 
     // Certificate
-    const privateKey = fs.readFileSync('/etc/letsencrypt/live/pi.douglas-reiser.de/privkey.pem', 'utf8');
-    const certificate = fs.readFileSync('/etc/letsencrypt/live/pi.douglas-reiser.de/cert.pem', 'utf8');
-    const ca = fs.readFileSync('/etc/letsencrypt/live/pi.douglas-reiser.de/chain.pem', 'utf8');
+    const privateKey = fs.readFileSync(__dirname + '/keys/privkey.pem', 'utf8');
+    const certificate = fs.readFileSync(__dirname + '/keys/cert.pem', 'utf8');
+    const ca = fs.readFileSync(__dirname + '/keys/chain.pem', 'utf8');
 
     const credentials = {
       key: privateKey,

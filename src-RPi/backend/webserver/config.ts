@@ -17,6 +17,6 @@ export const CONFIG = {
   
   QUEUE_MANAGER_PORT : process.env.QUEUE_MANAGER_PORT || 8081,
 
-  PROD_MODE : process.env.PROD_MODE || false
+  PROD_MODE : process.env.PROD_MODE == "true" || false
   
 }

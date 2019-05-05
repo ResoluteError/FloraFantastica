@@ -88,9 +88,9 @@ typeorm_1.createConnection().then(function (connection) { return __awaiter(_this
                     res.sendFile(config_1.CONFIG.FRONTEND_DIR + "/index.html");
                 });
                 if (config_1.CONFIG.PROD_MODE) {
-                    privateKey = fs.readFileSync('/etc/letsencrypt/live/pi.douglas-reiser.de/privkey.pem', 'utf8');
-                    certificate = fs.readFileSync('/etc/letsencrypt/live/pi.douglas-reiser.de/cert.pem', 'utf8');
-                    ca = fs.readFileSync('/etc/letsencrypt/live/pi.douglas-reiser.de/chain.pem', 'utf8');
+                    privateKey = fs.readFileSync(__dirname + '/keys/privkey.pem', 'utf8');
+                    certificate = fs.readFileSync(__dirname + '/keys/cert.pem', 'utf8');
+                    ca = fs.readFileSync(__dirname + '/keys/chain.pem', 'utf8');
                     credentials = {
                         key: privateKey,
                         cert: certificate,
