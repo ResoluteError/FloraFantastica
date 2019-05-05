@@ -25,7 +25,7 @@ var Authorizer = (function () {
             next();
         }
         else {
-            console.log("Authorization failed - Wrong Auth!");
+            console.log("Authorization failed - Wrong Auth! Provided: ", authHeader);
             return res.status(403).send({
                 "message": "You must be logged in to request this endpoint"
             });
