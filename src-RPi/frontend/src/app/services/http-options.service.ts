@@ -36,17 +36,11 @@ export class HttpOptionsService {
       result = {
         headers: new HttpHeaders(
           {
-            'Content-Type': 'multipart/form-data',
             'Authorization': localStorage.getItem("auth")
           })
       }
     } else {
-      result = {
-        headers: new HttpHeaders(
-          {
-            'Content-Type': 'multipart/form-data'
-          })
-      }
+      result = null
     }
     return result;
   }

@@ -78,7 +78,7 @@ export class PlantService {
 
     return new Observable( observer => {
 
-      this.http.post<Plant>(url + "/plants", plant).subscribe( result => {
+      this.http.post<Plant>(url + "/plants", plant, this.httpOptions.formOptions).subscribe( result => {
         observer.next(result);
         observer.complete();
       }, err => {
