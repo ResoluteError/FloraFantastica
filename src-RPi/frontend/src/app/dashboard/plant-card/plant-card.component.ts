@@ -28,8 +28,8 @@ export class PlantCardComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.plantData = new PlantDataObj(this.plant.currentData);
-    this.plantDataIter = PlantDataToIterable(this.plant.currentData);
+      this.plantData = new PlantDataObj(this.plant.currentData);
+      this.plantDataIter = PlantDataToIterable(this.plant.currentData);
     console.log(this.plantDataIter);
     this.sensors = this.sensors.filter( sensor => sensor.currentPlantId === this.plant.id);
   }

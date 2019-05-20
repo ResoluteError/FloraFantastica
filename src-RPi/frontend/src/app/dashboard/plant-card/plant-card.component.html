@@ -21,7 +21,8 @@
             <span class="small"><b>{{plantDataItem[1]}}</b></span></p> 
         </ng-container>
       </div>
-    <div class="row h-100 m-3" *ngIf="plantDataIter.length <= 3">
+    </div>
+    <div class="row m-3" *ngIf="plantDataIter.length <= 3 && plantDataIter.length > 0">
       <div class="col-12 h-100">
         <ng-container *ngFor="let plantDataItem of plantDataIter;">
           <p>{{plantDataItem[0]}}<br>
@@ -29,9 +30,10 @@
         </ng-container>
       </div>
     </div>
-    <div class="row h-100 m-3" *ngIf="plantDataIter.length === 0">
-      <div class="col-12 h-100">
-        <p>No data for this plant.</p>
+    <div class="row m-3" *ngIf="plantDataIter.length === 0">
+      <div class="col-12 h-100 ">
+        <p>No data for this plant.<br>
+        <span class="small"><b>Add sensors to collect data</b></span></p>
       </div>
     </div>
   </div>

@@ -54,10 +54,12 @@ export function PlantDataToIterable( dataStr : string): string[][]{
   }
 
   for(var sensorType of sensorTypes){
-    result.push([
-      dataObj[sensorType].data + Sensor.typeToUnit(sensorType),
-      lables[sensorType]
-    ])
+    if(dataObj[sensorType]){
+      result.push([
+        dataObj[sensorType].data + Sensor.typeToUnit(sensorType),
+        lables[sensorType]
+      ])
+    } 
   }
 
   return result;

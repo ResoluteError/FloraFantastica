@@ -95,6 +95,8 @@ export class ScheduleService {
     var url = this.httpOptions.apiUrl;
     var options = this.httpOptions.options;
 
+    console.log("Schedule Options: ", options);
+
     return new Observable( observer => {
 
       this.http.post<Schedule>(`${url}/schedules`, scheduleData, options).subscribe( result => {

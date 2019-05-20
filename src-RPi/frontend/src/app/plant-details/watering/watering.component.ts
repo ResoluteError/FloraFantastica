@@ -55,20 +55,22 @@ export class WateringComponent implements OnInit {
 
     this.scheduleService.getScheduleByPlantId( this.plant.id).subscribe( result => {
       if(!result){
-        this.scheduleService.postSchedule({
-          plantId: this.plant.id,
-          active: false,
-          valvePin: 38,
-          duration: 45000,
-          minDurationSinceWatering: 48
-        }).subscribe( result => {
-          this.wateringSchedule = result;
-        }, err => {
-          if(err.status == 403){
-            this.alertService.accessDenied();
-          } else {
-          }
-        });
+        if(localStorage.getItem('auth')){
+          this.scheduleService.postSchedule({
+            plantId: this.plant.id,
+            active: false,
+            valvePin: 38,
+            duration: 45000,
+            minDurationSinceWatering: 48
+          }).subscribe( result => {
+            this.wateringSchedule = result;
+          }, err => {
+            if(err.status == 403){
+              this.alertService.accessDenied();
+            } else {
+            }
+          });
+        }
       } else {
 
         this.wateringSchedule = result;
@@ -85,7 +87,11 @@ export class WateringComponent implements OnInit {
 
 
   updateSchedule(){
-    
+
+    if(!this.wateringSchedule){
+      this.wateringSchedule = <Schedule>{};
+    }
+
     this.wateringSchedule.active = this.scheduleActive == "true";
     this.wateringSchedule.maxLight = +this.lightSelect;
     this.wateringSchedule.minDurationSinceWatering = +this.timeSelect;
@@ -97,8 +103,10 @@ export class WateringComponent implements OnInit {
     }, err => {
       if(err.status == 403){
         this.alertService.accessDenied();
+        this.savingSchedule = false;
       } else {
         this.alertService.warning("Schedule API Error!", "Failed saving the schedule, please try again in a moment.")
+        this.savingSchedule = false;
       }
     }, () => {
       this.savingSchedule = false;
@@ -131,8 +139,10 @@ export class WateringComponent implements OnInit {
           
           if(err.status == 403){
             this.alertService.accessDenied();
+            this.actionState = ActionState.error;
           } else {
             this.alertService.warning("Action API Error!", "Something went wrong, may be hardware related. Please check back later.");
+            this.actionState = ActionState.error;
           }
           
 
@@ -143,8 +153,10 @@ export class WateringComponent implements OnInit {
   }, err => {
     if (err.status == 403){
       this.alertService.accessDenied();
+      this.actionState = ActionState.error;
     } else {
       this.alertService.warning("Action API Error!", "Failed submitting action request, please try again in a moment.");
+      this.actionState = ActionState.error;
     }
 
   });
