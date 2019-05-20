@@ -31,12 +31,24 @@ export class HttpOptionsService {
   }
 
   get formOptions(): HttpOptions {
-    return {
-      headers: new HttpHeaders(
-        {
-          'Content-Type': 'multipart/form-data'
-        })
+    var result;
+    if(localStorage.getItem("auth")){
+      result = {
+        headers: new HttpHeaders(
+          {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': localStorage.getItem("auth")
+          })
+      }
+    } else {
+      result = {
+        headers: new HttpHeaders(
+          {
+            'Content-Type': 'multipart/form-data'
+          })
+      }
     }
+    return result;
   }
 
   get url(): string {
