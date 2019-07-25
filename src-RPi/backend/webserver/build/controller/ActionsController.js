@@ -283,6 +283,7 @@ var ActionsController = (function () {
                                             measuredAt: new Date().toISOString(),
                                             id: null
                                         };
+                                        console.log("Insert new measurement: ", newMeasurement);
                                         return [4, manager.insert(Measurement_1.Measurement, newMeasurement)];
                                     case 3:
                                         measurement = _a.sent();

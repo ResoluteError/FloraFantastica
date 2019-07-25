@@ -209,6 +209,8 @@ export class ActionsController {
           id : null
         }
 
+        console.log("Insert new measurement: ", newMeasurement);
+
         var measurement = await manager.insert(Measurement, newMeasurement);
 
         res.status(202).send(newMeasurement);
