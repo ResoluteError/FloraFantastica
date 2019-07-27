@@ -67,27 +67,28 @@ createConnection().then(async connection => {
 
   if(CONFIG.PROD_MODE){
 
-    // Certificate
-    const privateKey = fs.readFileSync(__dirname + '/keys/privkey.pem', 'utf8');
-    const certificate = fs.readFileSync(__dirname + '/keys/cert.pem', 'utf8');
-    const ca = fs.readFileSync(__dirname + '/keys/chain.pem', 'utf8');
+    // TODO: Reactivate HTTPS
+    // // Certificate
+    // const privateKey = fs.readFileSync(__dirname + '/keys/privkey.pem', 'utf8');
+    // const certificate = fs.readFileSync(__dirname + '/keys/cert.pem', 'utf8');
+    // const ca = fs.readFileSync(__dirname + '/keys/chain.pem', 'utf8');
 
-    const credentials = {
-      key: privateKey,
-      cert: certificate,
-      ca: ca
-    };
+    // const credentials = {
+    //   key: privateKey,
+    //   cert: certificate,
+    //   ca: ca
+    // };
 
     const httpServer = http.createServer(app);
-    const httpsServer = https.createServer(credentials, app);
+    // const httpsServer = https.createServer(credentials, app);
 
     httpServer.listen(CONFIG.WEBSERVER_PORT, () => {
       console.log('HTTP Server running on port 80');
     });
     
-    httpsServer.listen(CONFIG.WEBSERVER_HTTPS_PORT, () => {
-      console.log('HTTPS Server running on port 443');
-    });
+    // httpsServer.listen(CONFIG.WEBSERVER_HTTPS_PORT, () => {
+    //   console.log('HTTPS Server running on port 443');
+    // });
 
   } else {
 
